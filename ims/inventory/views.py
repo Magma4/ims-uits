@@ -5,5 +5,5 @@ from django.http import HttpResponse, JsonResponse
 def index(request):
     return render(request, 'index.html')
 
-def stock(request):
-    return render(request, 'stock.html')
+def dashboard(request):
+    return render(request, 'dashboard.html')
