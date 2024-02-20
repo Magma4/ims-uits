@@ -7,3 +7,6 @@ def index(request):
 
 def dashboard(request):
     return render(request, 'dashboard.html')
+
+def stock(request):
+    return render(request, 'stock.html')

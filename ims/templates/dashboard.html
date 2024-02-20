@@ -69,12 +69,14 @@
                         </div>
                     </div>
         </div>
-
+        {% block content %}
         
         <div class="col-md-10" style="margin: 1rem auto 0 auto; display:block;">
             <div class="card" style="max-width: 83rem; min-height: 25rem;">
                 <div class="card-body">
-                    <h5 class="card-title">Requisitions</h5>
+                    <h5 class="card-title"><button type="button" class="btn btn-primary">
+                        Requisitions <span class="badge text-bg-secondary">4</span>
+                      </button></h5>
                     <div class="row">
                         <div class="col-md-12">
                             <div style="max-height: 25rem; overflow-y: auto;">
@@ -95,7 +97,29 @@
                                             <td>Intern</td>
                                             <td>ISTH</td>
                                             <td>0241111122</td>
-                                            <td><button class="btn btn-primary">Order Details</button></td>
+                                            <td><!-- Button trigger modal -->
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                  Order Details
+                                                </button>
+                                                
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                  <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                      <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Order Details</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                      </div>
+                                                      <div class="modal-body">
+                                                        Four biometric devices
+                                                      </div>
+                                                      <div class="modal-footer">
+                                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Reject</button>
+                                                        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Approve</button>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div></td>
                                             <td>
                                                 <div class="dropdown">
                                                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -201,6 +225,179 @@
                     <div class="card" style="max-width: 40.5rem; min-height: 25rem; margin: 1rem; display: block;"> 
                         <div class="card-body">
                             <h5 class="card-title">Stock</h5>
+                            <div class="row">
+                                <div class="col-md-12" style="max-height: 25rem; overflow-y: auto;">
+                                  <table class="table">
+                                    <tbody>
+                                      <tr>
+                                        <td>Black Biometric</td>
+                                        <td><div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                          </div></td>
+                                        <td>
+                                          
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                    <tbody>
+                                        <tr>
+                                          <td>Black Biometric</td>
+                                          <td><div class="progress">
+                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                            </div></td>
+                                          <td>
+                                            
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                      <tbody>
+                                        <tr>
+                                          <td>Black Biometric</td>
+                                          <td><div class="progress">
+                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                            </div></td>
+                                          <td>
+                                            
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                      <tbody>
+                                        <tr>
+                                          <td>Black Biometric</td>
+                                          <td><div class="progress">
+                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                            </div></td>
+                                          <td>
+                                            
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                      <tbody>
+                                        <tr>
+                                          <td>Black Biometric</td>
+                                          <td><div class="progress">
+                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                            </div></td>
+                                          <td>
+                                            
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                      <tbody>
+                                        <tr>
+                                          <td>Black Biometric</td>
+                                          <td><div class="progress">
+                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                            </div></td>
+                                          <td>
+                                            
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                      <tbody>
+                                        <tr>
+                                          <td>Black Biometric</td>
+                                          <td><div class="progress">
+                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                            </div></td>
+                                          <td>
+                                            
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                      <tbody>
+                                        <tr>
+                                          <td>Black Biometric</td>
+                                          <td><div class="progress">
+                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                            </div></td>
+                                          <td>
+                                            
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                      <tbody>
+                                        <tr>
+                                          <td>Black Biometric</td>
+                                          <td><div class="progress">
+                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                            </div></td>
+                                          <td>
+                                            
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                      <tbody>
+                                        <tr>
+                                          <td>Black Biometric</td>
+                                          <td><div class="progress">
+                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                            </div></td>
+                                          <td>
+                                            
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                      <tbody>
+                                        <tr>
+                                          <td>Black Biometric</td>
+                                          <td><div class="progress">
+                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                            </div></td>
+                                          <td>
+                                            
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                      <tbody>
+                                        <tr>
+                                          <td>Black Biometric</td>
+                                          <td><div class="progress">
+                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                            </div></td>
+                                          <td>
+                                            
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                      <tbody>
+                                        <tr>
+                                          <td>Black Biometric</td>
+                                          <td><div class="progress">
+                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                            </div></td>
+                                          <td>
+                                            
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                      <tbody>
+                                        <tr>
+                                          <td>Black Biometric</td>
+                                          <td><div class="progress">
+                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                            </div></td>
+                                          <td>
+                                            
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                      <tbody>
+                                        <tr>
+                                          <td>Black Biometric</td>
+                                          <td><div class="progress">
+                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                            </div></td>
+                                          <td>
+                                            
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                      
+                                </div>
+                      
+                              </div>
                         </div>
                     </div>
                     <div class="card" style="max-width: 40.5rem; min-height: 25rem;margin: 1rem; display: block;" >
@@ -222,7 +419,7 @@
     </div>
 
     </div>
-
+    {% endblock %}
 
     <script src="popper.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

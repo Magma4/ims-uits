@@ -1,0 +1,24 @@
+{% extends 'dashboard.html' %}
+{% block title %} Stock {% endblock %}
+{% block content %}
+<div class="col-md-10" style="margin: 1rem auto 0 auto; display:block;">
+    <div class="card" style="max-width: 83rem; min-height: 90vh;">
+        <div class="card-body">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Active</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Link</a>
+                </li>
+                
+              </ul>
+            <div class="row">
+                <div class="col-md-12" style="">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
