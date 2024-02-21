@@ -1,24 +1,66 @@
 {% extends 'dashboard.html' %}
 {% block title %} Stock {% endblock %}
 {% block content %}
+
 <div class="col-md-10" style="margin: 1rem auto 0 auto; display:block;">
     <div class="card" style="max-width: 83rem; min-height: 90vh;">
-        <div class="card-body">
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Active</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Link</a>
-                </li>
-                
-              </ul>
-            <div class="row">
-                <div class="col-md-12" style="">
+        <p class="d-inline-flex gap-1">
+            <button class="btn btn-primary toggle-button" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample1" aria-expanded="false" aria-controls="multiCollapseExample1" onclick="toggleCollapse('multiCollapseExample1')">Toggle first element</button>
+            <button class="btn btn-primary toggle-button" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2" onclick="toggleCollapse('multiCollapseExample2')">Toggle second element</button>
+        </p>
 
+        <div class="collapse" id="multiCollapseExample1">
+            <div class="card-body">
+                <h5 class="card-title">Requisitions</h5>
+                <div class="row">
+                    <div class="col-md-12" style="">
+                        </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="collapse" id="multiCollapseExample2">
+            <div class="card-body">
+                Some placeholder content for the second collapse component of this multi-collapse example. This panel is hidden by default but revealed when the user activates the relevant trigger.
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function toggleCollapse(collapseId) {
+        // Get all collapse elements
+        var collapses = document.querySelector('.collapse');
+
+        // Loop through each collapse element
+        collapses.forEach(function (collapse) {
+            // Check if the collapse element is the one being toggled
+            if (collapse.getAttribute('id') !== collapseId) {
+                // If not, close the collapse element
+                var collapseInstance = new bootstrap.Collapse(collapse);
+                collapseInstance.hide();
+            }
+        });
+
+        // Prevent default behavior after triggering toggleCollapse
+        event.preventDefault();
+
+        // Get the clicked button and disable it
+        var clickedButton = event.target;
+        clickedButton.disabled = true;
+
+        // Enable the previously disabled button based on collapseId
+        document.querySelectorAll('.toggle-button').forEach(function (button) {
+            if (button.dataset.bsTarget !== `#${collapseId}`) {
+                button.disabled = false;
+            }
+        });
+    }
+</script>
+
+
+
+
+
+
 {% endblock %}
