@@ -30,7 +30,7 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                             <a href><img src="{% static 'knustlogo.png' %}" class="img-fluid rounded-start" alt="..." style="height: 50px;display: block;margin: 0 auto;">
 
                             </a>
-                            
+                            {% block content %}
                             <h5 style="text-align: center;margin-top: 1rem;">Login</h5>
                             <form action="">
                                 <div>
@@ -56,6 +56,9 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                     
                                 </div>
                             </form>
+
+                            <p style="text-align: center;">Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+                            {% endblock %}
                           </div>
                     </div>
                   </div>

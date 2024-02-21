@@ -1,0 +1,133 @@
+{% extends 'dashboard.html' %}
+{% block title %} Stock {% endblock %}
+{% block content %}
+
+<div class="col-md-10" style="margin: 2rem auto 0 auto; display:block;">
+    <p class="d-inline-flex gap-1">
+            <button class="btn btn-secondary toggle-button btn-lg" type="button" onclick="toggleCollapse('multiCollapseExample1')">View Your Requests</button>
+            <button class="btn btn-secondary toggle-button btn-lg" type="button" onclick="toggleCollapse('multiCollapseExample2')" style="margin-left: 0.5rem;">Request Items</button>
+        </p>
+    
+        
+
+        <div class="collapse" id="multiCollapseExample1">
+            <div class="card shadow-lg" style="max-width: 83rem; min-height: 60vh;border-radius: 20px;">
+            <div class="card-body">
+                <h5 class="card-title" style="text-align: center;">Requests</h5>
+                <div class="row">
+                    <div class="col-md-12" style="max-height: 60vh; overflow-y: auto;">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>Black Biometric</td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                <tr>
+                                    <td>Black Biometric</td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="collapse" id="multiCollapseExample2">
+        <div class="card shadow-lg" style="max-width: 83rem; min-height: 60vh;border-radius: 20px;">
+            <div class="card-body">
+                <h5 class="card-title" style="text-align: center;">Request For Items</h5>
+                <div class="row">
+                    <div class="col-md-12" style="max-height: 60vh; overflow-y: auto; margin-top: 2rem;">
+                        <form id="itemForm">
+                            <div class="form-group col-md-4 mx-auto">
+                                <label for="item" class="form-label" style="margin-top: 1rem;">Select Item(s) </label>
+                                <select class="form-select" id="item" multiple>
+                                    <option value="Black Biometric">Black Biometric</option>
+                                    <option value="Blue Biometric">Blue Biometric</option>
+                                    <option value="Lenovo Laptop">Lenovo Laptop</option>
+                                    <option value="Hp Laptops">Hp Laptops</option>
+                                    <option value="Extension">Extension</option>
+                                </select>
+                                <label class="form-label text-muted">N.B Please hold CTRL to select multiple</label>
+                            </div>
+                            <div id="quantityFields" class="form-group col-md-4 mx-auto"></div>
+                            <div class="form-group col-md-4 mx-auto">
+                                <label for="reason" style="margin-top: 1rem;">Reason For Request</label>
+                                <input type="text" id="reason" name="reason" class="form-control">
+                            </div>
+                            <div class="form-group col-md-4 mx-auto">
+                                <label for="date" style="margin-top: 1rem;">Date</label>
+                                <input type="date" id="date" name="date" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary mx-auto d-block" style="margin-top: 2rem;">
+                                    Add
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<script>
+    function toggleCollapse(collapseId) {
+        var collapse1 = document.getElementById('multiCollapseExample1');
+        var collapse2 = document.getElementById('multiCollapseExample2');
+
+        if (collapseId === 'multiCollapseExample1') {
+            if (collapse1.classList.contains('show')) {
+                collapse1.classList.remove('show');
+            } else {
+                collapse1.classList.add('show');
+                collapse2.classList.remove('show');
+            }
+        } else if (collapseId === 'multiCollapseExample2') {
+            if (collapse2.classList.contains('show')) {
+                collapse2.classList.remove('show');
+            } else {
+                collapse2.classList.add('show');
+                collapse1.classList.remove('show');
+            }
+        }
+    }
+
+    document.getElementById('item').addEventListener('change', function () {
+        var itemSelect = document.getElementById('item');
+        var quantityFields = document.getElementById('quantityFields');
+        quantityFields.innerHTML = '';
+
+        for (var i = 0; i < itemSelect.selectedOptions.length; i++) {
+            var itemName = itemSelect.selectedOptions[i].value;
+            var label = document.createElement('label');
+            label.textContent = itemName + ' Quantity:';
+            var input = document.createElement('input');
+            input.type = 'number';
+            input.name = 'quantity[]'; // Use array notation for multiple inputs
+            input.classList.add('form-control');
+            input.style.marginTop = '0.5rem';
+            quantityFields.appendChild(label);
+            quantityFields.appendChild(input);
+        }
+    });
+</script>
+
+{% endblock %}

@@ -10,3 +10,12 @@ def dashboard(request):
 
 def stock(request):
     return render(request, 'stock.html')
+
+def requisition(request):
+    return render(request, 'requisition.html')
+
+def employees(request):
+    return render(request, 'employees.html')
+
+def register(request):
+    return render(request, 'register.html')

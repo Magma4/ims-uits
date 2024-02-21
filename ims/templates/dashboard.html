@@ -25,7 +25,7 @@
 <body style="background-color: #f2f2f2;">
     <nav class="navbar bg-body-tertiary shadow">
         <div class="container-fluid">
-            <a class="navbar-brand" style="margin-left: 2rem;">UITS - IMS</a>
+            <a class="navbar-brand" style="margin-left: 2rem; font-weight: bolder;">UITS - IMS</a>
             <form class="d-flex" role="search">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
@@ -45,7 +45,7 @@
                                                 style="margin-right: 5px;margin-top: 1rem;"></i>Dashboard</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#"><i class="fa fa-plus-square"
+                                        <a class="nav-link" href="{% url 'requisition' %}"><i class="fa fa-plus-square"
                                                 style="margin-right: 5px;margin-top: 1rem;"></i>Requisitions</a>
                                     </li>
                                     <li class="nav-item">
@@ -53,7 +53,7 @@
                                                 style="margin-right: 5px;margin-top: 1rem;"></i>Stock</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#"><i class="fa fa-users"
+                                        <a class="nav-link" href="{% url 'employees' %}"><i class="fa fa-users"
                                                 style="margin-right:5px;margin-top: 1rem;"></i>Employees</a>
                                     </li>
                                     <li class="nav-item">
@@ -61,7 +61,7 @@
                                                 style="margin-right: 5px;margin-top: 1rem;"></i>Report</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#"><i class="fa fa-sign-out"
+                                        <a class="nav-link" href="{% url 'index' %}"><i class="fa fa-sign-out"
                                                 style="margin-right: 5px;margin-top: 1rem;"></i>Sign Out</a>
                                     </li>
                                 </ul>
@@ -72,10 +72,10 @@
         {% block content %}
         
         <div class="col-md-10" style="margin: 1rem auto 0 auto; display:block;">
-            <div class="card" style="max-width: 83rem; min-height: 25rem;">
+            <div class="card shadow-lg" style="max-width: 83rem; min-height: 25rem;border-radius: 20px;">
                 <div class="card-body">
-                    <h5 class="card-title"><button type="button" class="btn btn-primary">
-                        Requisitions <span class="badge text-bg-secondary">4</span>
+                    <h5 class="card-title"><button type="button" class="btn btn-secondary btn-lg">
+                        Requisitions <span class="badge text-bg-warning">4</span>
                       </button></h5>
                     <div class="row">
                         <div class="col-md-12">
@@ -222,7 +222,7 @@
                 </div>
             </div> 
             <div class="row ">
-                    <div class="card" style="max-width: 40.5rem; min-height: 25rem; margin: 1rem; display: block;"> 
+                    <div class="card shadow-lg" style="max-width: 40.5rem; min-height: 25rem; margin: 1rem; display: block;border-radius: 20px;"> 
                         <div class="card-body">
                             <h5 class="card-title">Stock</h5>
                             <div class="row">
@@ -400,7 +400,7 @@
                               </div>
                         </div>
                     </div>
-                    <div class="card" style="max-width: 40.5rem; min-height: 25rem;margin: 1rem; display: block;" >
+                    <div class="card shadow-lg" style="max-width: 40.5rem; min-height: 25rem;margin: 1rem; display: block;border-radius: 20px;" >
                         <div class="card-body">
                             <h5 class="card-title">Usage</h5>
                         </div>

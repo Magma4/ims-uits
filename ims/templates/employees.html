@@ -1,0 +1,42 @@
+{% extends 'dashboard.html' %}
+{% block title %} Stock {% endblock %}
+{% block content %}
+
+<div class="col-md-10" style="margin: 1rem auto 0 auto; display:block;">
+    <div class="card shadow-lg" style="max-width: 83rem; min-height: 70vh;border-radius: 20px;">
+        <div class="card-body">
+            <h5 class="card-title"><button type="button" class="btn btn-secondary btn-lg">
+                Employee List <span class="badge text-bg-success">80</span>
+              </button></h5>
+            <div class="row">
+                <div class="col-md-12">
+                    <div style="max-height: 70vh; overflow-y: auto;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Position</th>
+                                    <th scope="col">Department</th>
+                                    <th scope="col">Last Ordered</th>
+                                    <th scope="col">Joined</th>
+                                    <th scope="col">Mobile</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Mary Magaret</td>
+                                    <td>Intern</td>
+                                    <td>ISTH</td>
+                                    <td>date</td>
+                                    <td>date</td>
+                                    <td>0241111122</td>
+                                </tr>
+                            </tbody>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
