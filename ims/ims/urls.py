@@ -21,5 +21,6 @@ from user import views as user_view
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('dashboard/',include('inventory.urls')),
-    path('register/', user_view.register, name='user-register')
+    path('register/', user_view.register, name='user-register'),
+    path('login/', user_view.login, name='user-login')
 ]

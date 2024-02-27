@@ -1,4 +1,4 @@
-{% extends 'user/index.html' %}
+{% extends 'user/login.html' %}
 
 {% block content %}
 {% load crispy_forms_tags %}
@@ -37,6 +37,6 @@
         </div>
     </form>
 
-    <p style="text-align: center;">Already have an account? <a href="">Login</a></p>
+    <p style="text-align: center;">Already have an account? <a href="{% url 'user-login' %}">Login</a></p>
 
 {% endblock %}
