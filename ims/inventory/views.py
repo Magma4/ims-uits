@@ -2,20 +2,22 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 
 # Create your views here.
-def index(request):
-    return render(request, 'index.html')
+
 
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    return render(request, 'dashboard/dashboard.html')
 
 def stock(request):
-    return render(request, 'stock.html')
+    return render(request, 'dashboard/stock.html')
 
 def requisition(request):
-    return render(request, 'requisition.html')
+    return render(request, 'dashboard/requisition.html')
 
 def employees(request):
-    return render(request, 'employees.html')
+    return render(request, 'dashboard/employees.html')
 
-def register(request):
-    return render(request, 'register.html')
+def trying(request):
+    return render(request, 'dashboard/try.html')
+
+def profile(request):
+    return render(request, 'dashboard/profile.html')
