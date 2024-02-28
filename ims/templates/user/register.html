@@ -1,7 +1,15 @@
 {% extends 'user/login.html' %}
 
 {% block content %}
-{% load crispy_forms_tags %}
+{% if form.erros %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    The username may be in use, please use a different username...
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+
+    </button>
+
+  </div>
+{% endif %}
 <h5 style="text-align: center;margin-top: 1rem;">Register</h5>
     <form method="POST">
       {% csrf_token %}

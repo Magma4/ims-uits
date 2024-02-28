@@ -28,19 +28,20 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                         <div class="mb-3">
                             <h3 style="text-align: center;margin-top: 1rem;">UITS - IMS</h3>
                             <a href><img src="{% static 'knustlogo.png' %}" class="img-fluid rounded-start" alt="..." style="height: 50px;display: block;margin: 0 auto;">
-
+                            
                             </a>
                             {% block content %}
                             <h5 style="text-align: center;margin-top: 1rem;">Login</h5>
-                            <form action="">
+                            <form action="" method="POST">
+                                {% csrf_token %}
                                 <div>
-                                    <label for="email" class="form-label" style="margin-top: 1rem;">Email address</label>
-                                    <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                                    <label for="email" class="form-label" style="margin-top: 1rem;">Username</label>
+                                    <input type="text" class="form-control" id="username" placeholder="johndoe" name="username">
                                 </div>
                                 <div>
                                     <label for="password" class="form-label" style="margin-top: 1rem;">Password</label>
                                     <div class="input-group">
-                                        <input type="password" id="inputPassword5" class="form-control" aria-describedby="passwordHelpBlock">
+                                        <input type="password" id="password" name="password" class="form-control" aria-describedby="passwordHelpBlock">
                                         <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                             <i class="fas fa-eye" id="eyeIcon"></i>
                                         </button>
