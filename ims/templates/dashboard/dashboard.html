@@ -28,12 +28,12 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
 ">
     <nav class="navbar bg-body-tertiary shadow">
         <div class="container-fluid">
-            <a class="navbar-brand" style="margin-left: 2rem; font-weight: bolder;">UITS - IMS</a>
-            <p>Welcome {{username}}</p>
+            <a class="navbar-brand" style="margin-left: 2rem; font-weight: bolder;"><h2>UITS - IMS</h2></a>
             <form class="d-flex" role="search">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
-                <a href=""><img src="" alt=""><i class="fa fa-user-circle" style="margin-left: 1rem;margin-top: 1rem;"></i></a>
+                <a href="{% url 'profile' %}"><img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                  class="rounded-circle img-fluid" style="width: 50px;margin-left: 1rem;"></a>
             </form>
         </div>
     </nav>
