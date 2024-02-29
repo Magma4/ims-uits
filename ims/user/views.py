@@ -33,13 +33,20 @@ def register(request):
                 login(request, new_user)
                 return redirect('dashboard')
             
+            
     else:
+        messages.success(request, ("Username may be in use, please try a different username"))
         form = Register()
 
     context = {
         'form' : form,
     }
     return render(request, 'user/register.html', context)
+
+def passwordreset(request):
+    
+
+    return render(request, 'user/passwordreset.html')
 
 
 
