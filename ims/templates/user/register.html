@@ -2,13 +2,23 @@
 
 {% block content %}
 <h5 style="text-align: center;margin-top: 1rem;">Register</h5>
-    {% if messages %}
-        {% for message in messages %}
-            <div  class="alert alert-danger" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
+  {% if form.errors %}
+    {% for field in form %}
+      {% for error in field.errors %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <small>{{ error|escape }}</small>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <small>{{ error|escape }}</small>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+    
     <form method="POST">
       {% csrf_token %}
         <div class="row " style="margin-top: 1rem;">

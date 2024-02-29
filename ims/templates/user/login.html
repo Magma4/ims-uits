@@ -18,65 +18,60 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
 ">
     <div class="row">
         
-        <div class="col-md-6 " style="margin: 10rem auto 0 auto;">
-            <div class="card mb-3 shadow-lg" style="max-width: 1000px;min-height: 600px;border-radius: 20px;border: none;">
-                <div class="row g-0" >
-                  <div class="col-md-7" >
-                    <img src="{% static 'inventory.jpg' %}" class="img-fluid " alt="..." style="min-height: 67vh;border-radius: 20px 0px 0px 20px;border: none;">
-                  </div>
-                  <div class="col-md-5">
-                    <div class="card-body" style="color: green;min-height: 64.6vh;border-radius: 0px 20px 20px 0px;border: none;">
-                        <div class="mb-3">
-                            <h3 style="text-align: center;margin-top: 1rem;">UITS - IMS</h3>
-                            <a href><img src="{% static 'knustlogo.png' %}" class="img-fluid rounded-start" alt="..." style="height: 50px;display: block;margin: 0 auto;">
-                            
-                            </a>
-                            {% block content %}
-                            <h5 style="text-align: center;margin-top: 1rem;">Login</h5>
-                            
-                                {% if messages %}
-                                    {% for message in messages %}
-                                        <div  class="alert alert-danger" role="alert">
+        <div class="row justify-content-center" style="margin-top: 10rem;">
+            <div class="col-md-6 d-flex">
+                <div class="card mb-3 shadow-lg" style="width: 100%;border-radius: 20px;">
+                    <div class="row g-0">
+                        <div class="col-md-7 d-flex" style="border-radius: 20px;">
+                            <img src="{% static 'inventory.jpg' %}" class="img-fluid" alt="..." style="border: none; height: 100%;border-radius: 20px 0px 0px  20px;">
+                        </div>
+                        <div class="col-md-5 d-flex" >
+                            <div class="card-body" style="color: green; border: none; height: 100%;">
+                                <div class="mb-3">
+                                    <h3 style="text-align: center; margin-top: 1rem;">UITS - IMS</h3>
+                                    <a href="#"><img src="{% static 'knustlogo.png' %}" class="img-fluid rounded-start" alt="..." style="height: 50px; display: block; margin: 0 auto;"></a>
+                                    {% block content %}
+                                    <h5 style="text-align: center; margin-top: 1rem;">Login</h5>
+                                    {% if messages %}
+                                        {% for message in messages %}
+                                        <div class="alert alert-danger" role="alert">
                                             {{ message}}
                                         </div>
-                                    {% endfor %}
-                                {% endif %}
-                            
-                            <form action="" method="POST">
-                                {% csrf_token %}
-                                <div>
-                                    <label for="email" class="form-label" style="margin-top: 1rem;">Username</label>
-                                    <input type="text" class="form-control" id="username" placeholder="johndoe" name="username">
+                                        {% endfor %}
+                                    {% endif %}
+                                    <form action="" method="POST">
+                                        {% csrf_token %}
+                                        <div>
+                                            <label for="email" class="form-label" style="margin-top: 1rem;">Username</label>
+                                            <input type="text" class="form-control" id="username" placeholder="johndoe" name="username">
+                                        </div>
+                                        <div>
+                                            <label for="password" class="form-label" style="margin-top: 1rem;">Password</label>
+                                            <div class="input-group">
+                                                <input type="password" id="inputPassword5" name="password" class="form-control" aria-describedby="passwordHelpBlock">
+                                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                                    <i class="fas fa-eye" id="eyeIcon"></i>
+                                                </button>
+                                            </div>
+                                            <a href="#"><p style="margin-left: 11rem;">Forgot Password?</p></a>
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary" style="margin: 1rem auto 0 auto; display: block;">
+                                                Login
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <p style="text-align: center;">Don't have an account? <a href="{% url 'user-register' %}">Register</a></p>
+                                    {% endblock %}
                                 </div>
-                                <div>
-                                    <label for="password" class="form-label" style="margin-top: 1rem;">Password</label>
-                                    <div class="input-group">
-                                        <input type="password" id="password" name="password" class="form-control" aria-describedby="passwordHelpBlock">
-                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                            <i class="fas fa-eye" id="eyeIcon"></i>
-                                        </button>
-                                    </div>
-                                    
-                                    <a href="#"><p style="margin-left: 11rem;">Forgot Password?</p></a>
-                                </div>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary" style="margin: 1rem auto 0 auto;
-                                    display: block;">
-                                        Login
-                                    </button>
-                    
-                                </div>
-                            </form>
-
-                            <p style="text-align: center;">Don't have an account? <a href="{% url 'user-register' %}">Register</a></p>
-                            {% endblock %}
-                          </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
                 </div>
-              </div>
-
+            </div>
         </div>
+        
+        
 
     </div>
 

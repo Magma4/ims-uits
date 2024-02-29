@@ -35,7 +35,6 @@ def register(request):
             
             
     else:
-        messages.success(request, ("Username may be in use, please try a different username"))
         form = Register()
 
     context = {
@@ -48,5 +47,19 @@ def passwordreset(request):
 
     return render(request, 'user/passwordreset.html')
 
+def passwordresetcomplete(request):
+    
+    return render(request, 'user/passwordresetcomplete.html')
 
+def passwordresetsent(request):
+
+    return render(request, 'user/passwordresetsent.html')
+
+def passwordresetconfirm(request):
+
+    return render(request, 'user/passwordresetconfirm.html')
+
+def logout_user(request):
+
+    return render(request, 'user/logout.html')
 

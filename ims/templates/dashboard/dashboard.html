@@ -30,12 +30,17 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
 ">
     <nav class="navbar bg-body-tertiary shadow">
         <div class="container-fluid">
-            <a class="navbar-brand" style="margin-left: 2rem; font-weight: bolder;"><h3>UITS - IMS</h3></a>
+            <a class="navbar-brand" style="margin-left: 2rem; font-weight: bolder;" href=""><h4>UITS - IMS</h4></a>
             <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+                {% if user.is_authenticated %}
+                  <p style="margin-top: 1rem;">Welcome {{ user.username|title }}</p>
+                {% elif new_user.is_authenticated %}
+                  <p style="margin-top: 1rem;">Welcome {{ new_user.username|title }}</p>
+
+                {% endif %}
                 <a href="{% url 'profile' %}"><img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
-                  class="rounded-circle img-fluid" style="width: 50px;margin-left: 1rem;"></a>
+                  class="rounded-circle img-fluid" style="width: 40px;margin-left: 1rem;"></a>
+                
             </form>
         </div>
     </nav>
@@ -67,7 +72,7 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                                 style="margin-right: 5px;margin-top: 1rem;"></i>Report</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href=""><i class="fa fa-sign-out"
+                                        <a class="nav-link" href="{% url 'logout' %}"><i class="fa fa-sign-out"
                                                 style="margin-right: 5px;margin-top: 1rem;"></i>Sign Out</a>
                                     </li>
                                 </ul>

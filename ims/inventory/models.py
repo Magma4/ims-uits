@@ -6,12 +6,14 @@ class Stock(models.Model):
     name = models.CharField(max_length=100, null=True)
     description = models.CharField(max_length=200, null=True)
     quantity = models.PositiveIntegerField(null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = 'Stock'
 
     def __str__(self):
-        return f'{self.name}-{self.quantity}'
+        return f'{self.name}-{self.quantity}-{self.date_created}-{self.user}'
     
 class Order(models.Model):
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE, null=True)

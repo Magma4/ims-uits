@@ -24,5 +24,10 @@ urlpatterns = [
     path('register/', user_view.register, name='user-register'),
     path('login/', user_view.login_user, name='user-login'),
     path('users/', include('django.contrib.auth.urls')),
-    path('passwordreset', user_view.passwordreset, name='passwordreset')
+    path('passwordreset', user_view.passwordreset, name='passwordreset'),
+    path('passwordresetcomplete', user_view.passwordresetcomplete, name='passwordresetcomplete'),
+    path('passwordresetconfirm', user_view.passwordresetconfirm, name='passwordresetconfirm'),
+    path('passwordresetsent', user_view.passwordresetsent, name='passwordresetsent'),
+    path('logout', user_view.logout_user, name='logout')
+
 ]
