@@ -14,3 +14,4 @@ class StockAdmin(admin.ModelAdmin):
 # Register your models here.
 admin.site.register(Stock, StockAdmin )
 admin.site.register(Order)
+admin.site.register(Profile)
