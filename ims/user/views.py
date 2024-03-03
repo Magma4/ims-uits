@@ -4,19 +4,19 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 # Create your views here.
-def login_user(request):
-    if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('dashboard')
-        else:
-            messages.success(request, ("There was an error logging in, please try again.."))
-            return render(request, 'user/login.html')
-    else:
-        return render(request, 'user/login.html')
+# def login_user(request):
+#     if request.method == "POST":
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             login(request, user)
+#             return redirect('dashboard')
+#         else:
+#             messages.success(request, ("There was an error logging in, please try again.."))
+#             return render(request, 'user/login.html')
+#     else:
+#         return render(request, 'user/login.html')
 
 def register(request):
     if request.method == "POST":
@@ -31,7 +31,7 @@ def register(request):
             new_user = authenticate(username=username, password=password, first_name=first_name, last_name=last_name, email=email)
             if new_user is not None:
                 login(request, new_user)
-                return redirect('dashboard')
+                return redirect('user-login')
             
             
     else:
@@ -59,7 +59,7 @@ def passwordresetconfirm(request):
 
     return render(request, 'user/passwordresetconfirm.html')
 
-def logout_user(request):
+# def logout_user(request):
 
-    return render(request, 'user/logout.html')
+#     return render(request, 'user/logout.html')
 
