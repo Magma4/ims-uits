@@ -32,10 +32,19 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                     <a href="#"><img src="{% static 'knustlogo.png' %}" class="img-fluid rounded-start" alt="..." style="height: 50px; display: block; margin: 0 auto;"></a>
                                     {% block content %}
                                     <h5 style="text-align: center; margin-top: 1rem;">Login</h5>
-                                    {% if messages %}
-                                        {% for message in messages %}
-                                        <div class="alert alert-danger" role="alert">
-                                            {{ message}}
+                                    {% if form.errors %}
+                                        {% for field in form %}
+                                            {% for error in field.errors %}
+                                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                <small>{{ error|escape }}</small>
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                </div>
+                                            {% endfor %}
+                                        {% endfor %}
+                                        {% for error in form.non_field_errors %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <small>{{ error|escape }}</small>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                         </div>
                                         {% endfor %}
                                     {% endif %}
