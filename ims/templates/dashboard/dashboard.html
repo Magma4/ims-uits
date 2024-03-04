@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,13 +45,14 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
             </form>
         </div>
     </nav>
-
+    
     <div class="row">
         <div class="col-md-2">
             <div class="card" style="width: 11rem;height: 92vh; border: none; border-radius: 0%;display: contents;">
                         <div class="card-body">
                             <div class="offcanvas-body">
                                 <ul class="navbar-nav justify-content-end flex-grow-1 ">
+                                  
                                     <li class="nav-item" style="margin-top: 0.5rem;">
                                         <a class="nav-link active" aria-current="page" href="{% url 'dashboard' %}"><i class="fa fa-tachometer"
                                                 style="margin-right: 5px;margin-top: 1rem;"></i>Dashboard</a>
@@ -59,10 +61,12 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                         <a class="nav-link" href="{% url 'requisition' %}"><i class="fa fa-plus-square"
                                                 style="margin-right: 5px;margin-top: 1rem;"></i>Requisitions</a>
                                     </li>
+                                    {% if user.is_authenticated and user.is_staff and user.is_superuser %}
                                     <li class="nav-item">
                                         <a class="nav-link" href="{% url 'stock' %}"><i class="fa fa-table"
                                                 style="margin-right: 5px;margin-top: 1rem;"></i>Stock</a>
                                     </li>
+                                    
                                     <li class="nav-item">
                                         <a class="nav-link" href="{% url 'employees' %}"><i class="fa fa-users"
                                                 style="margin-right:5px;margin-top: 1rem;"></i>Employees</a>
@@ -71,6 +75,7 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                         <a class="nav-link" href="#"><i class="fa fa-book"
                                                 style="margin-right: 5px;margin-top: 1rem;"></i>Report</a>
                                     </li>
+                                    {% endif %}
                                     <li class="nav-item">
                                         <a class="nav-link" href="{% url 'user-logout' %}"><i class="fa fa-sign-out"
                                                 style="margin-right: 5px;margin-top: 1rem;"></i>Sign Out</a>
@@ -80,7 +85,9 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                         </div>
                     </div>
         </div>
+        
         {% block content %}
+        {% if user.is_authenticated and user.is_staff and user.is_superuser %}
         
         <div class="col-md-10" style="margin: 1rem auto 0 auto; display:block;">
             <div class="card shadow-lg" style="max-width: 83rem; min-height: 25rem;border-radius: 20px;">
@@ -430,6 +437,58 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
     </div>
 
     </div>
+    {% else %}
+    <div class="col-md-10" style="margin: 1rem auto 0 auto; display:block;">
+      <div class="card shadow-lg" style="max-width: 83rem; min-height: 25rem;border-radius: 20px;">
+          <div class="card-body">
+              <h5 class="card-title"><button type="button" class="btn btn-secondary btn-lg">
+                  My Requests <span class="badge text-bg-warning">4</span>
+                </button></h5>
+              <div class="row">
+                  <div class="col-md-12">
+                      <div style="max-height: 25rem; overflow-y: auto;">
+                          <table class="table">
+                              <thead>
+                                  <tr>
+                                      <th scope="col">Item</th>
+                                      <th scope="col">Description</th>
+                                      <th scope="col">Quantity</th>
+                                      <th scope="col">Status</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <tr>
+                                      <td>Mary Magaret</td>
+                                      <td>Intern</td>
+                                      <td>ISTH</td>
+                                      <td>ISTH</td>
+                                      
+                                  </tr>
+                              </tbody>
+                              <tbody>
+                                  <tr>
+                                      <td>Mary Magaret</td>
+                                      <td>Intern</td>
+                                      <td>ISTH</td>
+                                      <td>0241111122</td>
+                                  </tr>
+                              </tbody>
+                              <tbody>
+                                  <tr>
+                                      <td>Mary Magaret</td>
+                                      <td>Intern</td>
+                                      <td>ISTH</td>
+                                      <td>0241111122</td>
+                                  </tr>
+                              </tbody>
+                              
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div> 
+    {% endif %}
     {% endblock %}
 
     <script src="popper.min.js"></script>

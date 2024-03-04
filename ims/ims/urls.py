@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from user import views as user_view
 from django.contrib.auth import views as auth_views
+from django.contrib.auth import logout
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -29,7 +30,7 @@ urlpatterns = [
     path('passwordresetcomplete', user_view.passwordresetcomplete, name='passwordresetcomplete'),
     path('passwordresetconfirm', user_view.passwordresetconfirm, name='passwordresetconfirm'),
     path('passwordresetsent', user_view.passwordresetsent, name='passwordresetsent'),
-    path('logout', auth_views.LogoutView.as_view(template_name='user/logout.html'), name='user-logout')
+    path('logout/', user_view.logout_view, name='user-logout')
 
 
 ]

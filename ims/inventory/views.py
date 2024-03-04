@@ -10,25 +10,25 @@ def dashboard(request):
     
     return render(request, 'dashboard/dashboard.html')
 
-@login_required(login_url='user-login')
+@login_required
 def stock(request):
     mydictionary = {
         "stocks" : Stock.objects.all()
     }
     return render(request, 'dashboard/stock.html', context=mydictionary)
 
-@login_required(login_url='user-login')
+@login_required
 def requisition(request):
     return render(request, 'dashboard/requisition.html')
 
-@login_required(login_url='user-login')
+@login_required
 def employees(request):
     return render(request, 'dashboard/employees.html')
 
-@login_required(login_url='user-login')
+@login_required
 def trying(request):
     return render(request, 'dashboard/try.html')
 
-@login_required(login_url='user-login')
+@login_required
 def profile(request):
     return render(request, 'dashboard/profile.html')

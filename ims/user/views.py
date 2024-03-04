@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import Register, UserCreationForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 # Create your views here.
@@ -59,7 +59,7 @@ def passwordresetconfirm(request):
 
     return render(request, 'user/passwordresetconfirm.html')
 
-# def logout_user(request):
-
-#     return render(request, 'user/logout.html')
+def logout_view(request):
+    logout(request)
+    return render(request, 'user/logout.html')
 
