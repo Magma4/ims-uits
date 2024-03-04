@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from .models import *
 from django.contrib.auth.decorators import login_required
+from .forms import *
 # Create your views here.
 
 
@@ -12,13 +13,21 @@ def dashboard(request):
 
 @login_required
 def stock(request):
+    items = Stock.objects.all()
+
+    if request.method == 'POST':
+        form = StockForm(request.POST)
+    else:
+        form = StockForm()
     mydictionary = {
-        "stocks" : Stock.objects.all()
+        "stocks" : items,
+        "form" : form
     }
     return render(request, 'dashboard/stock.html', context=mydictionary)
 
 @login_required
 def requisition(request):
+    
     return render(request, 'dashboard/requisition.html')
 
 @login_required

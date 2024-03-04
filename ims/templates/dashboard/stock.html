@@ -1,18 +1,19 @@
 {% extends 'dashboard/dashboard.html' %}
 {% block title %} Stock {% endblock %}
 {% block content %}
+{% load crispy_forms_tags %}
 
 <div class="col-md-10" style="margin: 2rem auto 0 auto; display:block;">
     <p class="d-inline-flex gap-1">
-        <button class="btn btn-secondary toggle-button btn-lg" type="button"
-            onclick="toggleCollapse('multiCollapseExample1')">View Available Stock</button>
-        <button class="btn btn-secondary toggle-button btn-lg" type="button"
-            onclick="toggleCollapse('multiCollapseExample2')" style="margin-left: 0.5rem;">Add Stock</button>
+        <button class="btn btn-secondary toggle-button btn-lg" type="button" onclick="toggleCollapse('multiCollapseExample1')">View Available Stock</button>
+        {% if user.is_authenticated and user.is_staff and user.is_superuser %}
+        <button class="btn btn-secondary toggle-button btn-lg" type="button" onclick="toggleCollapse('multiCollapseExample2')" style="margin-left: 0.5rem;">Add Stock</button>
+        {% endif %}
     </p>
 
 
 
-    <div class="collapse" id="multiCollapseExample1">
+    <div class="collapse show" id="multiCollapseExample1">
         <div class="card shadow-lg" style="max-width: 83rem; min-height: 60vh;border-radius: 20px;">
             <div class="card-body">
                 <h5 class="card-title" style="text-align: center;">Available Items</h5>
@@ -56,9 +57,14 @@
                                                 aria-valuenow="{{stock.quantity}}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}">{{stock.quantity}}</div>
                                         </div>
                                     </td>
+                                    {% if user.is_authenticated and user.is_staff and user.is_superuser %}
                                     <td class="col-md-4">
-                                        <button class="btn btn-danger">Delete Item</button>
+                                        <button class="btn btn-primary">Edit</button>
                                     </td>
+                                    <td class="col-md-4">
+                                        <button class="btn btn-danger">Delete</button>
+                                    </td>
+                                    {% endif %}
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -71,36 +77,19 @@
             </div>
         </div>
     </div>
-
+    {% if user.is_authenticated and user.is_staff and user.is_superuser %}
     <div class="collapse" id="multiCollapseExample2">
         <div class="card shadow-lg" style="max-width: 83rem; min-height: 60vh;border-radius: 20px;">
             <div class="card-body">
                 <h5 class="card-title " style="text-align: center;">Add Stock</h5>
                 <div class="row">
                     <div class="col-md-12" style="max-height: 60vh; overflow-y: auto;margin-top: 2rem;">
-                        <form action="">
+                        <form action="" method="POST">
+                            {% csrf_token %}
                             <div class="form-group col-md-4 mx-auto">
-                                <label for="exampleDataList" class="form-label" style="margin-top: 1rem;">Item
-                                    Name</label>
-                                <input class="form-control" list="datalistOptions" id="exampleDataList"
-                                    placeholder="Type to search...">
-                                <datalist id="datalistOptions">
-                                    <option value="Black Biometric">
-                                    <option value="Blue Biometric">
-                                    <option value="Lenovo Laptop">
-                                    <option value="Hp Laptops">
-                                    <option value="Extension">
-                                </datalist>
+                                {{form|crispy}}
                             </div>
-                            <div class="form-group col-md-4 mx-auto">
-                                <label for="text" style="margin-top: 1rem;">Description</label>
-                                <input type="text" id="title" name="title" class="form-control">
-                            </div>
-                            <div class="form-group col-md-4 mx-auto">
-                                <label for="priority" style="margin-top: 1rem;">Quantity</label>
-                                <input type="number" id="priority" name="priority" class="form-control">
-                            </div>
-                            <div class="form-group">
+                            
                                 <button type="submit" class="btn btn-primary mx-auto d-block" style="margin-top: 2rem;">
                                     Add
                                 </button>
@@ -112,6 +101,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 
 <script>
@@ -136,7 +126,6 @@
         }
     }
 </script>
-
 
 
 
