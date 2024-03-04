@@ -29,6 +29,4 @@ def employees(request):
 def trying(request):
     return render(request, 'dashboard/try.html')
 
-@login_required
-def profile(request):
-    return render(request, 'dashboard/profile.html')
+

@@ -30,7 +30,8 @@ urlpatterns = [
     path('passwordresetcomplete', user_view.passwordresetcomplete, name='passwordresetcomplete'),
     path('passwordresetconfirm', user_view.passwordresetconfirm, name='passwordresetconfirm'),
     path('passwordresetsent', user_view.passwordresetsent, name='passwordresetsent'),
-    path('logout/', user_view.logout_view, name='user-logout')
+    path('logout/', user_view.logout_view, name='user-logout'),
+    path('profile', user_view.profile, name='profile')
 
 
 ]

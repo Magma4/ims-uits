@@ -28,16 +28,3 @@ class Order(models.Model):
     def __str__(self):
         return f'{self.order_quantity} {self.stock} ordered by {self.users.username} on {self.date}' 
     
-
-class Profile(models.Model):
-    users = models.ForeignKey(User, models.CASCADE, null=True)
-    contact = models.IntegerField(null=True)
-    job_title = models.CharField(max_length=50, null=True)
-    department = models.CharField(max_length=100, null=True)
-    orders = models.ForeignKey(Order, models.CASCADE)
-
-    class Meta:
-        verbose_name_plural = 'Profile'
-
-    # def __str__(self):
-    #     return f'{self.users.first_name}-{self.users.last_name}-{self.job_title}-{self.department}-{self.contact}'
