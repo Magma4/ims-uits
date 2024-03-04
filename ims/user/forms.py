@@ -15,7 +15,7 @@ class Register(UserCreationForm):
             'class' : 'form-control',
             'placeholder' : 'username',
             'aria-label' : 'username',
-            'minlength' : '6'
+            'minlength' : '4'
         })
         self.fields["first_name"].widget.attrs.update({
             'required' : '',
