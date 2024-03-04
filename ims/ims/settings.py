@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     "django.contrib.admin",
     "inventory",
     "user",
+    'crispy_forms',
+    "crispy_bootstrap4",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -130,6 +132,10 @@ STATICFILES_DIRS = [
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 MEDIA_ROOT = (BASE_DIR / 'media')
 

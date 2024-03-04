@@ -33,7 +33,8 @@ urlpatterns = [
     path('passwordresetconfirm', user_view.passwordresetconfirm, name='passwordresetconfirm'),
     path('passwordresetsent', user_view.passwordresetsent, name='passwordresetsent'),
     path('logout/', user_view.logout_view, name='user-logout'),
-    path('profile', user_view.profile, name='profile')
+    path('profile', user_view.profile, name='profile'),
+    path('profile/update/', user_view.profile_update, name='profile-update')
     
 
 

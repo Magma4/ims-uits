@@ -1,0 +1,44 @@
+{% extends 'dashboard/dashboard.html' %}
+{% block title %} Stock {% endblock %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+<div class="row" style="max-width: 83rem; min-height: 60vh;border-radius: 20px; margin-top: 2rem;">
+    <div class="col-md-12" >
+        <section >
+            <div class="container py-5">
+              <div class="row">
+                <div class="col">
+                  <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item active" aria-current="page">Edit Profile</li>
+                    </ol>
+                  </nav>
+                </div>
+              </div>
+          
+            <div class="row">
+                
+                <div class="col-lg-12">
+                  <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row " style="margin-top: 1rem;">
+                        <div class="form-control">
+                          {{user_form|crispy}}
+                          {{profile_form|crispy}}
+                          <input class="btn btn-info" type="submit" value="Update">
+                        </div>
+                          
+                      </div>
+                  </form>
+                </div>
+            </div>
+                 
+          </section>
+
+    </div>
+
+</div>
+{% endblock %}

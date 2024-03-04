@@ -2,6 +2,8 @@
 {% block title %} Stock {% endblock %}
 {% block content %}
 
+{% load static %}
+
 <div class="row" style="max-width: 83rem; min-height: 60vh;border-radius: 20px; margin-top: 2rem;">
     <div class="col-md-12" >
         <section >
@@ -20,14 +22,13 @@
                 <div class="col-lg-4">
                   <div class="card mb-4">
                     <div class="card-body text-center">
-                      <img src="{{user.profile.image.url}}" alt="avatar"
+                      <img src="{{user.profile.image.url}}" alt=" "
                         class="rounded-circle img-fluid" style="width: 150px;">
                       <h5 class="my-3">{{user.username|title}}</h5>
                       <p class="text-muted mb-1">{{user.profile.jobTitle|title}}</p>
                       <p class="text-muted mb-4">{{user.profile.department|upper}}</p>
                       <div class="d-flex justify-content-center mb-2">
-                        <button type="button" class="btn btn-primary">Save</button>
-                        <button type="button" class="btn btn-outline-primary ms-1">Edit</button>
+                        <a href="{% url 'profile-update' %}"><button type="button" class="btn btn-outline-primary ms-1">Edit</button></a>
                       </div>
                     </div>
                   </div>
