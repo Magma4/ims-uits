@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from .models import *
 from django.contrib.auth.decorators import login_required
 from .forms import *
+from django.contrib.auth.models import User
 # Create your views here.
 
 
@@ -17,6 +18,9 @@ def stock(request):
 
     if request.method == 'POST':
         form = StockForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('stock')
     else:
         form = StockForm()
     mydictionary = {
@@ -32,10 +36,39 @@ def requisition(request):
 
 @login_required
 def employees(request):
-    return render(request, 'dashboard/employees.html')
+    workers = User.objects.all()
+    context={
+        'workers' : workers
+    }
+    return render(request, 'dashboard/employees.html', context)
 
 @login_required
 def trying(request):
     return render(request, 'dashboard/try.html')
+
+def stock_delete(request, pk):
+    item = Stock.objects.get(id=pk)
+    if request.method == 'POST':
+        item.delete()
+        return redirect('stock')
+    return render(request, 'dashboard/stock_delete.html')
+
+def stock_update(request, pk):
+    item = Stock.objects.get(id=pk)
+    if request.method == 'POST':
+        form = StockForm(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect('stock')
+    else:
+        form = StockForm(instance=item)
+    context = {
+        'form' : form
+    }
+    return render(request, 'dashboard/stock_update.html', context)
+
+def employees_detail(request, pk):
+
+    return render(request, 'dashboard/employees_detail.html')
 
 

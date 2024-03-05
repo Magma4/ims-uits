@@ -15,24 +15,28 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Position</th>
+                                    <th scope="col">Job Title</th>
                                     <th scope="col">Department</th>
-                                    <th scope="col">Last Ordered</th>
+                                    <th scope="col">Division</th>
                                     <th scope="col">Joined</th>
                                     <th scope="col">Mobile</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for worker in workers %}
                                 <tr>
-                                    <td>Mary Magaret</td>
-                                    <td>Intern</td>
-                                    <td>ISTH</td>
-                                    <td>date</td>
-                                    <td>date</td>
-                                    <td>0241111122</td>
+                                    <td>{{ worker.first_name|title }} {{ worker.last_name|title }}</td>
+                                    <td>{{ worker.profile.jobTitle|title}}</td>
+                                    <td>{{ worker.profile.department|upper}}</td>
+                                    <td>{{ worker.profile.division|upper}}</td>
+                                    <td>{{ worker.date_joined}}</td>
+                                    <td>{{ worker.profile.contact}}</td>
+                                    <td><a href="{% url 'employees-detail'}"><button class="btn btn-info">View</button></a></td>
                                 </tr>
+                                {% endfor %}
                             </tbody>
-
+                        </table>
                     </div>
                 </div>
             </div>

@@ -7,7 +7,7 @@ class Stock(models.Model):
     description = models.CharField(max_length=200, null=True)
     quantity = models.PositiveIntegerField(null=True)
     date_created = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     class Meta:
         verbose_name_plural = 'Stock'
