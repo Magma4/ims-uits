@@ -60,23 +60,23 @@
                                         <td scope="col">
                                             {% if stock.quantity < 10 %}
                                                 <div class="progress">
-                                                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ stock.quantity|safe }}%;" aria-valuenow="{{ stock.quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}">{{ stock.quantity }}</div>
+                                                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ stock.quantity }}%;" aria-valuenow="{{ stock.quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}">{{ stock.quantity }}</div>
                                                 </div>
                                             {% elif stock.quantity < 20 %}
                                                 <div class="progress">
-                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ stock.quantity|safe }}%;" aria-valuenow="{{ stock.quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}">{{ stock.quantity }}</div>
+                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ stock.quantity }}%;" aria-valuenow="{{ stock.quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}">{{ stock.quantity }}</div>
                                                 </div>
                                             {% else %}
                                                 <div class="progress">
-                                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ stock.quantity|safe }}%;" aria-valuenow="{{ stock.quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}">{{ stock.quantity }}</div>
+                                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ stock.quantity }}%;" aria-valuenow="{{ stock.quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}">{{ stock.quantity }}</div>
                                                 </div>
                                             {% endif %}
                                         </td>
                                         {% if user.is_authenticated and user.is_staff and user.is_superuser %}
-                                            <td scope="col">
-                                                <a href="{% url 'stock-update' pk=stock.id %}"><button class="btn btn-primary">Edit</button></a>
-                                                <a href="{% url 'stock-delete' pk=stock.id %}"><button class="btn btn-danger">Delete</button></a>
-                                            </td>
+                                        <td scope="col">
+                                            <a href="{% url 'stock-update' pk=stock.id %}"><button class="btn btn-primary">Edit</button></a>
+                                            <a href="{% url 'stock-delete' pk=stock.id %}"><button class="btn btn-danger">Delete</button></a>
+                                        </td>
                                             
                                         {% endif %}
                                     </tr>
