@@ -6,7 +6,11 @@
     <div class="card shadow-lg" style="max-width: 83rem; min-height: 70vh;border-radius: 20px;">
         <div class="card-body">
             <h5 class="card-title"><button type="button" class="btn btn-secondary btn-lg">
-                Employee List <span class="badge text-bg-success">80</span>
+                Employee List <span class="badge text-bg-success">
+                    {% with workers.count as total_workers %}
+                        {{ total_workers }}
+                    {% endwith %}
+                </span>
               </button></h5>
             <div class="row">
                 <div class="col-md-12">
@@ -26,13 +30,14 @@
                             <tbody>
                                 {% for worker in workers %}
                                 <tr>
-                                    <td>{{ worker.first_name|title }} {{ worker.last_name|title }}</td>
+                                    <td><img src="{{worker.profile.image.url}}" alt=" "
+                                        class="rounded-circle img-fluid" style="width: 35px;"> {{ worker.first_name|title }} {{ worker.last_name|title }}</td>
                                     <td>{{ worker.profile.jobTitle|title}}</td>
                                     <td>{{ worker.profile.department|upper}}</td>
                                     <td>{{ worker.profile.division|upper}}</td>
                                     <td>{{ worker.date_joined}}</td>
                                     <td>{{ worker.profile.contact}}</td>
-                                    <td><a href="{% url 'employees-detail'}"><button class="btn btn-info">View</button></a></td>
+                                    <td><a href="{% url 'employees-detail' pk=worker.id %}"><button class="btn btn-info">View</button></a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

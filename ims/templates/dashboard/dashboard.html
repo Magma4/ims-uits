@@ -31,7 +31,7 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
 ">
     <nav class="navbar bg-body-tertiary shadow">
         <div class="container-fluid">
-            <a class="navbar-brand" style="margin-left: 2rem; font-weight: bolder;" href=""><h4>UITS - IMS</h4></a>
+            <a class="navbar-brand" style="margin-left: 1rem; font-weight: bolder;" href=""><h4><img src="{% static 'knustlogo.png' %}" class="img-fluid" alt="" style="height: 45px;"> UITS - IMS</h4></a>
             <form class="d-flex" role="search">
                 {% if user.is_authenticated %}
                   <p style="margin-top: 1rem;">Welcome {{ user.username|title }}</p>
@@ -94,7 +94,11 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
             <div class="card shadow-lg" style="max-width: 83rem; min-height: 25rem;border-radius: 20px;">
                 <div class="card-body">
                     <h5 class="card-title"><button type="button" class="btn btn-secondary btn-lg">
-                        Requisitions <span class="badge text-bg-warning">4</span>
+                        Requisitions <span class="badge text-bg-success">
+                            {% with orders.count as total_orders %}
+                                {{ total_orders }}
+                            {% endwith %}
+                        </span>
                       </button></h5>
                     <div class="row">
                         <div class="col-md-12">
@@ -104,6 +108,7 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                         <tr>
                                             <th scope="col">Name</th>
                                             <th scope="col">Position</th>
+                                            <th scope="col">Division</th>
                                             <th scope="col">Department</th>
                                             <th scope="col">Mobile No</th>
                                             <th scope="col">Order Details</th>
@@ -111,12 +116,14 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        {% for order in orders %}
                                         <tr>
-                                            <td>Mary Magaret</td>
-                                            <td>Intern</td>
-                                            <td>ISTH</td>
-                                            <td>0241111122</td>
-                                            <td><!-- Button trigger modal -->
+                                            <td scope="col">{{order.users.first_name|title}} {{order.users.last_name|title}}</td>
+                                            <td scope="col">{{order.users.profile.jobTitle|title}}</td>
+                                            <td scope="col">{{order.users.profile.division|upper}}</td>
+                                            <td scope="col">{{order.users.profile.department|upper}}</td>
+                                            <td scope="col">{{order.users.profile.contact|title}}</td>
+                                            <td scope="col"><!-- Button trigger modal -->
                                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                                   Order Details
                                                 </button>
@@ -130,110 +137,22 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                       </div>
                                                       <div class="modal-body">
-                                                        Four biometric devices
-                                                      </div>
-                                                      <div class="modal-footer">
-                                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Reject</button>
-                                                        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Approve</button>
+                                                        {{order.users.username|title}} ordered {{order.order_quantity}} {{order.item_name.name|title}}(s) for {{order.order_description|title}}  on {{order.date}}
                                                       </div>
                                                     </div>
                                                   </div>
                                                 </div></td>
-                                            <td>
-                                                <div class="dropdown">
-                                                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                      Dropdown
+                                            <td scope="col">
+                                            
+                                                    <button class="btn {% if order.status == 'pending' %}btn-warning{% elif order.status == 'approved' %}btn-success{% elif order.status == 'released' %}btn-danger{% elif order.status == 'returned' %}btn-secondary{% endif %}" >
+                                                        {{ order.status|title }}
                                                     </button>
-                                                    <ul class="dropdown-menu">
-                                                      <li><button class="dropdown-item" type="button">Action</button></li>
-                                                      <li><button class="dropdown-item" type="button">Another action</button></li>
-                                                      <li><button class="dropdown-item" type="button">Something else here</button></li>
-                                                    </ul>
-                                                  </div>
+                                               
                                             </td>
                                         </tr>
+                                        {% endfor %}
                                     </tbody>
-                                    <tbody>
-                                        <tr>
-                                            <td>Mary Magaret</td>
-                                            <td>Intern</td>
-                                            <td>ISTH</td>
-                                            <td>0241111122</td>
-                                            <td><button class="btn btn-primary">Order Details</button></td>
-                                        </tr>
-                                    </tbody>
-                                    <tbody>
-                                        <tr>
-                                            <td>Mary Magaret</td>
-                                            <td>Intern</td>
-                                            <td>ISTH</td>
-                                            <td>0241111122</td>
-                                            <td><button class="btn btn-primary">Order Details</button></td>
-                                        </tr>
-                                    </tbody>
-                                    <tbody>
-                                        <tr>
-                                            <td>Mary Magaret</td>
-                                            <td>Intern</td>
-                                            <td>ISTH</td>
-                                            <td>0241111122</td>
-                                            <td><button class="btn btn-primary">Order Details</button></td>
-                                        </tr>
-                                    </tbody>
-                                    <tbody>
-                                        <tr>
-                                            <td>Mary Magaret</td>
-                                            <td>Intern</td>
-                                            <td>ISTH</td>
-                                            <td>0241111122</td>
-                                            <td><button class="btn btn-primary">Order Details</button></td>
-                                        </tr>
-                                    </tbody>
-                                    <tbody>
-                                        <tr>
-                                            <td>Mary Magaret</td>
-                                            <td>Intern</td>
-                                            <td>ISTH</td>
-                                            <td>0241111122</td>
-                                            <td><button class="btn btn-primary">Order Details</button></td>
-                                        </tr>
-                                    </tbody>
-                                    <tbody>
-                                        <tr>
-                                            <td>Mary Magaret</td>
-                                            <td>Intern</td>
-                                            <td>ISTH</td>
-                                            <td>0241111122</td>
-                                            <td><button class="btn btn-primary">Order Details</button></td>
-                                        </tr>
-                                    </tbody>
-                                    <tbody>
-                                        <tr>
-                                            <td>Mary Magaret</td>
-                                            <td>Intern</td>
-                                            <td>ISTH</td>
-                                            <td>0241111122</td>
-                                            <td><button class="btn btn-primary">Order Details</button></td>
-                                        </tr>
-                                    </tbody>
-                                    <tbody>
-                                        <tr>
-                                            <td>Mary Magaret</td>
-                                            <td>Intern</td>
-                                            <td>ISTH</td>
-                                            <td>0241111122</td>
-                                            <td><button class="btn btn-primary">Order Details</button></td>
-                                        </tr>
-                                    </tbody>
-                                    <tbody>
-                                        <tr>
-                                            <td>Mary Magaret</td>
-                                            <td>Intern</td>
-                                            <td>ISTH</td>
-                                            <td>0241111122</td>
-                                            <td><button class="btn btn-primary">Order Details</button></td>
-                                        </tr>
-                                    </tbody>
+                                    
                                 </table>
                             </div>
                         </div>
@@ -269,149 +188,7 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                           </td>
                                         </tr>
                                       </tbody>
-                                      <tbody>
-                                        <tr>
-                                          <td>Black Biometric</td>
-                                          <td><div class="progress">
-                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
-                                            </div></td>
-                                          <td>
-                                            
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                      <tbody>
-                                        <tr>
-                                          <td>Black Biometric</td>
-                                          <td><div class="progress">
-                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
-                                            </div></td>
-                                          <td>
-                                            
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                      <tbody>
-                                        <tr>
-                                          <td>Black Biometric</td>
-                                          <td><div class="progress">
-                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
-                                            </div></td>
-                                          <td>
-                                            
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                      <tbody>
-                                        <tr>
-                                          <td>Black Biometric</td>
-                                          <td><div class="progress">
-                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
-                                            </div></td>
-                                          <td>
-                                            
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                      <tbody>
-                                        <tr>
-                                          <td>Black Biometric</td>
-                                          <td><div class="progress">
-                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
-                                            </div></td>
-                                          <td>
-                                            
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                      <tbody>
-                                        <tr>
-                                          <td>Black Biometric</td>
-                                          <td><div class="progress">
-                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
-                                            </div></td>
-                                          <td>
-                                            
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                      <tbody>
-                                        <tr>
-                                          <td>Black Biometric</td>
-                                          <td><div class="progress">
-                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
-                                            </div></td>
-                                          <td>
-                                            
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                      <tbody>
-                                        <tr>
-                                          <td>Black Biometric</td>
-                                          <td><div class="progress">
-                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
-                                            </div></td>
-                                          <td>
-                                            
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                      <tbody>
-                                        <tr>
-                                          <td>Black Biometric</td>
-                                          <td><div class="progress">
-                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
-                                            </div></td>
-                                          <td>
-                                            
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                      <tbody>
-                                        <tr>
-                                          <td>Black Biometric</td>
-                                          <td><div class="progress">
-                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
-                                            </div></td>
-                                          <td>
-                                            
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                      <tbody>
-                                        <tr>
-                                          <td>Black Biometric</td>
-                                          <td><div class="progress">
-                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
-                                            </div></td>
-                                          <td>
-                                            
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                      <tbody>
-                                        <tr>
-                                          <td>Black Biometric</td>
-                                          <td><div class="progress">
-                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
-                                            </div></td>
-                                          <td>
-                                            
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                      <tbody>
-                                        <tr>
-                                          <td>Black Biometric</td>
-                                          <td><div class="progress">
-                                              <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
-                                            </div></td>
-                                          <td>
-                                            
-                                          </td>
-                                        </tr>
-                                      </tbody>
+                                      
                                   </table>
                       
                                 </div>
@@ -439,12 +216,13 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
 
     </div>
     {% else %}
-    <div class="col-md-10" style="margin: 1rem auto 0 auto; display:block;">
+    <div class="col-md-10" style="margin: 2rem auto 0 auto; display:block;">
       <div class="card shadow-lg" style="max-width: 83rem; min-height: 25rem;border-radius: 20px;">
           <div class="card-body">
               <h5 class="card-title"><button type="button" class="btn btn-secondary btn-lg">
-                  Records <span class="badge text-bg-warning">4</span>
-                </button></h5>
+                  Records 
+                    
+                </h5>
               <div class="row">
                   <div class="col-md-12">
                       <div style="max-height: 25rem; overflow-y: auto;">
@@ -454,34 +232,44 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                       <th scope="col">Item</th>
                                       <th scope="col">Description</th>
                                       <th scope="col">Quantity</th>
+                                      <th scope="col">Date</th>
                                       <th scope="col">Status</th>
+                                      <th scope="col">Action</th>
                                   </tr>
                               </thead>
                               <tbody>
-                                  <tr>
-                                      <td>Mary Magaret</td>
-                                      <td>Intern</td>
-                                      <td>ISTH</td>
-                                      <td>ISTH</td>
-                                      
-                                  </tr>
-                              </tbody>
-                              <tbody>
-                                  <tr>
-                                      <td>Mary Magaret</td>
-                                      <td>Intern</td>
-                                      <td>ISTH</td>
-                                      <td>0241111122</td>
-                                  </tr>
-                              </tbody>
-                              <tbody>
-                                  <tr>
-                                      <td>Mary Magaret</td>
-                                      <td>Intern</td>
-                                      <td>ISTH</td>
-                                      <td>0241111122</td>
-                                  </tr>
-                              </tbody>
+                                {% if orders %}
+                                    {% for order in orders %}
+                                      {% if order.users == user %}
+                                    <tr>
+                                        <td scope="col">{{ order.item_name.name|title }}</td>
+                                        <td scope="col">{{ order.order_description|title }}</td>
+                                        <td scope="col">{{ order.order_quantity }}</td>
+                                        <td scope="col">{{ order.date }}</td>
+                                        <td scope="col">
+                                            <button class="btn {% if order.status == 'pending' %}btn-warning{% elif order.status == 'approved' %}btn-success{% elif order.status == 'released' %}btn-danger{% elif order.status == 'returned' %}btn-secondary{% endif %}" disabled>
+                                                {{ order.status|title }}
+                                            </button>
+                                        </td>
+                                        {% if order.status == 'pending' %}
+                                        <td scope="col">
+                                            <a href="{% url 'order-update' pk=order.id %}"><button class="btn btn-primary">Edit</button></a>
+                                            <a href="{% url 'order-delete' pk=order.id %}"><button class="btn btn-danger">Delete</button></a>
+                                        </td>
+                                        {% else %}
+                                        <td scope="col">
+                                            <a href="" ><button class="btn btn-primary" disabled>Edit</button></a>
+                                            <a href="" ><button class="btn btn-danger" disabled>Delete</button></a>
+                                        </td>
+                                        {% endif %}
+                                    </tr>
+                                      {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    <td colspan="12">You have no orders</td>
+                                {% endif %}
+                            </tbody>
+                            
                               
                           </table>
                       </div>

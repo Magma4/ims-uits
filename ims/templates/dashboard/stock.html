@@ -5,7 +5,11 @@
 
 <div class="col-md-10" style="margin: 2rem auto 0 auto; display:block;">
     <p class="d-inline-flex gap-1">
-        <button class="btn btn-secondary toggle-button btn-lg" type="button" onclick="toggleCollapse('multiCollapseExample1')">View Available Stock</button>
+        <button class="btn btn-secondary toggle-button btn-lg" type="button" onclick="toggleCollapse('multiCollapseExample1')">View Available Stock <span class="badge text-bg-success">
+            {% with stocks.count as total_stocks %}
+                {{ total_stocks }}
+            {% endwith %}
+        </span></button>
         {% if user.is_authenticated and user.is_staff and user.is_superuser %}
         <button class="btn btn-secondary toggle-button btn-lg" type="button" onclick="toggleCollapse('multiCollapseExample2')" style="margin-left: 0.5rem;">Add Stock</button>
         {% endif %}
@@ -22,26 +26,28 @@
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <th class="col-md-4">Name</th>
-                                    <th class="col-md-4">Description</th>
-                                    <th class="col-md-4">
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">
                                         Quantity
                                     </th>
-                                    <th class="col-md-4">
-                                        
+                                    {% if request.user.is_superuser %}
+                                    <th scope="col">
+                                        Action
                                     </th>
+                                    {% endif %}
                                 </tr>
                                 {% if stocks|length == 0 %}
                                 <tr>
-                                    <td class="col-md-4"></td>
-                                    <td class="col-md-4"></td>
-                                    <td class="col-md-4">
+                                    <td scope="col"></td>
+                                    <td scope="col"></td>
+                                    <td scope="col">
                                         <div class="progress">
                                             <div class="progress-bar" role="progressbar" style="width: 0%;"
                                                 aria-valuenow="" aria-valuemin="0" aria-valuemax=""></div>
                                         </div>
                                     </td>
-                                    <td class="col-md-4">
+                                    <td scope="col">
                                         
                                     </td>
                                 </tr>
@@ -49,9 +55,9 @@
 
                                 {% for stock in stocks %}
                                     <tr>
-                                        <td class="col-md-4">{{ stock.name }}</td>
-                                        <td class="col-md-4">{{ stock.description }}</td>
-                                        <td class="col-md-4">
+                                        <td scope="col">{{ stock.name|title }}</td>
+                                        <td scope="col">{{ stock.description|title }}</td>
+                                        <td scope="col">
                                             {% if stock.quantity < 10 %}
                                                 <div class="progress">
                                                     <div class="progress-bar bg-danger" role="progressbar" style="width: {{ stock.quantity|safe }}%;" aria-valuenow="{{ stock.quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}">{{ stock.quantity }}</div>
@@ -67,12 +73,11 @@
                                             {% endif %}
                                         </td>
                                         {% if user.is_authenticated and user.is_staff and user.is_superuser %}
-                                            <td class="col-md-4">
+                                            <td scope="col">
                                                 <a href="{% url 'stock-update' pk=stock.id %}"><button class="btn btn-primary">Edit</button></a>
-                                            </td>
-                                            <td class="col-md-4">
                                                 <a href="{% url 'stock-delete' pk=stock.id %}"><button class="btn btn-danger">Delete</button></a>
                                             </td>
+                                            
                                         {% endif %}
                                     </tr>
                                 {% endfor %}

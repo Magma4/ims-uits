@@ -1,44 +1,73 @@
 {% extends 'dashboard/dashboard.html' %}
 {% block title %} Stock {% endblock %}
 {% block content %}
+{% load crispy_forms_tags %}
 
 <div class="col-md-10" style="margin: 2rem auto 0 auto; display:block;">
     <p class="d-inline-flex gap-1">
-            <button class="btn btn-secondary toggle-button btn-lg" type="button" onclick="toggleCollapse('multiCollapseExample1')">View Your Requests</button>
+        {% if user.is_authenticated and user.is_staff and user.is_superuser %}
+            <button class="btn btn-secondary toggle-button btn-lg" type="button" onclick="toggleCollapse('multiCollapseExample1')">View Requests</button>
+        {% endif %}
             <button class="btn btn-secondary toggle-button btn-lg" type="button" onclick="toggleCollapse('multiCollapseExample2')" style="margin-left: 0.5rem;">Request Items</button>
         </p>
     
         
-
+        {% if user.is_authenticated and user.is_staff and user.is_superuser %}
         <div class="collapse show" id="multiCollapseExample1">
             <div class="card shadow-lg" style="max-width: 83rem; min-height: 60vh;border-radius: 20px;">
             <div class="card-body">
-                <h5 class="card-title" style="text-align: center;">Requests</h5>
+                <h5 class="card-title" style="text-align: center;">All Orders</h5>
                 <div class="row">
                     <div class="col-md-12" style="max-height: 60vh; overflow-y: auto;">
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <td>Black Biometric</td>
-                                    <td>
-                                        <div class="progress">
-                                            <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
-                                        </div>
-                                    </td>
-                                    <td></td>
+                                    <th scope="col">Item Name</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Order By</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Action</th>
+
                                 </tr>
                             </tbody>
+                            {% if orders|length == 0 %}
+                            <td colspan="12" style="text-align: center;"><h5>There are no orders</h5></td>
+                            {% endif %}
                             <tbody>
+                                {% for order in orders %}
                                 <tr>
-                                    <td>Black Biometric</td>
-                                    <td>
-                                        <div class="progress">
-                                            <div class="progress-bar" role="progressbar" style="width:100;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">3</div>
-                                        </div>
+                                    <td scope="col">{{ order.item_name.name|title }}</td>
+                                    <td scope="col">{{ order.order_description|title }}</td>
+                                    <td scope="col">{{ order.order_quantity }}</td>
+                                    <td scope="col">{{ order.users.username|title }}</td>
+                                    <td scope="col">{{ order.date }}</td>
+                                    <td scope="col">
+
+                                        <form action="{% url 'update_order_status' order.id %}" method="post">
+                                            {% csrf_token %}
+                                            <select name="status" class="form-select" {% if not request.user.is_superuser %}disabled{% endif %}>
+                                                <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                                                <option value="approved" {% if order.status == 'approved' %}selected{% endif %}>Approved</option>
+                                                <option value="released" {% if order.status == 'released' %}selected{% endif %}>Released</option>
+                                                <option value="returned" {% if order.status == 'returned' %}selected{% endif %}>Returned</option>
+                                            </select>
+                                            {% if request.user.is_superuser %}
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                            {% endif %}
+                                        </form>
                                     </td>
-                                    <td></td>
+                                    <td scope="col">
+                                        <a href="{% url 'order-update' pk=order.id %}"><button class="btn btn-primary">Edit</button></a>
+                                        <a href="{% url 'order-delete' pk=order.id %}"><button class="btn btn-danger">Delete</button></a>
+                                    </td>
+                                    
                                 </tr>
+                                {% endfor %}
                             </tbody>
+                            
+                            
                         </table>
                     </div>
                     
@@ -46,34 +75,24 @@
             </div>
         </div>
     </div>
-
+    {% endif %}
+    {% if user.is_authenticated and user.is_staff and user.is_superuser %}
     <div class="collapse" id="multiCollapseExample2">
+    {% else %}
+    <div class="collapse show" id="multiCollapseExample2">
+    {% endif %}
         <div class="card shadow-lg" style="max-width: 83rem; min-height: 60vh;border-radius: 20px;">
             <div class="card-body">
                 <h5 class="card-title" style="text-align: center;">Request For Items</h5>
                 <div class="row">
                     <div class="col-md-12" style="max-height: 60vh; overflow-y: auto; margin-top: 2rem;">
-                        <form id="itemForm">
+                        <form id="itemForm" method="POST">
+                            {% csrf_token %}
                             <div class="form-group col-md-4 mx-auto">
-                                <label for="item" class="form-label" style="margin-top: 1rem;">Select Item(s) </label>
-                                <select class="form-select" id="item" multiple>
-                                    <option value="Black Biometric">Black Biometric</option>
-                                    <option value="Blue Biometric">Blue Biometric</option>
-                                    <option value="Lenovo Laptop">Lenovo Laptop</option>
-                                    <option value="Hp Laptops">Hp Laptops</option>
-                                    <option value="Extension">Extension</option>
-                                </select>
-                                <label class="form-label text-muted">N.B Please hold CTRL to select multiple</label>
+                                {{ form|crispy }}
+                                
                             </div>
-                            <div id="quantityFields" class="form-group col-md-4 mx-auto"></div>
-                            <div class="form-group col-md-4 mx-auto">
-                                <label for="reason" style="margin-top: 1rem;">Reason For Request</label>
-                                <input type="text" id="reason" name="reason" class="form-control">
-                            </div>
-                            <div class="form-group col-md-4 mx-auto">
-                                <label for="date" style="margin-top: 1rem;">Date</label>
-                                <input type="date" id="date" name="date" class="form-control">
-                            </div>
+                            
                             <div class="form-group">
                                 <button type="submit" class="btn btn-primary mx-auto d-block" style="margin-top: 2rem;">
                                     Add
@@ -87,6 +106,10 @@
     </div>
     
 </div>
+
+
+</div>
+
 
 <script>
     function toggleCollapse(collapseId) {
