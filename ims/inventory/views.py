@@ -13,13 +13,13 @@ from django.contrib import messages
 def dashboard(request):
     user = request.user
     orders = Order.objects.all()
-    stocks = Stock.objects.all()
+    items = Stock.objects.all()
     order_count = Order.objects.filter(users=user).count()
     
     context = {
         'orders' : orders,
         'order_count': order_count,
-        'stocks' : stocks
+        'items' : items
     }
     
     return render(request, 'dashboard/dashboard.html', context)

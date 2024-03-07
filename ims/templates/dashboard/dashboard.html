@@ -21,6 +21,15 @@
             background-color: white;
         }
     </style>
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    
+    
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    </head>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
     
 </head>
@@ -163,7 +172,7 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                 </div>
             </div> 
             <div class="row ">
-                <div class="col-md-6 my-3">
+                <div class="col-5 my-4">
                     <div class="bg-white">
                         <div class="card-body">
                             <canvas id="myChart1" width="400" height="300"></canvas>
@@ -172,29 +181,39 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                 var myChart1 = new Chart(ctx, {
                                     type: 'pie',
                                     data: {
-                                        labels: [{% for stocks in stocks %} {{stocks.name}} {% endfor %}],
-                                datasets: [{
-                                    label: 'Number of Products',
-                                    data: [{% for stocks in stocks %} {{ stocks.quantity }}, {% endfor %}],
-                                    backgroundColor: [
-                                        'rgba(255, 99, 132, 1)',
-                                        'rgba(54, 162, 235, 1)',
-                                        'rgba(255, 206, 86, 1)',
-                                        'rgba(75, 192, 192, 1)',
-                                        'rgba(153, 102, 255, 1)',
-                                        'rgba(255, 159, 64, 1)'
-                                    ],
-                                        borderColor: [
-                                            'rgba(255, 99, 132, 1)',
-                                            'rgba(54, 162, 235, 1)',
-                                            'rgba(255, 206, 86, 1)',
-                                            'rgba(75, 192, 192, 1)',
-                                            'rgba(153, 102, 255, 1)',
-                                            'rgba(255, 159, 64, 1)'
-                                        ],
-                                            borderWidth: 1
-                                }]
-                                    },
+                                        labels: [{% for items in items %}"{{items|title}}",{% endfor %}],
+                                            datasets: [{
+                                                label: "Number of Products",
+                                                data: [{% for items in items %}{{ items.quantity }},{% endfor %}],
+                                                backgroundColor: [
+                                                    'rgba(255, 99, 132, 1)',
+                                                    'rgba(54, 162, 235, 1)',
+                                                    'rgba(255, 206, 86, 1)',
+                                                    'rgba(75, 192, 192, 1)',
+                                                    'rgba(153, 102, 255, 1)',
+                                                    'rgba(255, 159, 64, 1)',
+                                                    'rgba(208, 224, 35, 0.8)',
+                                                    'rgba(60, 65, 13, 0.8)',
+                                                    'rgba(219, 151, 132, 0.8)',
+                                                    'rgba(194, 132, 219, 0.8)',
+
+                                                ],
+                                                    borderColor: [
+                                                        'rgba(255, 99, 132, 1)',
+                                                        'rgba(54, 162, 235, 1)',
+                                                        'rgba(255, 206, 86, 1)',
+                                                        'rgba(75, 192, 192, 1)',
+                                                        'rgba(153, 102, 255, 1)',
+                                                        'rgba(255, 159, 64, 1)',
+                                                        'rgba(255, 159, 64, 1)',
+                                                        'rgba(208, 224, 35, 0.8)',
+                                                        'rgba(60, 65, 13, 0.8)',
+                                                        'rgba(219, 151, 132, 0.8)',
+                                                        'rgba(194, 132, 219, 0.8)',
+                                                    ],
+                                                        borderWidth: 1
+                                            }]
+                                },
                                 options: {
                                     scales: {
                                         yAxes: [{
@@ -209,7 +228,7 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 my-3">
+                <div class="col-5 my-4">
                     <div class="bg-white">
                         <div class="card-body">
                             <canvas id="myChart" width="400" height="300"></canvas>
@@ -218,29 +237,37 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                 var myChart = new Chart(ctx, {
                                     type: 'bar',
                                     data: {
-                                        labels: [{% for order in orders %} {{order.item_name}} ,{% endfor %}],
-                                datasets: [{
-                                    label: 'Orders',
-                                    data: [{% for order in orders %} {{ order.order_quantity }}, {% endfor %}],
-                                    backgroundColor: [
-                                        'rgba(255, 99, 132, 1)',
-                                        'rgba(54, 162, 235, 1)',
-                                        'rgba(255, 206, 86, 1)',
-                                        'rgba(75, 192, 192, 1)',
-                                        'rgba(153, 102, 255, 1)',
-                                        'rgba(255, 159, 64, 1)'
-                                    ],
-                                        borderColor: [
-                                            'rgba(255, 99, 132, 1)',
-                                            'rgba(54, 162, 235, 1)',
-                                            'rgba(255, 206, 86, 1)',
-                                            'rgba(75, 192, 192, 1)',
-                                            'rgba(153, 102, 255, 1)',
-                                            'rgba(255, 159, 64, 1)'
-                                        ],
-                                            borderWidth: 1
-                                }]
-                                    },
+                                        labels: [{% for orders in orders %}"{{orders.item_name|title}}",{% endfor %}],
+                                            datasets: [{
+                                                label: 'Orders',
+                                                data: [{% for orders in orders %}{{ orders.order_quantity }},{% endfor %}],
+                                                backgroundColor: [
+                                                    'rgba(255, 99, 132, 1)',
+                                                    'rgba(54, 162, 235, 1)',
+                                                    'rgba(255, 206, 86, 1)',
+                                                    'rgba(75, 192, 192, 1)',
+                                                    'rgba(153, 102, 255, 1)',
+                                                    'rgba(255, 159, 64, 1)',
+                                                    'rgba(208, 224, 35, 0.8)',
+                                                    'rgba(60, 65, 13, 0.8)',
+                                                    'rgba(219, 151, 132, 0.8)',
+                                                    'rgba(194, 132, 219, 0.8)',
+                                                ],
+                                                    borderColor: [
+                                                        'rgba(255, 99, 132, 1)',
+                                                        'rgba(54, 162, 235, 1)',
+                                                        'rgba(255, 206, 86, 1)',
+                                                        'rgba(75, 192, 192, 1)',
+                                                        'rgba(153, 102, 255, 1)',
+                                                        'rgba(255, 159, 64, 1)',
+                                                        'rgba(208, 224, 35, 0.8)',
+                                                        'rgba(60, 65, 13, 0.8)',
+                                                        'rgba(219, 151, 132, 0.8)',
+                                                        'rgba(194, 132, 219, 0.8)',
+                                                    ],
+                                                        borderWidth: 1
+                                            }]
+                                },
                                 options: {
                                     scales: {
                                         yAxes: [{
