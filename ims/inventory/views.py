@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import *
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.contrib import messages
 # Create your views here.
 
 
@@ -12,11 +13,13 @@ from django.db.models import Q
 def dashboard(request):
     user = request.user
     orders = Order.objects.all()
+    stocks = Stock.objects.all()
     order_count = Order.objects.filter(users=user).count()
     
     context = {
         'orders' : orders,
         'order_count': order_count,
+        'stocks' : stocks
     }
     
     return render(request, 'dashboard/dashboard.html', context)
@@ -46,16 +49,20 @@ def requisition(request):
         if form.is_valid():
             instance = form.save(commit=False)
             instance.users = request.user
-            instance.save()
-            return redirect('dashboard')
+            order_quantity = instance.order_quantity
+            stock_quantity = instance.item_name.quantity
+            if order_quantity <= stock_quantity:
+                instance.save()
+                return redirect('dashboard')
+            else:
+                messages.error(request, "Order quantity cannot be more than stock quantity")
+                return redirect('requisition')  # Redirect back to the requisition page
     else:
         form = OrderForm()
     context = {
-        'orders' : orders,
-        'form' : form,
-        
+        'orders': orders,
+        'form': form,
     }
-    
     return render(request, 'dashboard/requisition.html', context)
 
 @login_required
@@ -125,15 +132,23 @@ def order_update(request, pk):
     if request.method == 'POST':
         form = OrderForm(request.POST, instance=order)
         if form.is_valid():
-            form.save()
-            if request.user.is_superuser:
-                return redirect('requisition')
+            instance = form.save(commit=False)
+            # Retrieve the current stock quantity
+            current_stock_quantity = instance.item_name.quantity
+            # Check if the order status is released and the new order quantity exceeds the current stock quantity
+            if instance.status == 'pending' and instance.order_quantity > current_stock_quantity:
+                # Add an error message if the condition is met
+                messages.error(request, "Insufficient stock quantity")
             else:
-                return redirect('dashboard')
+                instance.save()
+                if request.user.is_superuser:
+                    return redirect('requisition')
+                else:
+                    return redirect('dashboard')
     else:
         form = OrderForm(instance=order)
     context = {
-        'form' : form,
+        'form': form,
     }
     return render(request, 'dashboard/order_update.html', context)
 

@@ -13,6 +13,15 @@
                 <div class="col-md-12" style="max-height: 60vh; overflow-y: auto;margin-top: 2rem;">
                     <form action="" method="POST">
                         {% csrf_token %}
+                        {% if messages %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                    {% for message in messages %}
+                                    <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
                         <div class="form-group col-md-4 mx-auto">
                             {{form|crispy}}
                         </div>
