@@ -21,6 +21,10 @@
         <div class="card shadow-lg" style="max-width: 83rem; min-height: 60vh;border-radius: 20px;">
             <div class="card-body">
                 <h5 class="card-title" style="text-align: center;">Available Items</h5>
+                <form class="d-flex" role="search" action="{% url 'searchdata3' %}" method="GET">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
                 <div class="row">
                     <div class="col-md-12" style="max-height: 60vh; overflow-y: auto;">
                         <table class="table">

@@ -5,13 +5,17 @@
 <div class="col-md-10" style="margin: 1rem auto 0 auto; display:block;">
     <div class="card shadow-lg" style="max-width: 83rem; min-height: 70vh;border-radius: 20px;">
         <div class="card-body">
-            <h5 class="card-title"><button type="button" class="btn btn-secondary btn-lg">
+            <a href="{% url 'employees' %}"><h5 class="card-title"><button type="button" class="btn btn-secondary btn-lg">
                 Employee List <span class="badge text-bg-success">
                     {% with workers.count as total_workers %}
                         {{ total_workers }}
                     {% endwith %}
                 </span>
-              </button></h5>
+              </button></h5></a>
+              <form class="d-flex" role="search" action="{% url 'searchdata2' %}" method="GET">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
             <div class="row">
                 <div class="col-md-12">
                     <div style="max-height: 70vh; overflow-y: auto;">

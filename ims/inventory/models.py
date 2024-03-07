@@ -41,7 +41,14 @@ class Order(models.Model):
         return f'{self.order_quantity} - {self.item_name.name} ordered by {username} on {self.date} (Status: {self.get_status_display()})'
 
     def save(self, *args, **kwargs):
-        # If status is "Returned" and returned_date is not set, set it to current time
-        if self.status == 'returned' and not self.returned_date:
+        if self.status == 'released':
+            # Deduct quantity from stock
+            self.item_name.quantity -= self.order_quantity
+            self.item_name.save()
+        elif self.status == 'returned':
+            # Add quantity to stock
+            self.item_name.quantity += self.order_quantity
+            self.item_name.save()
+            # Set returned date
             self.returned_date = timezone.now()
         super().save(*args, **kwargs)

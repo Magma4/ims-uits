@@ -4,6 +4,7 @@ from .models import *
 from django.contrib.auth.decorators import login_required
 from .forms import *
 from django.contrib.auth.models import User
+from django.db.models import Q
 # Create your views here.
 
 
@@ -135,5 +136,44 @@ def order_update(request, pk):
         'form' : form,
     }
     return render(request, 'dashboard/order_update.html', context)
+
+def list_requisition(request):
+    return render(request, 'dashboard/list_requisition.html')
+
+def searchdata(request):
+    q = request.GET.get('query') # Get the query parameter from the request
+    if q:
+        orders = Order.objects.filter(Q(users__username__icontains=q) | Q(order_description__icontains=q) | Q(users__first_name__icontains=q) | Q(users__last_name__icontains=q))
+    else:
+        orders = Order.objects.all()
+
+    context = {
+        "orders": orders,
+    }
+    return render(request, 'dashboard/requisition.html', context=context)
+
+def searchdata2(request):
+    q = request.GET.get('query') # Get the query parameter from the request
+    if q:
+        workers = User.objects.filter(Q(username__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q))
+    else:
+        workers = User.objects.all()
+
+    context = {
+        "workers": workers,
+    }
+    return render(request, 'dashboard/employees.html', context=context)
+
+def searchdata3(request):
+    q = request.GET.get('query')  # Get the query parameter from the request
+    if q:
+        stocks = Stock.objects.filter(Q(name__icontains=q) | Q(description__icontains=q))
+    else:
+        stocks = Stock.objects.all()
+
+    context = {
+        "stocks": stocks,
+    }
+    return render(request, 'dashboard/stock.html', context=context)
 
 
