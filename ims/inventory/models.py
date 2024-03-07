@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 class Stock(models.Model):
@@ -13,7 +14,7 @@ class Stock(models.Model):
         verbose_name_plural = 'Stock'
 
     def __str__(self):
-        return f'{self.name}-{self.quantity}-{self.date_created}-{self.user}'
+        return f'{self.name}'
     
 class Order(models.Model):
     STATUS_CHOICES = (
@@ -26,15 +27,21 @@ class Order(models.Model):
     order_quantity = models.PositiveIntegerField(null=True)
     order_description = models.CharField(max_length=200, null=True)
     date = models.DateTimeField(auto_now_add=True)
+    returned_date = models.DateTimeField(null=True, blank=True)  # New field for returned date
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
 
     class Meta:
         verbose_name_plural = 'Order'
 
     def __str__(self):
-        if self.users:  # Check if user is not None
-            username = self.users.username  # Access username attribute
+        if self.users:
+            username = self.users.username
         else:
             username = "Unknown User"
         return f'{self.order_quantity} - {self.item_name.name} ordered by {username} on {self.date} (Status: {self.get_status_display()})'
 
+    def save(self, *args, **kwargs):
+        # If status is "Returned" and returned_date is not set, set it to current time
+        if self.status == 'returned' and not self.returned_date:
+            self.returned_date = timezone.now()
+        super().save(*args, **kwargs)

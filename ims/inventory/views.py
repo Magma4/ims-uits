@@ -9,10 +9,13 @@ from django.contrib.auth.models import User
 
 @login_required(login_url='user-login')
 def dashboard(request):
+    user = request.user
     orders = Order.objects.all()
+    order_count = Order.objects.filter(users=user).count()
     
     context = {
         'orders' : orders,
+        'order_count': order_count,
     }
     
     return render(request, 'dashboard/dashboard.html', context)
@@ -95,6 +98,7 @@ def employees_detail(request, pk):
 
     return render(request, 'dashboard/employees_detail.html', context)
 
+@login_required
 def update_order_status(request, order_id):
     if request.method == 'POST' and request.user.is_superuser:
         order = Order.objects.get(id=order_id)
@@ -103,6 +107,7 @@ def update_order_status(request, order_id):
         order.save()    
     return redirect('requisition')
 
+@login_required
 def delete_order(request, pk):
     order = Order.objects.get(id=pk)
     if request.method == 'POST':       
@@ -113,6 +118,7 @@ def delete_order(request, pk):
             return redirect('dashboard')
     return render(request, 'dashboard/order_delete.html')
 
+@login_required
 def order_update(request, pk):
     order = Order.objects.get(id=pk)
     if request.method == 'POST':
@@ -126,7 +132,7 @@ def order_update(request, pk):
     else:
         form = OrderForm(instance=order)
     context = {
-        'form' : form
+        'form' : form,
     }
     return render(request, 'dashboard/order_update.html', context)
 

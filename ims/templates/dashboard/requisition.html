@@ -6,7 +6,11 @@
 <div class="col-md-10" style="margin: 2rem auto 0 auto; display:block;">
     <p class="d-inline-flex gap-1">
         {% if user.is_authenticated and user.is_staff and user.is_superuser %}
-            <button class="btn btn-secondary toggle-button btn-lg" type="button" onclick="toggleCollapse('multiCollapseExample1')">View Requests</button>
+            <button class="btn btn-secondary toggle-button btn-lg" type="button" onclick="toggleCollapse('multiCollapseExample1')">View Requests<span class="badge text-bg-success">
+                {% with orders.count as total_orders %}
+                    {{ total_orders }}
+                {% endwith %}
+            </span></button>
         {% endif %}
             <button class="btn btn-secondary toggle-button btn-lg" type="button" onclick="toggleCollapse('multiCollapseExample2')" style="margin-left: 0.5rem;">Request Items</button>
         </p>
@@ -27,6 +31,7 @@
                                     <th scope="col">Quantity</th>
                                     <th scope="col">Order By</th>
                                     <th scope="col">Date</th>
+                                    <th scope="col">Date Returned</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Action</th>
 
@@ -38,11 +43,12 @@
                             <tbody>
                                 {% for order in orders %}
                                 <tr>
-                                    <td scope="col">{{ order.item_name.name|title }}</td>
+                                    <td scope="col">{{ order.item_name|title }}</td>
                                     <td scope="col">{{ order.order_description|title }}</td>
                                     <td scope="col">{{ order.order_quantity }}</td>
                                     <td scope="col">{{ order.users.username|title }}</td>
                                     <td scope="col">{{ order.date }}</td>
+                                    <td scope="col">{{ order.returned_date }}</td>
                                     <td scope="col">
 
                                         <form action="{% url 'update_order_status' order.id %}" method="post">
