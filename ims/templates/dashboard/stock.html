@@ -39,36 +39,26 @@
                                 <tr>
                                     <th scope="col">Name</th>
                                     <th scope="col">Description</th>
-                                    <th scope="col">
-                                        Quantity
-                                    </th>
+                                    <th scope="col">Total Stock</th> <!-- New column for total stock -->
+                                    <th scope="col">Quantity</th>
                                     {% if request.user.is_superuser %}
-                                    <th scope="col">
-                                        Action
-                                    </th>
+                                        <th scope="col">Action</th>
                                     {% endif %}
                                 </tr>
                                 {% if stocks|length == 0 %}
-                                <tr>
-                                    <td scope="col"></td>
-                                    <td scope="col"></td>
-                                    <td scope="col">
-                                        <div class="progress">
-                                            <div class="progress-bar" role="progressbar" style="width: 0%;"
-                                                aria-valuenow="" aria-valuemin="0" aria-valuemax=""></div>
-                                        </div>
-                                    </td>
-                                    <td scope="col">
-                                        
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="4" style="text-align: center;">There are no stocks</td>
+                                    </tr>
                                 {% endif %}
-
                                 {% for stock in stocks %}
                                     <tr>
-                                        <td scope="col">{{ stock.name|title }}</td>
-                                        <td scope="col">{{ stock.description|title }}</td>
-                                        <td scope="col">
+                                        <td>{{ stock.name|title }}</td>
+                                        <td>{{ stock.description|title }}</td>
+                                        <td>
+                                            <!-- Calculate total stock quantity -->
+                                            
+                                        </td>
+                                        <td>
                                             {% if stock.quantity < 10 %}
                                                 <div class="progress">
                                                     <div class="progress-bar bg-danger" role="progressbar" style="width: {{ stock.quantity }}%;" aria-valuenow="{{ stock.quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}"><strong>{{ stock.quantity }}</strong></div>
@@ -84,16 +74,17 @@
                                             {% endif %}
                                         </td>
                                         {% if user.is_authenticated and user.is_staff and user.is_superuser %}
-                                        <td scope="col">
-                                            <a href="{% url 'stock-update' pk=stock.id %}"><button class="btn btn-primary">Edit</button></a>
-                                            <a href="{% url 'stock-delete' pk=stock.id %}"><button class="btn btn-danger">Delete</button></a>
-                                        </td>
-                                            
+                                            <td>
+                                                <a href="{% url 'stock-update' pk=stock.id %}"><button class="btn btn-primary">Edit</button></a>
+                                                <a href="{% url 'stock-delete' pk=stock.id %}"><button class="btn btn-danger">Delete</button></a>
+                                            </td>
                                         {% endif %}
                                     </tr>
                                 {% endfor %}
-
                             </tbody>
+                            
+
+                            
 
 
                         </table>

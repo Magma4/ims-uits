@@ -136,16 +136,16 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                             <td scope="col">{{order.users.profile.department|upper}}</td>
                                             <td scope="col">{{order.users.profile.contact|title}}</td>
                                             <td scope="col"><!-- Button trigger modal -->
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#orderModal{{ order.id }}">
                                                   Order Details
                                                 </button>
                                                 
                                                 <!-- Modal -->
-                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                  <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                      <div class="modal-header">
-                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Order Details</h1>
+                                                <div class="modal fade" id="orderModal{{ order.id }}" tabindex="-1" aria-labelledby="orderModalLabel{{ order.id }}" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="orderModalLabel{{ order.id }}">Order Details</h1>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                       </div>
                                                       

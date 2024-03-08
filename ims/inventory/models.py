@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 # Create your models here.
+from django.db import models
+from django.contrib.auth.models import User
+
 class Stock(models.Model):
     name = models.CharField(max_length=100, null=True)
     description = models.CharField(max_length=200, null=True)
@@ -15,6 +18,7 @@ class Stock(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
     
 class Order(models.Model):
     STATUS_CHOICES = (
