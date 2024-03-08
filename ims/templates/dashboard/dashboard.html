@@ -148,9 +148,11 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                                         <h1 class="modal-title fs-5" id="exampleModalLabel">Order Details</h1>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                       </div>
+                                                      
                                                       <div class="modal-body">
                                                         {{order.users.username|title}} ordered {{order.order_quantity}} {{order.item_name.name|title}}(s) for {{order.order_description|title}}  on {{order.date}}
                                                       </div>
+                                                      
                                                     </div>
                                                   </div>
                                                 </div></td>
@@ -181,10 +183,11 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                 var myChart1 = new Chart(ctx, {
                                     type: 'pie',
                                     data: {
-                                        labels: [{% for items in items %}"{{items|title}}",{% endfor %}],
+                                        labels: [{% for orders in orders %}"{{orders.item_name|title}}",{% endfor %}],
                                             datasets: [{
-                                                label: "Number of Products",
-                                                data: [{% for items in items %}{{ items.quantity }},{% endfor %}],
+                                                label: "Orders",
+                                                data: [{% for orders in orders %}{{ orders.order_quantity }},{% endfor %}],
+                                                
                                                 backgroundColor: [
                                                     'rgba(255, 99, 132, 1)',
                                                     'rgba(54, 162, 235, 1)',
@@ -237,10 +240,10 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                 var myChart = new Chart(ctx, {
                                     type: 'bar',
                                     data: {
-                                        labels: [{% for orders in orders %}"{{orders.item_name|title}}",{% endfor %}],
+                                        labels: [{% for items in items %} "{{items|title}}", {% endfor %}],
                                             datasets: [{
-                                                label: 'Orders',
-                                                data: [{% for orders in orders %}{{ orders.order_quantity }},{% endfor %}],
+                                                label: 'Number Of Products',
+                                                data: [{% for items in items %} {{ items.quantity }}, {% endfor %}],
                                                 backgroundColor: [
                                                     'rgba(255, 99, 132, 1)',
                                                     'rgba(54, 162, 235, 1)',

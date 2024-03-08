@@ -28,6 +28,7 @@ def register(request):
             email = form.cleaned_data.get("email")
             password = form.cleaned_data.get("password1")
             form.save()
+            messages.success(request, f'Account has been created for {username}. Continue to Log in.')
             new_user = authenticate(username=username, password=password, first_name=first_name, last_name=last_name, email=email)
             if new_user is not None:
                 login(request, new_user)

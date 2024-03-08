@@ -32,6 +32,8 @@ def stock(request):
         form = StockForm(request.POST)
         if form.is_valid():
             form.save()
+            stock_name = form.cleaned_data.get('name')
+            messages.success(request, f'{stock_name} has been added.')
             return redirect('stock')
     else:
         form = StockForm()

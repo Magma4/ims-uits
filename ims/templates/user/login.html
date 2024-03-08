@@ -32,6 +32,13 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                     <a href="#"><img src="{% static 'knustlogo.png' %}" class="img-fluid rounded-start" alt="..." style="height: 50px; display: block; margin: 0 auto;"></a>
                                     {% block content %}
                                     <h5 style="text-align: center; margin-top: 1rem;">Login</h5>
+                                    {% for message in messages %}
+                                    {% if message %}
+                                    <div class="alert alert-{{ message.tags}}">
+                                        {{message}}
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
                                     {% if form.errors %}
                                         {% for field in form %}
                                             {% for error in field.errors %}
