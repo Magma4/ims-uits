@@ -113,9 +113,25 @@ def update_order_status(request, order_id):
     if request.method == 'POST' and request.user.is_superuser:
         order = Order.objects.get(id=order_id)
         new_status = request.POST.get('status')
-        order.status = new_status
-        order.save()    
+        
+        # Check if the status is being changed to 'released'
+        if new_status == 'released':
+            order.status = new_status
+            order.released_by = request.user.username  # Set the released_by field to the username of the admin
+            order.save()
+            messages.success(request, f"Order {order.id} has been released by {request.user.username}.")
+        elif new_status == 'returned':
+            order.status = new_status
+            order.returned_to = request.user.username  # Set the returned_to field to the username of the admin
+            order.save()
+            messages.success(request, f"Order {order.id} has been marked as returned by {request.user.username}.")
+        else:
+            order.status = new_status
+            order.save()
+            messages.success(request, f"Order {order.id} status has been updated.")
+    
     return redirect('requisition')
+
 
 @login_required
 def delete_order(request, pk):

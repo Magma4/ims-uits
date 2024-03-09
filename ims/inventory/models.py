@@ -32,6 +32,8 @@ class Order(models.Model):
     order_description = models.CharField(max_length=200, null=True)
     date = models.DateTimeField(auto_now_add=True)
     returned_date = models.DateTimeField(null=True, blank=True)  # New field for returned date
+    released_by = models.CharField(max_length=100, null=True)
+    returned_to = models.CharField(max_length=100, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
 
     class Meta:

@@ -37,6 +37,8 @@
                                     <th scope="col">Date</th>
                                     <th scope="col">Date Returned</th>
                                     <th scope="col">Status</th>
+                                    <th scope="col">Released by</th>
+                                    <th scope="col">Recieved By</th>
                                     <th scope="col">Action</th>
 
                                 </tr>
@@ -68,6 +70,8 @@
                                             {% endif %}
                                         </form>
                                     </td>
+                                    <td scope="col">{{ order.released_by|title }}</td>
+                                    <td scope="col">{{ order.returned_to|title }}</td>
                                     <td scope="col">
                                         <a href="{% url 'order-update' pk=order.id %}"><button class="btn btn-primary">Edit</button></a>
                                         <a href="{% url 'order-delete' pk=order.id %}"><button class="btn btn-danger">Delete</button></a>

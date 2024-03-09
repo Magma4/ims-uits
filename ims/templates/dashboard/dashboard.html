@@ -40,7 +40,9 @@
 background: -webkit-linear-gradient(to right, #ffffff, #abbaab);  /* Chrome 10-25, Safari 5.1-6 */
 background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 ">
-    <nav class="navbar bg-body-tertiary shadow">
+<div class="row">
+    <div class="col-md-12">
+        <nav class="navbar bg-body-tertiary shadow">
         <div class="container-fluid">
             <a class="navbar-brand" style="margin-left: 1rem; font-weight: bolder;" href="{% url 'dashboard' %}"><h4><img src="{% static 'knustlogo.png' %}" class="img-fluid" alt="" style="height: 45px;"> UITS - IMS</h4></a>
             <form class="d-flex" role="search">
@@ -57,6 +59,10 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
             </form>
         </div>
     </nav>
+    </div>
+    
+</div>
+    
     
     <div class="row">
         <div class="col-md-2">
@@ -174,7 +180,7 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                 </div>
             </div> 
             <div class="row ">
-                <div class="col-5 my-4">
+                <div class="col-md-6 my-4">
                     <div class="bg-white">
                         <div class="card-body">
                             <canvas id="myChart1" width="400" height="300"></canvas>
@@ -183,10 +189,10 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                 var myChart1 = new Chart(ctx, {
                                     type: 'pie',
                                     data: {
-                                        labels: [{% for orders in orders %}"{{orders.item_name|title}}",{% endfor %}],
+                                        labels: [{% for orders in orders %}{% if orders.status != 'returned' %}"{{orders.item_name|title}}",{% endif %}{% endfor %}],
                                             datasets: [{
                                                 label: "Orders",
-                                                data: [{% for orders in orders %}{{ orders.order_quantity }},{% endfor %}],
+                                                data: [{% for orders in orders %}{% if orders.status != 'returned' %}{{ orders.order_quantity }},{% endif %}{% endfor %}],
                                                 
                                                 backgroundColor: [
                                                     'rgba(255, 99, 132, 1)',
@@ -231,7 +237,7 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                         </div>
                     </div>
                 </div>
-                <div class="col-5 my-4">
+                <div class="col-md-6 my-4">
                     <div class="bg-white">
                         <div class="card-body">
                             <canvas id="myChart" width="400" height="300"></canvas>
