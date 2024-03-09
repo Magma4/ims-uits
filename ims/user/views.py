@@ -43,22 +43,22 @@ def register(request):
     }
     return render(request, 'user/register.html', context)
 
-def passwordreset(request):
+# def passwordreset(request):
     
 
-    return render(request, 'user/passwordreset.html')
+#     return render(request, 'user/passwordreset.html')
 
-def passwordresetcomplete(request):
+# def passwordresetcomplete(request):
     
-    return render(request, 'user/passwordresetcomplete.html')
+#     return render(request, 'user/passwordresetcomplete.html')
 
-def passwordresetsent(request):
+# def passwordresetsent(request):
 
-    return render(request, 'user/passwordresetsent.html')
+#     return render(request, 'user/passwordresetsent.html')
 
-def passwordresetconfirm(request):
+# def passwordresetconfirm(request):
 
-    return render(request, 'user/passwordresetconfirm.html')
+#     return render(request, 'user/passwordresetconfirm.html')
 
 def logout_view(request):
     logout(request)

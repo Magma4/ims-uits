@@ -28,13 +28,18 @@ urlpatterns = [
     path('register/', user_view.register, name='user-register'),
     path('', auth_views.LoginView.as_view(template_name='user/login.html'), name='user-login'),
     path('users/', include('django.contrib.auth.urls')),
-    path('passwordreset', user_view.passwordreset, name='passwordreset'),
-    path('passwordresetcomplete', user_view.passwordresetcomplete, name='passwordresetcomplete'),
-    path('passwordresetconfirm', user_view.passwordresetconfirm, name='passwordresetconfirm'),
-    path('passwordresetsent', user_view.passwordresetsent, name='passwordresetsent'),
+    # path('passwordreset', user_view.passwordreset, name='passwordreset'),
+    # path('passwordresetcomplete', user_view.passwordresetcomplete, name='passwordresetcomplete'),
+    # path('passwordresetconfirm', user_view.passwordresetconfirm, name='passwordresetconfirm'),
+    # path('passwordresetsent', user_view.passwordresetsent, name='passwordresetsent'),
     path('logout/', user_view.logout_view, name='user-logout'),
     path('profile', user_view.profile, name='profile'),
-    path('profile/update/', user_view.profile_update, name='profile-update')
+    path('profile/update/', user_view.profile_update, name='profile-update'),
+    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('password_reset_confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+
     
 
 
