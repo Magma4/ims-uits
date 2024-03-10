@@ -16,4 +16,6 @@ urlpatterns = [
     path('searchdata', views.searchdata, name='searchdata'),
     path('searchdata2', views.searchdata2, name='searchdata2'),
     path('searchdata3', views.searchdata3, name='searchdata3'),
+    path('report', views.report, name='report'),
+    path('orders_excel', views.orders_excel, name='orders_excel'),
 ]

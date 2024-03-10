@@ -90,7 +90,7 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                                 style="margin-right:5px;margin-top: 1rem;"></i>Employees</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#"><i class="fa fa-book"
+                                        <a class="nav-link" href="{% url 'report' %}"><i class="fa fa-book"
                                                 style="margin-right: 5px;margin-top: 1rem;"></i>Report</a>
                                     </li>
                                     {% endif %}
@@ -132,6 +132,9 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                             <th scope="col">Status</th>
                                         </tr>
                                     </thead>
+                                    {% if orders|length == 0 %}
+                                    <td colspan="12" style="text-align: center;"><h5>There are no orders</h5></td>
+                                    {% endif %}
                                     <tbody>
                                         {% for order in orders %}
                                         <tr>

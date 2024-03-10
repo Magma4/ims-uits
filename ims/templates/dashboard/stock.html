@@ -39,7 +39,6 @@
                                 <tr>
                                     <th scope="col">Name</th>
                                     <th scope="col">Description</th>
-                                    <th scope="col">Total Stock</th> <!-- New column for total stock -->
                                     <th scope="col">Quantity</th>
                                     {% if request.user.is_superuser %}
                                         <th scope="col">Action</th>
@@ -54,10 +53,7 @@
                                     <tr>
                                         <td>{{ stock.name|title }}</td>
                                         <td>{{ stock.description|title }}</td>
-                                        <td>
-                                            <!-- Calculate total stock quantity -->
-                                            {{ stock.total_quantity }}
-                                        </td>
+                                        
                                         <td>
                                             {% if stock.quantity < 10 %}
                                                 <div class="progress">

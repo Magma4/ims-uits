@@ -6,6 +6,10 @@ from .forms import *
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from openpyxl import Workbook
+from openpyxl.styles import *
+import decimal
 # Create your views here.
 
 
@@ -27,6 +31,8 @@ def dashboard(request):
 @login_required
 def stock(request):
     items = Stock.objects.all()
+    orders = Order.objects.all()
+
 
     if request.method == 'POST':
         form = StockForm(request.POST)
@@ -39,7 +45,8 @@ def stock(request):
         form = StockForm()
     mydictionary = {
         "stocks" : items,
-        "form" : form
+        "form" : form,
+        "orders" : orders
     }
     return render(request, 'dashboard/stock.html', context=mydictionary)
 
@@ -209,4 +216,42 @@ def searchdata3(request):
     }
     return render(request, 'dashboard/stock.html', context=context)
 
+def is_valid_queryparam(param):
+    return param != '' and param is not None
+
+def report(request):
+    ol = Order.objects.order_by('users')
+
+    name = request.GET.get('name')
+    itemName = request.GET.get('item_name')
+    date_created = request.GET.get('date')
+    date_returned = request.GET.get('returned_date')
+    year = request.GET.get('year')
+    status = request.GET.get('status')
+
+    request.session['name'] = name
+    request.session['year'] = year
+
+    if is_valid_queryparam(name):
+        qs = qs.filter(name__icontains=name)
+
+    if is_valid_queryparam(year):
+        qs = qs.filter(year=year)
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(qs, 30)
+
+    try:
+        qs = paginator.page(page)
+    except PageNotAnInteger:
+        qs = paginator.page(1)
+    except EmptyPage:
+        qs = paginator.page(paginator.num_pages)
+
+    context = {
+        'countries_list': qs,
+        'name': name,
+        'year':year,
+    }
+    return render(request, 'dashboard/report.html')
 
