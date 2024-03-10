@@ -13,74 +13,102 @@
                 <form action="{% url 'report' %}" method="GET">
                     <div class="row">
                         <div class="col">
-                            <label >Username</label>
-                            <input type="text" class="form-control" placeholder="Username" name='name' {% if name %} value="{{name}}" {% endif %} >
+                            <label>Username</label>
+                            <input type="text" class="form-control" placeholder="Username" name='name' {% if name %} value="{{name}}" {% endif %}>
                         </div>
-                        <br>
                         <div class="col">
-                            <label >Item Name</label>
-                            <input type="text" class="form-control" placeholder="Item Name" name='name' {% if itemName %} value="{{itemName}}" {% endif %} >
+                            <label>Item Name</label>
+                            <input type="text" class="form-control" placeholder="Item Name" name='item_name' {% if itemName %} value="{{itemName}}" {% endif %}>
                         </div>
-                        <br>
                         <div class="col">
                             <label>Date Created</label>
                             <select class="form-control" name='date_created'>
                                 <option value="" selected>Select Date</option>
-                                {% for order in orders %}
-                                    {% if order.date %}
-                                        {% with order.date|date:"M Y" as formatted_date %}
-                                            {% if not forloop.first and formatted_date != orders|slice:":forloop.counter"|last.date|date:"M Y" %}
-                                                </optgroup>
-                                            {% endif %}
-                                            {% if forloop.first or formatted_date != orders|slice:":forloop.counter"|last.date|date:"M Y" %}
-                                                <optgroup label="{{ formatted_date }}">
-                                            {% endif %}
-                                            <option value="{{ order.date }}">{{ order.date|date:"jS" }}</option>
-                                        {% endwith %}
-                                    {% endif %}
+                                {% for month, start_date, end_date in available_months %}
+                                    <option value="{{ start_date }}">{{ month }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <br>
                         <div class="col">
                             <label>Date Returned</label>
                             <select class="form-control" name='returned_date'>
                                 <option value="" selected>Select Date</option>
-                                {% for order in orders %}
-                                    {% if order.returned_date %}
-                                        {% with order.returned_date|date:"M Y" as formatted_date %}
-                                            {% if not forloop.first and formatted_date != orders|slice:":forloop.counter"|last.returned_date|date:"M Y" %}
-                                                </optgroup>
-                                            {% endif %}
-                                            {% if forloop.first or formatted_date != orders|slice:":forloop.counter"|last.returned_date|date:"M Y" %}
-                                                <optgroup label="{{ formatted_date }}">
-                                            {% endif %}
-                                            <option value="{{ order.returned_date }}">{{ order.returned_date|date:"jS" }}</option>
-                                        {% endwith %}
-                                    {% endif %}
+                                {% for month, start_date, end_date in available_months %}
+                                    <option value="{{ start_date }}">{{ month }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <br>
                         <div class="col">
                             <label>Status</label>
                             <select class="form-control" name='status'>
                                 <option value="" selected>Select Status</option>
-                                {% for order in orders %}
+                                <option value="all">All Status</option>
+                                {% for order in orders1 %}
                                     {% if order.status %}
                                         <option value="{{ order.status }}">{{ order.status }}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
                         </div>
-                        <br>
+                        <div class="col">
+                            <label>Released By</label>
+                            <select class="form-control" name='released_by'>
+                                <option value="" selected>Select Admin</option>
+                                <option value="all">All Admins</option>
+                                {% for admin in released_by_options %}
+                                    <option value="{{ admin }}">{{ admin }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label>Received By</label>
+                            <select class="form-control" name='received_by'>
+                                <option value="" selected>Select Admin</option>
+                                <option value="all">All Admins</option>
+                                {% for admin in received_by_options %}
+                                    <option value="{{ admin }}">{{ admin }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                         <div class="col" style="padding-top: 2%;">
                             <button type="submit" class="btn btn-primary">Search</button>
                         </div>
                     </div>
                 </form>
             </div>
+            <br>
+            <div class="container">
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Item Name</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Date Created</th>
+                        <th scope="col">Date Received</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Released By</th>
+                        <th scope="col">Received By</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in order_list %}
+                          <tr>
+                            <td scope="col">{{order.users.username}}</td>
+                            <td scope="col">{{order.item_name.name}}</td>
+                            <td scope="col">{{order.order_quantity}}</td>
+                            <td scope="col">{{order.date}}</td>
+                            <td scope="col">{{order.returned_date}}</td>
+                            <td scope="col">{{order.status}}</td>
+                            <td scope="col">{{order.released_by}}</td>
+                            <td scope="col">{{order.returned_to}}</td>
+                          </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
