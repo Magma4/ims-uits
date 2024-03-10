@@ -10,6 +10,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from openpyxl import Workbook
 from openpyxl.styles import *
 import decimal
+from collections import defaultdict
 # Create your views here.
 
 
@@ -221,37 +222,224 @@ def is_valid_queryparam(param):
 
 def report(request):
     ol = Order.objects.order_by('users')
+    orders = Order.objects.all()
 
     name = request.GET.get('name')
     itemName = request.GET.get('item_name')
+    quantity = request.GET.get('order_quantity')
     date_created = request.GET.get('date')
     date_returned = request.GET.get('returned_date')
-    year = request.GET.get('year')
     status = request.GET.get('status')
+    released_by = request.GET.get('released_by')
+    received_by = request.GET.get('returned_to')
 
     request.session['name'] = name
-    request.session['year'] = year
+    request.session['item_name'] = itemName
+    request.session['date'] = date_created
+    request.session['returned_date'] = date_returned
+    request.session['status'] = status
+    request.session['released_by'] = released_by
+    request.session['returned_to'] = received_by
+
+    filters = {}
 
     if is_valid_queryparam(name):
-        qs = qs.filter(name__icontains=name)
+        filters['name__icontains'] = name
 
-    if is_valid_queryparam(year):
-        qs = qs.filter(year=year)
+    if is_valid_queryparam(itemName):
+        filters['itemName__icontains'] = itemName
+    
+    if is_valid_queryparam(date_created):
+        filters['date_created'] = date_created
+
+    if is_valid_queryparam(date_returned):
+        filters['date_returned'] = date_returned
+
+    if is_valid_queryparam(status):
+        filters['status'] = status
+
+    if is_valid_queryparam(released_by):
+        filters['released_by__icontains'] = released_by
+
+    if is_valid_queryparam(received_by):
+        filters['received_by__icontains'] = received_by
+
+    ol = ol.filter(**filters)
+
+    # Group orders by month and year
+    grouped_orders = defaultdict(list)
+    for order in ol:
+        key = order.date_created.strftime('%Y-%m')  # Change the format as per your requirement
+        grouped_orders[key].append(order)
 
     page = request.GET.get('page', 1)
-    paginator = Paginator(qs, 30)
+    paginator = Paginator(ol, 30)
 
     try:
-        qs = paginator.page(page)
+        ol = paginator.page(page)
     except PageNotAnInteger:
-        qs = paginator.page(1)
+        ol = paginator.page(1)
     except EmptyPage:
-        qs = paginator.page(paginator.num_pages)
+        ol = paginator.page(paginator.num_pages)
 
     context = {
-        'countries_list': qs,
-        'name': name,
-        'year':year,
+        'order_list': ol,
+        'itemName': itemName,
+        'quantity':quantity,
+        'date_created':date_created,
+        'date_returned':date_returned,
+        'status':status,
+        'released_by':released_by,
+        'received_by':received_by,
+        'grouped_orders': grouped_orders,  # Pass grouped orders to the template
+        'orders' : orders
     }
-    return render(request, 'dashboard/report.html')
+    return render(request, 'dashboard/report.html', context)
 
+def order_excel(request):
+    ol = Order.objects.order_by('name')
+
+    if 'name' in request.session:
+        name = request.session['name']
+    else:
+        name = None
+
+    if 'item_name' in request.session:
+        itemName = request.session['item_name']
+    else:
+        itemName = None
+
+    if 'date' in request.session:
+        date_created = request.session['date']
+    else:
+        date_created = None
+
+    if 'returned_date' in request.session:
+        date_returned = request.session['returned_date']
+    else:
+        date_returned = None
+
+    if 'status' in request.session:
+        status = request.session['status']
+    else:
+        status = None
+
+    if 'released_by' in request.session:
+        released_by = request.session['released_by']
+    else:
+        released_by = None
+
+    if 'returned_to' in request.session:
+        received_by = request.session['returned_to']
+    else:
+        received_by = None
+
+    
+
+    if is_valid_queryparam(name):
+        ol = ol.filter(name__icontains=name)
+
+    if is_valid_queryparam(itemName):
+        ol = ol.filter(itemName__icontains=itemName)
+    
+    if is_valid_queryparam(date_created):
+        ol = ol.filter(date_created=date_created)
+
+    if is_valid_queryparam(date_returned):
+        ol = ol.filter(date_returned=date_returned)
+
+    if is_valid_queryparam(status):
+        ol = ol.filter(status=status)
+
+    if is_valid_queryparam(released_by):
+        ol = ol.filter(released_by__icontains=released_by)
+
+    if is_valid_queryparam(received_by):
+        ol = ol.filter(received_by__icontains=received_by)
+
+    if name is None or name == '':
+        name = "All Orders"
+    else:
+        name = name
+
+    if itemName is None or name == '':
+        itemName = "All Items"
+    else:
+        itemName = itemName
+    
+    if date_created is None or date_created == '':
+        date_created = "2024 - 2090"
+    else:
+        date_created = date_created
+
+    if date_returned is None or date_returned == '':
+        date_returned = "2024 - 2090"
+    else:
+        date_returned = date_returned
+
+    if status is None or status == '':
+        status = "All Status"
+    else:
+        status = status
+
+    if released_by is None or released_by == '':
+        released_by = "All Admins"
+    else:
+        released_by = released_by
+
+    if received_by is None or received_by == '':
+        received_by = "All Admins"
+    else:
+        received_by = received_by
+
+    
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',)
+    response['Content-Disposition'] = 'attachment; filename="' + 'Order Report' +'.xlsx"'
+    workbook = Workbook()
+
+    worksheet = workbook.active
+
+    worksheet.merge_cells('A1:H1')
+    worksheet.merge_cells('A2:h22')
+    first_cell = worksheet['A1']
+    first_cell.value = "Order List" + "From " + date_created
+    first_cell.fill = PatternFill("solid", fgColor="246ba1")
+    first_cell.font  = Font(bold=True, color="F7F6FA")
+    first_cell.alignment = Alignment(horizontal="center", vertical="center")
+
+    second_cell = worksheet['A2']
+    second_cell.value = name
+    second_cell.font  = Font(bold=True, color="246ba1")
+    second_cell.alignment = Alignment(horizontal="center", vertical="center")
+
+    worksheet.title = 'Order List List' + " " + date_created
+
+    # Define the titles for columns
+    columns = ['Username','Item Name','Quantity', 'Date Created', 'Date Received', 'Status', 'Released By', 'Received By']
+    row_num = 3
+
+    # Assign the titles for each cell of the header
+    for col_num, column_title in enumerate(columns, 1):
+        cell = worksheet.cell(row=row_num, column=col_num)
+        cell.value = column_title
+        cell.fill = PatternFill("solid", fgColor="50C878")
+        cell.font  = Font(bold=True, color="F7F6FA")
+        third_cell = worksheet['D3']
+        third_cell.alignment = Alignment(horizontal="right")
+
+    for orders in ol:
+        row_num += 1
+
+        # Define the data for each cell in the row
+        row = [orders.users.username,orders.item_name.name,orders.order_quantity,orders.date,orders.returned_date,orders.status,orders.released_by,orders.returned_to]
+
+        # Assign the data for each cell of the row
+        for col_num, cell_value in enumerate(row, 1):
+            cell = worksheet.cell(row=row_num, column=col_num)
+            cell.value = cell_value
+            if isinstance(cell_value, decimal.Decimal):
+                cell.number_format = numbers.FORMAT_NUMBER_COMMA_SEPARATED1
+
+    workbook.save(response)
+    return response

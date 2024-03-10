@@ -5,7 +5,81 @@
 <div class="col-md-10" style="margin: 2rem auto 0 auto; display:block;">
     <div class="card shadow-lg" style="max-width: 83rem; min-height: 70vh;border-radius: 20px;">
         <div class="card-body">
-
+            <div class="container">
+                <a href="{% url 'order_excel' %}" type="button" class="btn btn-sm btn-warning">Download Excel Report</a>
+            </div>
+            <br>
+            <div class="container">
+                <form action="{% url 'report' %}" method="GET">
+                    <div class="row">
+                        <div class="col">
+                            <label >Username</label>
+                            <input type="text" class="form-control" placeholder="Username" name='name' {% if name %} value="{{name}}" {% endif %} >
+                        </div>
+                        <br>
+                        <div class="col">
+                            <label >Item Name</label>
+                            <input type="text" class="form-control" placeholder="Item Name" name='name' {% if itemName %} value="{{itemName}}" {% endif %} >
+                        </div>
+                        <br>
+                        <div class="col">
+                            <label>Date Created</label>
+                            <select class="form-control" name='date_created'>
+                                <option value="" selected>Select Date</option>
+                                {% for order in orders %}
+                                    {% if order.date %}
+                                        {% with order.date|date:"M Y" as formatted_date %}
+                                            {% if not forloop.first and formatted_date != orders|slice:":forloop.counter"|last.date|date:"M Y" %}
+                                                </optgroup>
+                                            {% endif %}
+                                            {% if forloop.first or formatted_date != orders|slice:":forloop.counter"|last.date|date:"M Y" %}
+                                                <optgroup label="{{ formatted_date }}">
+                                            {% endif %}
+                                            <option value="{{ order.date }}">{{ order.date|date:"jS" }}</option>
+                                        {% endwith %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <br>
+                        <div class="col">
+                            <label>Date Returned</label>
+                            <select class="form-control" name='returned_date'>
+                                <option value="" selected>Select Date</option>
+                                {% for order in orders %}
+                                    {% if order.returned_date %}
+                                        {% with order.returned_date|date:"M Y" as formatted_date %}
+                                            {% if not forloop.first and formatted_date != orders|slice:":forloop.counter"|last.returned_date|date:"M Y" %}
+                                                </optgroup>
+                                            {% endif %}
+                                            {% if forloop.first or formatted_date != orders|slice:":forloop.counter"|last.returned_date|date:"M Y" %}
+                                                <optgroup label="{{ formatted_date }}">
+                                            {% endif %}
+                                            <option value="{{ order.returned_date }}">{{ order.returned_date|date:"jS" }}</option>
+                                        {% endwith %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <br>
+                        <div class="col">
+                            <label>Status</label>
+                            <select class="form-control" name='status'>
+                                <option value="" selected>Select Status</option>
+                                {% for order in orders %}
+                                    {% if order.status %}
+                                        <option value="{{ order.status }}">{{ order.status }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <br>
+                        <div class="col" style="padding-top: 2%;">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
