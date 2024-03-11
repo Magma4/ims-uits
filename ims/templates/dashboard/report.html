@@ -7,6 +7,7 @@
         <div class="card-body">
             <div class="container">
                 <a href="{% url 'order_excel' %}" type="button" class="btn btn-sm btn-warning">Download Excel Report</a>
+                <a href="" type="button" class="btn btn-sm btn-danger">Download PDF Report</a>
             </div>
             <br>
             <div class="container">
@@ -21,52 +22,45 @@
                             <input type="text" class="form-control" placeholder="Item Name" name='item_name' {% if itemName %} value="{{itemName}}" {% endif %}>
                         </div>
                         <div class="col">
-                            <label>Date Created</label>
-                            <select class="form-control" name='date_created'>
-                                <option value="" selected>Select Date</option>
-                                {% for month, start_date, end_date in available_months %}
-                                    <option value="{{ start_date }}">{{ month }}</option>
-                                {% endfor %}
-                            </select>
+                            <label>Date Range</label>
+                            <div class="input-group">
+                                <input type="date" class="form-control" name="date_from" placeholder="From" {% if date_from %} value="{{ date_from }}" {% endif %}>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">to</span>
+                                </div>
+                                <input type="date" class="form-control" name="date_to" placeholder="To" {% if date_to %} value="{{ date_to }}" {% endif %}>
+                            </div>
                         </div>
-                        <div class="col">
-                            <label>Date Returned</label>
-                            <select class="form-control" name='returned_date'>
-                                <option value="" selected>Select Date</option>
-                                {% for month, start_date, end_date in available_months %}
-                                    <option value="{{ start_date }}">{{ month }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                        
+                        <!-- Status Field -->
                         <div class="col">
                             <label>Status</label>
                             <select class="form-control" name='status'>
-                                <option value="" selected>Select Status</option>
-                                <option value="all">All Status</option>
-                                {% for order in orders1 %}
-                                    {% if order.status %}
-                                        <option value="{{ order.status }}">{{ order.status }}</option>
-                                    {% endif %}
+                                <option value="" {% if not status %} selected {% endif %}>Select Status</option>
+                                <option value="all" {% if status == 'all' %} selected {% endif %}>All Status</option>
+                                {% for order_status in status_options %}
+                                    <option value="{{ order_status }}" {% if status == order_status %} selected {% endif %}>{{ order_status }}</option>
                                 {% endfor %}
                             </select>
                         </div>
+                        
                         <div class="col">
                             <label>Released By</label>
                             <select class="form-control" name='released_by'>
-                                <option value="" selected>Select Admin</option>
-                                <option value="all">All Admins</option>
+                                <option value="" {% if not released_by %} selected {% endif %}>Select Admin</option>
+                                <option value="all" {% if released_by == 'all' %} selected {% endif %}>All Admins</option>
                                 {% for admin in released_by_options %}
-                                    <option value="{{ admin }}">{{ admin }}</option>
+                                    <option value="{{ admin }}" {% if released_by == admin %} selected {% endif %}>{{ admin }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="col">
                             <label>Received By</label>
                             <select class="form-control" name='received_by'>
-                                <option value="" selected>Select Admin</option>
-                                <option value="all">All Admins</option>
+                                <option value="" {% if not received_by %} selected {% endif %}>Select Admin</option>
+                                <option value="all" {% if received_by == 'all' %} selected {% endif %}>All Admins</option>
                                 {% for admin in received_by_options %}
-                                    <option value="{{ admin }}">{{ admin }}</option>
+                                    <option value="{{ admin }}" {% if received_by == admin %} selected {% endif %}>{{ admin }}</option>
                                 {% endfor %}
                             </select>
                         </div>

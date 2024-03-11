@@ -14,6 +14,10 @@ from datetime import datetime
 from collections import defaultdict
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import PatternFill, Font, Alignment
+from django.db.models.functions import TruncMonth
+from django.db.models import Count
+from django.template.loader import render_to_string
+import os
 # Create your views here.
 
 
@@ -223,13 +227,6 @@ def searchdata3(request):
 def is_valid_queryparam(param):
     return param != '' and param is not None
 
-from datetime import datetime
-
-from collections import defaultdict
-from datetime import datetime
-
-from django.db.models.functions import TruncMonth
-from django.db.models import Count
 
 def report(request):
     orders = Order.objects.annotate(
@@ -237,6 +234,7 @@ def report(request):
     ).values('month_year').annotate(
         count=Count('id')
     ).order_by('-month_year')
+    status_options = Order.objects.values_list('status', flat=True).distinct()
 
     available_months = [(order['month_year'].strftime('%B %Y'), order['month_year'].strftime('%Y-%m-01'), order['month_year'].strftime('%Y-%m-31')) for order in orders]
 
@@ -255,31 +253,30 @@ def report(request):
     name = request.GET.get('name')
     itemName = request.GET.get('item_name')
     quantity = request.GET.get('order_quantity')
-    date_created = request.GET.get('date_created')
-    date_returned = request.GET.get('returned_date')
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
     status = request.GET.get('status')
     released_by = request.GET.get('released_by')
-    received_by = request.GET.get('returned_to')
+    received_by = request.GET.get('received_by')
 
     request.session['name'] = name
     request.session['item_name'] = itemName
-    request.session['date'] = date_created
-    request.session['returned_date'] = date_returned
+    request.session['date_from'] = date_from
+    request.session['date_to'] = date_to
     request.session['status'] = status
     request.session['released_by'] = released_by
-    request.session['returned_to'] = received_by
+    request.session['received_by'] = received_by
 
     # Filter queryset based on search parameters
+    ol = ol.filter(
+        Q(date__range=[date_from, date_to]) if date_from and date_to else Q()
+    )
     if is_valid_queryparam(name):
         ol = ol.filter(users__username__icontains=name)
     if is_valid_queryparam(itemName):
         ol = ol.filter(item_name__name__icontains=itemName)
     if is_valid_queryparam(quantity):
         ol = ol.filter(order_quantity=quantity)
-    if is_valid_queryparam(date_created):
-        ol = ol.filter(date__icontains=date_created)
-    if is_valid_queryparam(date_returned):
-        ol = ol.filter(returned_date__icontains=date_returned)
     if is_valid_queryparam(status):
         ol = ol.filter(status=status)
     if is_valid_queryparam(released_by):
@@ -302,14 +299,15 @@ def report(request):
         'name': name,
         'itemName': itemName,
         'quantity': quantity,
-        'date_created': date_created,
-        'date_returned': date_returned,
+        'date_from': date_from,
+        'date_to': date_to,
         'status': status,
         'released_by': released_by,
         'received_by': received_by,
         'available_months': available_months,
         'released_by_options': released_by_set,
         'received_by_options': received_by_set,
+        'status_options' : status_options
     }
     return render(request, 'dashboard/report.html', context)
 
@@ -348,8 +346,11 @@ def order_excel(request):
     released_by = released_by if released_by else "All Admins"
     received_by = received_by if received_by else "All Admins"
 
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename="Order Report.xlsx"'
+    response['Content-Disposition'] = f'attachment; filename="Order Report {date_from} to {date_to}.xlsx"'
     workbook = Workbook()
 
     worksheet = workbook.active
@@ -357,18 +358,12 @@ def order_excel(request):
     worksheet.merge_cells('A1:H1')
     worksheet.merge_cells('A2:H2')
     first_cell = worksheet.cell(row=1, column=1)
-    first_cell.value = f"Order List From {date_created}"
+    first_cell.value = f"Order List From {date_from} to {date_to}"
 
-    first_cell.fill = PatternFill("solid", fgColor="246ba1")
-    first_cell.font = Font(bold=True, color="F7F6FA")
+    first_cell.font = Font(bold=True)
     first_cell.alignment = Alignment(horizontal="center", vertical="center")
 
-    second_cell = worksheet['A2']
-    second_cell.value = name
-    second_cell.font = Font(bold=True, color="246ba1")
-    second_cell.alignment = Alignment(horizontal="center", vertical="center")
-
-    worksheet.title = f'Order List {date_created}'
+    worksheet.title = f'Order List {date_from} to {date_to}'
 
     # Define the titles for columns
     columns = ['Username', 'Item Name', 'Quantity', 'Date Created', 'Date Received', 'Status', 'Released By', 'Received By']
@@ -378,9 +373,12 @@ def order_excel(request):
     for col_num, column_title in enumerate(columns, 1):
         cell = worksheet.cell(row=row_num, column=col_num)
         cell.value = column_title
-        cell.fill = PatternFill("solid", fgColor="50C878")
-        cell.font = Font(bold=True, color="F7F6FA")
+        cell.font = Font(bold=True)
         cell.alignment = Alignment(horizontal="center", vertical="center")
+        
+        # Adjust column width
+        column_letter = get_column_letter(col_num)
+        worksheet.column_dimensions[column_letter].width = max(len(str(column_title)), 12)  # Set minimum width
 
     for order in ol:
         row_num += 1
@@ -398,5 +396,13 @@ def order_excel(request):
             if isinstance(cell_value, datetime):
                 cell.number_format = 'yyyy-mm-dd HH:MM:SS'  # Set datetime format
 
+            # Adjust column width
+            column_letter = get_column_letter(col_num)
+            worksheet.column_dimensions[column_letter].width = max(worksheet.column_dimensions[column_letter].width, len(str(cell_value)) + 2)  # Set minimum width
+
+        # Adjust row height based on content
+        worksheet.row_dimensions[row_num].height = 14.4  # You can adjust this value based on your content
+
     workbook.save(response)
     return response
+
