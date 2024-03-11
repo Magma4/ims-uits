@@ -88,14 +88,14 @@
                     <tbody>
                         {% for order in order_list %}
                           <tr>
-                            <td scope="col">{{order.users.username}}</td>
-                            <td scope="col">{{order.item_name.name}}</td>
-                            <td scope="col">{{order.order_quantity}}</td>
+                            <td scope="col">{{order.users.username|title}}</td>
+                            <td scope="col">{{order.item_name.name|title}}</td>
+                            <td scope="col">{{order.order_quantity|title}}</td>
                             <td scope="col">{{order.date}}</td>
                             <td scope="col">{{order.returned_date}}</td>
-                            <td scope="col">{{order.status}}</td>
-                            <td scope="col">{{order.released_by}}</td>
-                            <td scope="col">{{order.returned_to}}</td>
+                            <td scope="col">{{order.status|title}}</td>
+                            <td scope="col">{{order.released_by|title}}</td>
+                            <td scope="col">{{order.returned_to|title}}</td>
                           </tr>
                         {% endfor %}
                     </tbody>
