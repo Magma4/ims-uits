@@ -17,6 +17,9 @@ from openpyxl.styles import PatternFill, Font, Alignment
 from django.db.models.functions import TruncMonth
 from django.db.models import Count
 from django.template.loader import render_to_string
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 import os
 # Create your views here.
 
@@ -187,9 +190,11 @@ def order_update(request, pk):
     }
     return render(request, 'dashboard/order_update.html', context)
 
+@login_required
 def list_requisition(request):
     return render(request, 'dashboard/list_requisition.html')
 
+@login_required
 def searchdata(request):
     q = request.GET.get('query') # Get the query parameter from the request
     if q:
@@ -203,6 +208,7 @@ def searchdata(request):
     }
     return render(request, 'dashboard/requisition.html', context=context)
 
+@login_required
 def searchdata2(request):
     q = request.GET.get('query') # Get the query parameter from the request
     if q:
@@ -216,6 +222,7 @@ def searchdata2(request):
     }
     return render(request, 'dashboard/employees.html', context=context)
 
+@login_required
 def searchdata3(request):
     q = request.GET.get('query')  # Get the query parameter from the request
     if q:
@@ -232,7 +239,7 @@ def searchdata3(request):
 def is_valid_queryparam(param):
     return param != '' and param is not None
 
-
+@login_required
 def report(request):
     orders = Order.objects.annotate(
         month_year=TruncMonth('date')
@@ -255,6 +262,7 @@ def report(request):
         if order.returned_to:
             received_by_set.add(order.returned_to)
     
+    order_id = request.GET.get('id')
     name = request.GET.get('name')
     itemName = request.GET.get('item_name')
     quantity = request.GET.get('order_quantity')
@@ -264,6 +272,7 @@ def report(request):
     released_by = request.GET.get('released_by')
     received_by = request.GET.get('received_by')
 
+    request.session['id'] = order_id
     request.session['name'] = name
     request.session['item_name'] = itemName
     request.session['date_from'] = date_from
@@ -276,6 +285,8 @@ def report(request):
     ol = ol.filter(
         Q(date__range=[date_from, date_to]) if date_from and date_to else Q()
     )
+    if is_valid_queryparam(order_id):
+        ol = ol.filter(id=order_id)
     if is_valid_queryparam(name):
         ol = ol.filter(users__username__icontains=name)
     if is_valid_queryparam(itemName):
@@ -301,6 +312,7 @@ def report(request):
 
     context = {
         'order_list': ol,
+        'order_id' : order_id,
         'name': name,
         'itemName': itemName,
         'quantity': quantity,
@@ -316,10 +328,10 @@ def report(request):
     }
     return render(request, 'dashboard/report.html', context)
 
-
+@login_required
 def order_excel(request):
     ol = Order.objects.order_by('users')
-
+    order_id = request.session.get('id')
     name = request.session.get('name')
     itemName = request.session.get('item_name')
     date_created = request.session.get('date')
@@ -328,6 +340,8 @@ def order_excel(request):
     released_by = request.session.get('released_by')
     received_by = request.session.get('returned_to')
 
+    if is_valid_queryparam(order_id):
+        ol = ol.filter(id=order_id)
     if is_valid_queryparam(name):
         ol = ol.filter(users__username__icontains=name)
     if is_valid_queryparam(itemName):
@@ -343,6 +357,7 @@ def order_excel(request):
     if is_valid_queryparam(received_by):
         ol = ol.filter(returned_to__icontains=received_by)
 
+    order_id = order_id if order_id else "All Order ID's"
     name = name if name else "All Orders"
     itemName = itemName if itemName else "All Items"
     date_created = date_created if date_created else "2024 - 2090"
@@ -360,10 +375,10 @@ def order_excel(request):
 
     worksheet = workbook.active
 
-    worksheet.merge_cells('A1:H1')
-    worksheet.merge_cells('A2:H2')
+    worksheet.merge_cells('A1:I1')
+    worksheet.merge_cells('A2:I2')
     first_cell = worksheet.cell(row=1, column=1)
-    first_cell.value = f"Order List From {date_from} to {date_to}"
+    first_cell.value = f"Report For Orders Generated on {timezone.now()}"
 
     first_cell.font = Font(bold=True)
     first_cell.alignment = Alignment(horizontal="center", vertical="center")
@@ -371,7 +386,7 @@ def order_excel(request):
     worksheet.title = f'Order List {date_from} to {date_to}'
 
     # Define the titles for columns
-    columns = ['Username', 'Item Name', 'Quantity', 'Date Created', 'Date Received', 'Status', 'Released By', 'Received By']
+    columns = ['Username', 'Order ID', 'Item Name', 'Quantity', 'Date Created', 'Date Received', 'Status', 'Released By', 'Received By']
     row_num = 3
 
     # Assign the titles for each cell of the header
@@ -389,7 +404,7 @@ def order_excel(request):
         row_num += 1
 
         # Define the data for each cell in the row
-        row = [order.users.username, order.item_name.name, order.order_quantity,
+        row = [order.users.username, order.id , order.item_name.name, order.order_quantity,
                order.date.replace(tzinfo=None) if order.date else None,
                order.returned_date.replace(tzinfo=None) if order.returned_date else None,
                order.status, order.released_by, order.returned_to]
@@ -406,8 +421,9 @@ def order_excel(request):
             worksheet.column_dimensions[column_letter].width = max(worksheet.column_dimensions[column_letter].width, len(str(cell_value)) + 2)  # Set minimum width
 
         # Adjust row height based on content
-        worksheet.row_dimensions[row_num].height = 14.4  # You can adjust this value based on your content
+        worksheet.row_dimensions[row_num].height = 14.4  
 
     workbook.save(response)
     return response
+
 

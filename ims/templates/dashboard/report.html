@@ -7,7 +7,7 @@
         <div class="card-body">
             <div class="container">
                 <a href="{% url 'order_excel' %}" type="button" class="btn btn-sm btn-warning">Download Excel Report</a>
-                <a href="" type="button" class="btn btn-sm btn-danger">Download PDF Report</a>
+                <a href="{% url 'order_pdf' %}" type="button" class="btn btn-sm btn-danger">Download PDF Report</a>
             </div>
             <br>
             <div class="container">
@@ -16,6 +16,10 @@
                         <div class="col">
                             <label>Username</label>
                             <input type="text" class="form-control" placeholder="Username" name='name' {% if name %} value="{{name}}" {% endif %}>
+                        </div>
+                        <div class="col">
+                            <label>Order ID</label>
+                            <input type="text" class="form-control" placeholder="Order ID" name='id' {% if order_id %} value="{{order_id}}" {% endif %}>
                         </div>
                         <div class="col">
                             <label>Item Name</label>
@@ -32,7 +36,6 @@
                             </div>
                         </div>
                         
-                        <!-- Status Field -->
                         <div class="col">
                             <label>Status</label>
                             <select class="form-control" name='status'>
@@ -76,6 +79,7 @@
                     <thead class="thead-dark">
                       <tr>
                         <th scope="col">Name</th>
+                        <th scope="col">Order ID</th>
                         <th scope="col">Item Name</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Date Created</th>
@@ -89,6 +93,7 @@
                         {% for order in order_list %}
                           <tr>
                             <td scope="col">{{order.users.username|title}}</td>
+                            <td scope="col">{{order.id}}</td>
                             <td scope="col">{{order.item_name.name|title}}</td>
                             <td scope="col">{{order.order_quantity|title}}</td>
                             <td scope="col">{{order.date}}</td>
