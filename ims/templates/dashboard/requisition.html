@@ -19,14 +19,12 @@
         {% if user.is_authenticated and user.is_staff and user.is_superuser %}
         <div class="collapse show" id="multiCollapseExample1">
             {% if messages %}
-                            <div class="alert alert-success col-lg-4">
-                                <ul>
-                                    {% for message in messages %}
-                                    <li>{{ message }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            {% endif %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% endif %} col-md-4">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% endif %}
             <div class="card shadow-lg" style="max-width: 100%; min-height: 60vh;border-radius: 20px;">
             <div class="card-body">
                 
@@ -108,15 +106,13 @@
     {% else %}
     <div class="collapse show" id="multiCollapseExample2">
     {% endif %}
-    {% if messages %}
-                            <div class="alert alert-{{ message.tags}} col-lg-4" style="display: block;">
-                                <ul>
-                                    {% for message in messages %}
-                                    <li>{{ message }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            {% endif %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags == 'error' %}alert-danger{% endif %} col-md-4">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
         <div class="card shadow-lg" style="max-width: 83rem; min-height: 60vh;border-radius: 20px;">
             <div class="card-body">
                 <h5 class="card-title" style="text-align: center;">Request For Items</h5>

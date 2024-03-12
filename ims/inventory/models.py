@@ -19,6 +19,16 @@ class Stock(models.Model):
     def __str__(self):
         return f'{self.name}'
     
+    def get_total_quantity(self):
+        total_quantity = self.quantity
+        orders = Order.objects.filter(item_name=self)
+        for order in orders:
+            if order.status == 'released':
+                total_quantity -= order.order_quantity
+            elif order.status == 'returned':
+                total_quantity == total_quantity
+        return total_quantity
+    
 
     
 class Order(models.Model):
@@ -48,13 +58,7 @@ class Order(models.Model):
         return f'{self.order_quantity} - {self.item_name.name} ordered by {username} on {self.date} (Status: {self.get_status_display()})'
 
     def save(self, *args, **kwargs):
-        if self.status == 'released':
-            # Deduct quantity from stock
-            self.item_name.quantity -= self.order_quantity
-            self.item_name.save()
-        elif self.status == 'returned':
-            # Add quantity to stock
-            self.item_name.quantity += self.order_quantity
+        if self.status == 'returned':
             self.item_name.save()
             # Set returned date
             self.returned_date = timezone.now()

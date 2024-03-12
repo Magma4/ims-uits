@@ -97,7 +97,7 @@ def stock_delete(request, pk):
     item = Stock.objects.get(id=pk)
     if request.method == 'POST':
         item.delete()
-        messages.success(request, "Item deleted")
+        messages.error(request, "Item deleted")
         return redirect('stock')
     return render(request, 'dashboard/stock_delete.html')
 

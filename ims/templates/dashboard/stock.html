@@ -22,8 +22,8 @@
             <div class="card-body">
                 {% for message in messages %}
                 {% if message %}
-                <div class="alert alert-{{ message.tags}}">
-                    {{message}}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} col-md-4">
+                    {{ message }}
                 </div>
                 {% endif %}
                 {% endfor %}
@@ -40,7 +40,8 @@
                                     <th scope="col">Stock ID</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Description</th>
-                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Available </th>
+                                    <th scope="col">Total</th>
                                     {% if request.user.is_superuser %}
                                         <th scope="col">Action</th>
                                     {% endif %}
@@ -57,20 +58,21 @@
                                         <td scope="col">{{ stock.description|title }}</td>
                                         
                                         <td scope="col">
-                                            {% if stock.quantity < 10 %}
+                                            {% if stock.get_total_quantity < 10 %}
                                                 <div class="progress">
-                                                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ stock.quantity }}%;" aria-valuenow="{{ stock.quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}"><strong>{{ stock.quantity }}</strong></div>
+                                                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ stock.quantity }}%;" aria-valuenow="{{ stock.get_total_quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}"><strong>{{ stock.get_total_quantity }}</strong></div>
                                                 </div>
-                                            {% elif stock.quantity < 20 %}
+                                            {% elif stock.get_total_quantity < 20 %}
                                                 <div class="progress">
-                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ stock.quantity }}%;" aria-valuenow="{{ stock.quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}"><strong>{{ stock.quantity }}</strong></div>
+                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ stock.quantity }}%;" aria-valuenow="{{ stock.get_total_quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}"><strong>{{ stock.get_total_quantity }}</strong></div>
                                                 </div>
                                             {% else %}
                                                 <div class="progress">
-                                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ stock.quantity }}%;" aria-valuenow="{{ stock.quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}"><strong>{{ stock.quantity }}</strong></div>
+                                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ stock.quantity }}%;" aria-valuenow="{{ stock.get_total_quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}"><strong>{{ stock.get_total_quantity }}</strong></div>
                                                 </div>
                                             {% endif %}
                                         </td>
+                                        <td scope="col">{{ stock.quantity }}</td>
                                         {% if user.is_authenticated and user.is_staff and user.is_superuser %}
                                             <td scope="col">
                                                 <a href="{% url 'stock-update' pk=stock.id %}"><button class="btn btn-primary">Edit</button></a>
