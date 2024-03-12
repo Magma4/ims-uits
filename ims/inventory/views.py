@@ -219,7 +219,7 @@ def searchdata2(request):
 def searchdata3(request):
     q = request.GET.get('query')  # Get the query parameter from the request
     if q:
-        stocks = Stock.objects.filter(Q(name__icontains=q) | Q(description__icontains=q))
+        stocks = Stock.objects.filter(Q(name__icontains=q) | Q(description__icontains=q) | Q(id=q))
     else:
         stocks = Stock.objects.all()
         messages.error(request, "No results found")

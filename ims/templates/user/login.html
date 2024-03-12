@@ -59,7 +59,7 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                         {% csrf_token %}
                                         <div>
                                             <label for="email" class="form-label" style="margin-top: 1rem;">Username</label>
-                                            <input type="text" class="form-control" id="username" placeholder="johndoe" name="username">
+                                            <input type="text" class="form-control" id="username" placeholder="johndoe" name="username" oninput="this.value = this.value.toLowerCase()">
                                         </div>
                                         <div>
                                             <label for="password" class="form-label" style="margin-top: 1rem;">Password</label>
