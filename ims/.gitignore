@@ -1,2 +1,4 @@
 .env
 .imsenv
+package-lock.json
+package.json
