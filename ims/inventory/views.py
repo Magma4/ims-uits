@@ -17,9 +17,10 @@ from openpyxl.styles import PatternFill, Font, Alignment
 from django.db.models.functions import TruncMonth
 from django.db.models import Count
 from django.template.loader import render_to_string
+from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
 import os
 # Create your views here.
 
@@ -427,3 +428,69 @@ def order_excel(request):
     return response
 
 
+def order_pdf(request):
+    # Your existing code to fetch orders
+    ol = Order.objects.order_by('users')
+    # Retrieve filters from session
+    order_id = request.session.get('id')
+    name = request.session.get('name')
+    itemName = request.session.get('item_name')
+    date_created = request.session.get('date')
+    date_returned = request.session.get('returned_date')
+    status = request.session.get('status')
+    released_by = request.session.get('released_by')
+    received_by = request.session.get('returned_to')
+    # Apply filters to queryset
+    if is_valid_queryparam(order_id):
+        ol = ol.filter(id=order_id)
+    if is_valid_queryparam(name):
+        ol = ol.filter(users__username__icontains=name)
+    if is_valid_queryparam(itemName):
+        ol = ol.filter(item_name__name__icontains=itemName)
+    if is_valid_queryparam(date_created):
+        ol = ol.filter(date__icontains=date_created)
+    if is_valid_queryparam(date_returned):
+        ol = ol.filter(returned_date__icontains=date_returned)
+    if is_valid_queryparam(status):
+        ol = ol.filter(status=status)
+    if is_valid_queryparam(released_by):
+        ol = ol.filter(released_by__icontains=released_by)
+    if is_valid_queryparam(received_by):
+        ol = ol.filter(returned_to__icontains=received_by)
+
+    # Create a PDF report
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="Order_Report.pdf"'
+
+    # Define the data for PDF
+    data = []
+    header = ['Username', 'Order ID', 'Item Name', 'Quantity', 'Date Created', 'Date Received', 'Status', 'Released By', 'Received By']
+    data.append(header)
+    for order in ol:
+        data.append([order.users.username, order.id, order.item_name.name, order.order_quantity,
+                     order.date.replace(tzinfo=None) if order.date else None,
+                     order.returned_date.replace(tzinfo=None) if order.returned_date else None,
+                     order.status, order.released_by, order.returned_to])
+
+    # Create PDF document
+    doc = SimpleDocTemplate(response, pagesize=landscape(letter), leftMargin=20, rightMargin=20, topMargin=20, bottomMargin=20)
+    
+    table_style = TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ])
+
+    table = Table(data, style=table_style)
+    styles = getSampleStyleSheet()
+    
+    elements = []
+    elements.append(Paragraph(f"A Report of Orders Generated on {timezone.now()}", styles['title']))
+    elements.append(Paragraph(f"Filters used:", styles['title']))
+    elements.append(Paragraph(f"Order ID: {order_id if order_id else 'All'}, Name: {name if name else 'All'}, Item Name: {itemName if itemName else 'All'}, Date Created: {date_created if date_created else 'All'}, Date Returned: {date_returned if date_returned else 'All'}, Status: {status if status else 'All'}, Released By: {released_by if released_by else 'All'}, Received By: {received_by if received_by else 'All'}", styles['Normal']))
+    elements.append(table)
+    
+    doc.build(elements)
+    return response
