@@ -1,9 +1,9 @@
 {% extends 'dashboard/dashboard.html' %}
-{% block title %} Stock {% endblock %}
+{% block title %} Employees {% endblock %}
 {% block content %}
 
-<div class="col-md-10" style="margin: 1rem auto 0 auto; display:block;">
-    <div class="card shadow-lg" style="max-width: 83rem; min-height: 70vh;border-radius: 20px;">
+<div class="col-md-10" style="margin: 2rem auto 0 auto; display:block;">
+    <div class="card shadow-lg" style="max-width: 100%; min-height: 70vh;border-radius: 20px;">
         <div class="card-body">
             <a href="{% url 'employees' %}"><h5 class="card-title"><button type="button" class="btn btn-secondary btn-lg">
                 Employee List <span class="badge text-bg-success">
@@ -22,6 +22,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th scope="col">Employee ID</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Job Title</th>
                                     <th scope="col">Department</th>
@@ -31,9 +32,13 @@
                                     <th></th>
                                 </tr>
                             </thead>
+                            {% if workers|length == 0 %}
+                            <td colspan="12" style="text-align: center;"><h5>There are no employees</h5></td>
+                            {% endif %}
                             <tbody>
                                 {% for worker in workers %}
                                 <tr>
+                                    <td scope="col">{{worker.id}}</td>
                                     <td><img src="{{worker.profile.image.url}}" alt=" "
                                         class="rounded-circle img-fluid" style="width: 35px;"> {{ worker.first_name|title }} {{ worker.last_name|title }}</td>
                                     <td>{{ worker.profile.jobTitle|title}}</td>

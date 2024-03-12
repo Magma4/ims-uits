@@ -70,6 +70,7 @@ def requisition(request):
             stock_quantity = instance.item_name.quantity
             if order_quantity <= stock_quantity:
                 instance.save()
+                messages.success(request, "Order succesfully created")
                 return redirect('dashboard')
             else:
                 messages.error(request, "Order quantity cannot be more than stock quantity")
@@ -96,6 +97,7 @@ def stock_delete(request, pk):
     item = Stock.objects.get(id=pk)
     if request.method == 'POST':
         item.delete()
+        messages.success(request, "Item deleted")
         return redirect('stock')
     return render(request, 'dashboard/stock_delete.html')
 
@@ -106,6 +108,7 @@ def stock_update(request, pk):
         form = StockForm(request.POST, instance=item)
         if form.is_valid():
             form.save()
+            messages.success(request, "Stock Updated")
             return redirect('stock')
     else:
         form = StockForm(instance=item)
@@ -139,7 +142,7 @@ def update_order_status(request, order_id):
             order.status = new_status
             order.returned_to = request.user.username  # Set the returned_to field to the username of the admin
             order.save()
-            messages.success(request, f"Order {order.id} has been marked as returned by {request.user.username}.")
+            messages.success(request, f"Order {order.id} has been marked as received by {request.user.username}.")
         else:
             order.status = new_status
             order.save()
@@ -166,14 +169,13 @@ def order_update(request, pk):
         form = OrderForm(request.POST, instance=order)
         if form.is_valid():
             instance = form.save(commit=False)
-            # Retrieve the current stock quantity
             current_stock_quantity = instance.item_name.quantity
-            # Check if the order status is released and the new order quantity exceeds the current stock quantity
-            if instance.status == 'pending' and instance.order_quantity > current_stock_quantity:
+            if instance.order_quantity > current_stock_quantity:
                 # Add an error message if the condition is met
                 messages.error(request, "Insufficient stock quantity")
             else:
                 instance.save()
+                messages.success(request, f"Order {order.id} has been updated")
                 if request.user.is_superuser:
                     return redirect('requisition')
                 else:
@@ -191,9 +193,10 @@ def list_requisition(request):
 def searchdata(request):
     q = request.GET.get('query') # Get the query parameter from the request
     if q:
-        orders = Order.objects.filter(Q(users__username__icontains=q) | Q(order_description__icontains=q) | Q(users__first_name__icontains=q) | Q(users__last_name__icontains=q))
+        orders = Order.objects.filter(Q(users__username__icontains=q) | Q(order_description__icontains=q) | Q(users__first_name__icontains=q) | Q(users__last_name__icontains=q) | Q(id=q))
     else:
         orders = Order.objects.all()
+        messages.error(request, "No results found")
 
     context = {
         "orders": orders,
@@ -206,6 +209,7 @@ def searchdata2(request):
         workers = User.objects.filter(Q(username__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q))
     else:
         workers = User.objects.all()
+        messages.error(request, "No results found")
 
     context = {
         "workers": workers,
@@ -218,6 +222,7 @@ def searchdata3(request):
         stocks = Stock.objects.filter(Q(name__icontains=q) | Q(description__icontains=q))
     else:
         stocks = Stock.objects.all()
+        messages.error(request, "No results found")
 
     context = {
         "stocks": stocks,

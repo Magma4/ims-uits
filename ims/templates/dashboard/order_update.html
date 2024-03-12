@@ -1,5 +1,5 @@
 {% extends 'dashboard/dashboard.html' %}
-{% block title %} Stock {% endblock %}
+{% block title %} Update Order {% endblock %}
 {% block content %}
 {% load crispy_forms_tags %}
 
@@ -14,13 +14,13 @@
                     <form action="" method="POST">
                         {% csrf_token %}
                         {% if messages %}
-                            <div class="alert alert-danger">
-                                <ul>
-                                    {% for message in messages %}
-                                    <li>{{ message }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
+                        <div class="alert alert-danger">
+                            <ul>
+                                {% for message in messages %}
+                                <li>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                         {% endif %}
                         <div class="form-group col-md-4 mx-auto">
                             {{form|crispy}}
@@ -29,14 +29,14 @@
                             <a class="btn btn-secondary" href="{% url 'requisition' %}">Cancel</a>
                             <input class="btn btn-danger" type="submit" value="Confirm">
                         </div>
-                        
-                        </div>
-                    </form>
-                </div>
-            </div>
 
+                </div>
+                </form>
+            </div>
         </div>
+
     </div>
+</div>
 
 </div>
 {% endblock %}

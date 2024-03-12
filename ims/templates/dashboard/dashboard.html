@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock</title>
+    <title>{% block title %} Dashboard {% endblock %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
@@ -13,25 +12,32 @@
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" ></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"
+        integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT"
+        crossorigin="anonymous"></script>
     <style>
         .nav-item:hover {
             background-color: white;
         }
     </style>
-    
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    
-    
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-    </head>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+        integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+        integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
-    
+
 </head>
 
 {% load static %}
@@ -40,83 +46,101 @@
 background: -webkit-linear-gradient(to right, #ffffff, #abbaab);  /* Chrome 10-25, Safari 5.1-6 */
 background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 ">
-<div class="row">
-    <div class="col-md-12">
-        <nav class="navbar bg-body-tertiary shadow">
-        <div class="container-fluid">
-            <a class="navbar-brand" style="margin-left: 1rem; font-weight: bolder;" href="{% url 'dashboard' %}"><h4><img src="{% static 'knustlogo.png' %}" class="img-fluid" alt="" style="height: 45px;"> UITS - IMS</h4></a>
-            <form class="d-flex" role="search">
-                {% if user.is_authenticated %}
-                  <p style="margin-top: 1rem;">Welcome {{ user.username|title }}</p>
-                {% elif new_user.is_authenticated %}
-                  <p style="margin-top: 1rem;">Welcome {{ new_user.username|title }}</p>
+    <div class="row">
+        <div class="col-md-12">
+            <nav class="navbar bg-body-tertiary shadow">
+                <div class="container-fluid">
+                    <a class="navbar-brand" style="margin-left: 1rem; font-weight: bolder;"
+                        href="{% url 'dashboard' %}">
+                        <h4><img src="{% static 'knustlogo.png' %}" class="img-fluid" alt="" style="height: 45px;"> UITS
+                            - IMS</h4>
+                    </a>
+                    <form class="d-flex" role="search">
+                        {% if user.is_authenticated %}
+                        <p style="margin-top: 1rem;">Welcome {{ user.username|title }}</p>
+                        {% elif new_user.is_authenticated %}
+                        <p style="margin-top: 1rem;">Welcome {{ new_user.username|title }}</p>
 
-                {% endif %}
-                <a href="{% url 'profile' %}">
-                  <img src="{{user.profile.image.url}}" alt=""
-                  class="rounded-circle img-fluid" style="width: 40px;margin-left: 1rem;"></a>
-                
-            </form>
+                        {% endif %}
+                        <a href="{% url 'profile' %}">
+                            <img src="{{user.profile.image.url}}" alt="" class="rounded-circle img-fluid"
+                                style="width: 40px;margin-left: 1rem;"></a>
+
+                    </form>
+                </div>
+            </nav>
         </div>
-    </nav>
+
     </div>
-    
-</div>
-    
-    
+
+
     <div class="row">
         <div class="col-md-2">
             <div class="card" style="width: 11rem;height: 92vh; border: none; border-radius: 0%;display: contents;">
-                        <div class="card-body">
-                            <div class="offcanvas-body">
-                                <ul class="navbar-nav justify-content-end flex-grow-1 ">
-                                  
-                                    <li class="nav-item" style="margin-top: 0.5rem;">
-                                        <a class="nav-link active" aria-current="page" href="{% url 'dashboard' %}"><i class="fa fa-tachometer"
-                                                style="margin-right: 5px;margin-top: 1rem;"></i>Dashboard</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'requisition' %}"><i class="fa fa-plus-square"
-                                                style="margin-right: 5px;margin-top: 1rem;"></i>Requisitions</a>
-                                    </li>
-                                    
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'stock' %}"><i class="fa fa-table"
-                                                style="margin-right: 5px;margin-top: 1rem;"></i>Stock</a>
-                                    </li>
-                                    {% if user.is_authenticated and user.is_staff and user.is_superuser %}
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'employees' %}"><i class="fa fa-users"
-                                                style="margin-right:5px;margin-top: 1rem;"></i>Employees</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'report' %}"><i class="fa fa-book"
-                                                style="margin-right: 5px;margin-top: 1rem;"></i>Report</a>
-                                    </li>
-                                    {% endif %}
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'user-logout' %}"><i class="fa fa-sign-out"
-                                                style="margin-right: 5px;margin-top: 1rem;"></i>Sign Out</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                <div class="card-body">
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav justify-content-end flex-grow-1 ">
+
+                            <li class="nav-item" style="margin-top: 0.5rem;">
+                                <a class="nav-link active" aria-current="page" href="{% url 'dashboard' %}"><i
+                                        class="fa fa-tachometer"
+                                        style="margin-right: 5px;margin-top: 1rem;"></i>Dashboard</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'requisition' %}"><i class="fa fa-plus-square"
+                                        style="margin-right: 5px;margin-top: 1rem;"></i>Requisitions</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'stock' %}"><i class="fa fa-table"
+                                        style="margin-right: 5px;margin-top: 1rem;"></i>Stock</a>
+                            </li>
+
+                            {% if user.is_authenticated and user.is_staff and user.is_superuser %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'employees' %}"><i class="fa fa-users"
+                                        style="margin-right:5px;margin-top: 1rem;"></i>Employees</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'report' %}"><i class="fa fa-book"
+                                        style="margin-right: 5px;margin-top: 1rem;"></i>Report</a>
+                            </li>
+                            {% endif %}
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'user-logout' %}"><i class="fa fa-sign-out"
+                                        style="margin-right: 5px;margin-top: 1rem;"></i>Sign Out</a>
+                            </li>
+
+                        </ul>
                     </div>
+                </div>
+            </div>
         </div>
-        
+
         {% block content %}
         {% if user.is_authenticated and user.is_staff and user.is_superuser %}
-        
+
         <div class="col-md-10" style="margin: 1rem auto 0 auto; display:block;">
+            {% if messages %}
+                            <div class="alert alert-success col-md-4">
+                                <ul>
+                                    {% for message in messages %}
+                                    <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
             <div class="card shadow-lg" style="max-width: 100%; min-height: 25rem;border-radius: 20px;">
                 <div class="card-body">
                     <h5 class="card-title"><button type="button" class="btn btn-secondary btn-lg">
-                        Requisitions <span class="badge text-bg-success">
-                            {% with orders.count as total_orders %}
+                            Requisitions <span class="badge text-bg-success">
+                                {% with orders.count as total_orders %}
                                 {{ total_orders }}
-                            {% endwith %}
-                        </span>
-                      </button></h5>
+                                {% endwith %}
+                            </span>
+                        </button></h5>
                     <div class="row">
                         <div class="col-md-12">
                             <div style="max-height: 25rem; overflow-y: auto;">
@@ -133,55 +157,68 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                         </tr>
                                     </thead>
                                     {% if orders|length == 0 %}
-                                    <td colspan="12" style="text-align: center;"><h5>There are no orders</h5></td>
+                                    <td colspan="12" style="text-align: center;">
+                                        <h5>There are no orders</h5>
+                                    </td>
                                     {% endif %}
                                     <tbody>
                                         {% for order in orders %}
                                         <tr>
                                             <td scope="col"><img src="{{order.users.profile.image.url}}" alt=" "
-                                                class="rounded-circle img-fluid" style="width: 35px;"> {{order.users.first_name|title}} {{order.users.last_name|title}}</td>
+                                                    class="rounded-circle img-fluid" style="width: 35px;">
+                                                {{order.users.first_name|title}} {{order.users.last_name|title}}</td>
                                             <td scope="col">{{order.users.profile.jobTitle|title}}</td>
                                             <td scope="col">{{order.users.profile.division|upper}}</td>
                                             <td scope="col">{{order.users.profile.department|upper}}</td>
                                             <td scope="col">{{order.users.profile.contact|title}}</td>
                                             <td scope="col"><!-- Button trigger modal -->
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#orderModal{{ order.id }}">
-                                                  Order Details
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#orderModal{{ order.id }}">
+                                                    Order Details
                                                 </button>
-                                                
+
                                                 <!-- Modal -->
-                                                <div class="modal fade" id="orderModal{{ order.id }}" tabindex="-1" aria-labelledby="orderModalLabel{{ order.id }}" aria-hidden="true">
+                                                <div class="modal fade" id="orderModal{{ order.id }}" tabindex="-1"
+                                                    aria-labelledby="orderModalLabel{{ order.id }}" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="orderModalLabel{{ order.id }}">Order Details</h1>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                      </div>
-                                                      
-                                                      <div class="modal-body">
-                                                        {{order.users.username|title}} ordered {{order.order_quantity}} {{order.item_name.name|title}}(s) for {{order.order_description|title}}  on {{order.date}}
-                                                      </div>
-                                                      
+                                                                <h1 class="modal-title fs-5"
+                                                                    id="orderModalLabel{{ order.id }}">Order Details
+                                                                </h1>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+
+                                                            <div class="modal-body">
+                                                                {{order.users.username|title}} ordered
+                                                                {{order.order_quantity}}
+                                                                {{order.item_name.name|title}}(s) for
+                                                                {{order.order_description|title}} on {{order.date}}
+                                                            </div>
+
+                                                        </div>
                                                     </div>
-                                                  </div>
-                                                </div></td>
+                                                </div>
+                                            </td>
                                             <td scope="col">
-                                            
-                                                    <button class="btn {% if order.status == 'pending' %}btn-warning{% elif order.status == 'approved' %}btn-success{% elif order.status == 'released' %}btn-danger{% elif order.status == 'returned' %}btn-secondary{% endif %}" >
-                                                        {{ order.status|title }}
-                                                    </button>
-                                               
+
+                                                <button
+                                                    class="btn {% if order.status == 'pending' %}btn-warning{% elif order.status == 'approved' %}btn-success{% elif order.status == 'released' %}btn-danger{% elif order.status == 'returned' %}btn-secondary{% endif %}">
+                                                    {{ order.status|title }}
+                                                </button>
+
                                             </td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
-                                    
+
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div> 
+            </div>
             <div class="row ">
                 <div class="col-md-6 my-4">
                     <div class="bg-white">
@@ -192,38 +229,38 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                 var myChart1 = new Chart(ctx, {
                                     type: 'pie',
                                     data: {
-                                        labels: [{% for orders in orders %}{% if orders.status != 'returned' %}"{{orders.item_name|title}}",{% endif %}{% endfor %}],
-                                            datasets: [{
-                                                label: "Orders",
-                                                data: [{% for orders in orders %}{% if orders.status != 'returned' %}{{ orders.order_quantity }},{% endif %}{% endfor %}],
-                                                
-                                                backgroundColor: [
-                                                    'rgba(255, 99, 132, 1)',
-                                                    'rgba(54, 162, 235, 1)',
-                                                    'rgba(255, 206, 86, 1)',
-                                                    'rgba(75, 192, 192, 1)',
-                                                    'rgba(153, 102, 255, 1)',
-                                                    'rgba(255, 159, 64, 1)',
-                                                    'rgba(208, 224, 35, 0.8)',
-                                                    'rgba(60, 65, 13, 0.8)',
-                                                    'rgba(219, 151, 132, 0.8)',
-                                                    'rgba(194, 132, 219, 0.8)',
+                                        labels: [{% for orders in orders %}{% if orders.status != 'returned' %}"{{orders.item_name|title}}", {% endif %}{% endfor %}],
+                                datasets: [{
+                                    label: "Orders",
+                                    data: [{% for orders in orders %}{% if orders.status != 'returned' %}{{ orders.order_quantity }}, {% endif %} {% endfor %}],
 
-                                                ],
-                                                    borderColor: [
-                                                        'rgba(255, 99, 132, 1)',
-                                                        'rgba(54, 162, 235, 1)',
-                                                        'rgba(255, 206, 86, 1)',
-                                                        'rgba(75, 192, 192, 1)',
-                                                        'rgba(153, 102, 255, 1)',
-                                                        'rgba(255, 159, 64, 1)',
-                                                        'rgba(255, 159, 64, 1)',
-                                                        'rgba(208, 224, 35, 0.8)',
-                                                        'rgba(60, 65, 13, 0.8)',
-                                                        'rgba(219, 151, 132, 0.8)',
-                                                        'rgba(194, 132, 219, 0.8)',
-                                                    ],
-                                                        borderWidth: 1
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)',
+                                    'rgba(208, 224, 35, 0.8)',
+                                    'rgba(60, 65, 13, 0.8)',
+                                    'rgba(219, 151, 132, 0.8)',
+                                    'rgba(194, 132, 219, 0.8)',
+
+                                ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)',
+                                        'rgba(255, 159, 64, 1)',
+                                        'rgba(208, 224, 35, 0.8)',
+                                        'rgba(60, 65, 13, 0.8)',
+                                        'rgba(219, 151, 132, 0.8)',
+                                        'rgba(194, 132, 219, 0.8)',
+                                    ],
+                                        borderWidth: 1
                                             }]
                                 },
                                 options: {
@@ -250,34 +287,34 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                                     type: 'bar',
                                     data: {
                                         labels: [{% for items in items %} "{{items|title}}", {% endfor %}],
-                                            datasets: [{
-                                                label: 'Number Of Products',
-                                                data: [{% for items in items %} {{ items.quantity }}, {% endfor %}],
-                                                backgroundColor: [
-                                                    'rgba(255, 99, 132, 1)',
-                                                    'rgba(54, 162, 235, 1)',
-                                                    'rgba(255, 206, 86, 1)',
-                                                    'rgba(75, 192, 192, 1)',
-                                                    'rgba(153, 102, 255, 1)',
-                                                    'rgba(255, 159, 64, 1)',
-                                                    'rgba(208, 224, 35, 0.8)',
-                                                    'rgba(60, 65, 13, 0.8)',
-                                                    'rgba(219, 151, 132, 0.8)',
-                                                    'rgba(194, 132, 219, 0.8)',
-                                                ],
-                                                    borderColor: [
-                                                        'rgba(255, 99, 132, 1)',
-                                                        'rgba(54, 162, 235, 1)',
-                                                        'rgba(255, 206, 86, 1)',
-                                                        'rgba(75, 192, 192, 1)',
-                                                        'rgba(153, 102, 255, 1)',
-                                                        'rgba(255, 159, 64, 1)',
-                                                        'rgba(208, 224, 35, 0.8)',
-                                                        'rgba(60, 65, 13, 0.8)',
-                                                        'rgba(219, 151, 132, 0.8)',
-                                                        'rgba(194, 132, 219, 0.8)',
-                                                    ],
-                                                        borderWidth: 1
+                                datasets: [{
+                                    label: 'Number Of Products',
+                                    data: [{% for items in items %} {{ items.quantity }}, {% endfor %}],
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)',
+                                        'rgba(208, 224, 35, 0.8)',
+                                        'rgba(60, 65, 13, 0.8)',
+                                        'rgba(219, 151, 132, 0.8)',
+                                        'rgba(194, 132, 219, 0.8)',
+                                    ],
+                                        borderColor: [
+                                            'rgba(255, 99, 132, 1)',
+                                            'rgba(54, 162, 235, 1)',
+                                            'rgba(255, 206, 86, 1)',
+                                            'rgba(75, 192, 192, 1)',
+                                            'rgba(153, 102, 255, 1)',
+                                            'rgba(255, 159, 64, 1)',
+                                            'rgba(208, 224, 35, 0.8)',
+                                            'rgba(60, 65, 13, 0.8)',
+                                            'rgba(219, 151, 132, 0.8)',
+                                            'rgba(194, 132, 219, 0.8)',
+                                        ],
+                                            borderWidth: 1
                                             }]
                                 },
                                 options: {
@@ -295,103 +332,121 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                     </div>
                 </div>
             </div>
-    {% else %}
-    <div class="col-md-10" style="margin: 2rem auto 0 auto; display:block;">
-      <div class="card shadow-lg" style="max-width: 100%; min-height: 25rem;border-radius: 20px;">
-          <div class="card-body">
-              <h5 class="card-title"><button type="button" class="btn btn-secondary btn-lg">
-                  Records <span class="badge text-bg-success">
-                    
-                    {{ order_count }}
-
-                </span>
-                    
-                </h5>
-              <div class="row">
-                  <div class="col-md-12">
-                      <div style="max-height: 25rem; overflow-y: auto;">
-                          <table class="table">
-                              <thead>
-                                  <tr>
-                                      <th scope="col">Item</th>
-                                      <th scope="col">Description</th>
-                                      <th scope="col">Quantity</th>
-                                      <th scope="col">Date</th>
-                                      <th scope="col">Date Returned</th>
-                                      <th scope="col">Status</th>
-                                      <th scope="col">Action</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                {% if order_count != 0 %}
-                                    {% for order in orders %}
-                                      {% if order.users == user %}
-                                    <tr>
-                                        <td scope="col">{{ order.item_name.name|title }}</td>
-                                        <td scope="col">{{ order.order_description|title }}</td>
-                                        <td scope="col">{{ order.order_quantity }}</td>
-                                        <td scope="col">{{ order.date }}</td>
-                                        <td scope="col">{{ order.returned_date }}</td>
-                                        <td scope="col">
-                                            <button class="btn {% if order.status == 'pending' %}btn-warning{% elif order.status == 'approved' %}btn-success{% elif order.status == 'released' %}btn-danger{% elif order.status == 'returned' %}btn-secondary{% endif %}" disabled>
-                                                {{ order.status|title }}
-                                            </button>
-                                        </td>
-                                        {% if order.status == 'pending' %}
-                                        <td scope="col">
-                                            <a href="{% url 'order-update' pk=order.id %}"><button class="btn btn-primary">Edit</button></a>
-                                            <a href="{% url 'order-delete' pk=order.id %}"><button class="btn btn-danger">Delete</button></a>
-                                        </td>
-                                        {% else %}
-                                        <td scope="col">
-                                            <a href="" ><button class="btn btn-primary" disabled>Edit</button></a>
-                                            <a href="" ><button class="btn btn-danger" disabled>Delete</button></a>
-                                        </td>
-                                        {% endif %}
-                                    </tr>
-                                      {% endif %}
+            {% else %}
+            
+            <div class="col-md-10" style="margin: 2rem auto 0 auto; display:block;">
+                {% if messages %}
+                            <div class="alert alert-success col-md-4">
+                                <ul>
+                                    {% for message in messages %}
+                                    <li>{{ message }}</li>
                                     {% endfor %}
-                                {% else %}
-                                    <td colspan="12" style="text-align: center;">You have no orders</td>
-                                {% endif %}
-                            </tbody>
-                            
-                              
-                          </table>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div> 
-    {% endif %}
-    {% endblock %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                <div class="card shadow-lg" style="max-width: 100%; min-height: 25rem;border-radius: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title"><button type="button" class="btn btn-secondary btn-lg">
+                                Records <span class="badge text-bg-success">
 
-    <script src="popper.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/96a4d66c94.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
-        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
-        crossorigin="anonymous"></script>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
-        crossorigin="anonymous"></script>
+                                    {{ order_count }}
+
+                                </span>
+
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div style="max-height: 25rem; overflow-y: auto;">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Order ID</th>
+                                                <th scope="col">Item</th>
+                                                <th scope="col">Description</th>
+                                                <th scope="col">Quantity</th>
+                                                <th scope="col">Date</th>
+                                                <th scope="col">Date Returned</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% if order_count != 0 %}
+                                            {% for order in orders %}
+                                            {% if order.users == user %}
+                                            <tr>
+                                                <td scope="col">{{ order.id}}</td>
+                                                <td scope="col">{{ order.item_name.name|title }}</td>
+                                                <td scope="col">{{ order.order_description|title }}</td>
+                                                <td scope="col">{{ order.order_quantity }}</td>
+                                                <td scope="col">{{ order.date }}</td>
+                                                <td scope="col">{{ order.returned_date }}</td>
+                                                <td scope="col">
+                                                    <button
+                                                        class="btn {% if order.status == 'pending' %}btn-warning{% elif order.status == 'approved' %}btn-success{% elif order.status == 'released' %}btn-danger{% elif order.status == 'returned' %}btn-secondary{% endif %}"
+                                                        disabled>
+                                                        {{ order.status|title }}
+                                                    </button>
+                                                </td>
+                                                {% if order.status == 'pending' %}
+                                                <td scope="col">
+                                                    <a href="{% url 'order-update' pk=order.id %}"><button
+                                                            class="btn btn-primary">Edit</button></a>
+                                                    <a href="{% url 'order-delete' pk=order.id %}"><button
+                                                            class="btn btn-danger">Delete</button></a>
+                                                </td>
+                                                {% else %}
+                                                <td scope="col">
+                                                    <a href=""><button class="btn btn-primary"
+                                                            disabled>Edit</button></a>
+                                                    <a href=""><button class="btn btn-danger"
+                                                            disabled>Delete</button></a>
+                                                </td>
+                                                {% endif %}
+                                            </tr>
+                                            {% endif %}
+                                            {% endfor %}
+                                            {% else %}
+                                            <td colspan="12" style="text-align: center;">You have no orders</td>
+                                            {% endif %}
+                                        </tbody>
+
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endblock %}
+
+                <script src="popper.min.js"></script>
+                <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+                    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+                    crossorigin="anonymous"></script>
+                <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+                    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                    crossorigin="anonymous"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+                    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+                    crossorigin="anonymous"></script>
+                <script src="https://kit.fontawesome.com/96a4d66c94.js" crossorigin="anonymous"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+                    crossorigin="anonymous"></script>
+                <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+                    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+                    crossorigin="anonymous"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+                    integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+                    crossorigin="anonymous"></script>
+                <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+                    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+                    crossorigin="anonymous"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+                    crossorigin="anonymous"></script>
 </body>
 
 </html>
