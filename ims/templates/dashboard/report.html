@@ -1,6 +1,50 @@
 {% extends 'dashboard/dashboard.html' %}
 {% block title %} Report {% endblock %}
 {% block content %}
+<div class="row">
+    <div class="col-md-2">
+        <div class="card" style="width: 11rem;height: 92vh; border: none; border-radius: 0%;display: contents;">
+            <div class="card-body">
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav justify-content-end flex-grow-1 ">
+
+                        <li class="nav-item" style="margin-top: 0.5rem;">
+                            <a class="nav-link " aria-current="page" href="{% url 'dashboard' %}"><i
+                                    class="fa fa-tachometer"
+                                    style="margin-right: 5px;margin-top: 1rem;"></i>Dashboard</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'requisition' %}"><i class="fa fa-plus-square"
+                                    style="margin-right: 5px;margin-top: 1rem;"></i>Requisitions</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'stock' %}"><i class="fa fa-table"
+                                    style="margin-right: 5px;margin-top: 1rem;"></i>Stock</a>
+                        </li>
+
+                        {% if user.is_authenticated and user.is_staff and user.is_superuser %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'employees' %}"><i class="fa fa-users"
+                                    style="margin-right:5px;margin-top: 1rem;"></i>Employees</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'report' %}"><i class="fa fa-book"
+                                    style="margin-right: 5px;margin-top: 1rem;"></i>Report</a>
+                        </li>
+                        {% endif %}
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'user-logout' %}"><i class="fa fa-sign-out"
+                                    style="margin-right: 5px;margin-top: 1rem;"></i>Sign Out</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <div class="col-md-10" style="margin: 2rem auto 0 auto; display:block;">
     <div class="card shadow-lg" style="max-width: 100%; min-height: 70vh;border-radius: 20px;">
@@ -75,36 +119,38 @@
             </div>
             <br>
             <div class="container">
-                <table class="table table-bordered">
-                    <thead class="thead-dark">
-                      <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Order ID</th>
-                        <th scope="col">Item Name</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Date Created</th>
-                        <th scope="col">Date Received</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Released By</th>
-                        <th scope="col">Received By</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        {% for order in order_list %}
-                          <tr>
-                            <td scope="col">{{order.users.username|title}}</td>
-                            <td scope="col">{{order.id}}</td>
-                            <td scope="col">{{order.item_name.name|title}}</td>
-                            <td scope="col">{{order.order_quantity|title}}</td>
-                            <td scope="col">{{order.date}}</td>
-                            <td scope="col">{{order.returned_date}}</td>
-                            <td scope="col">{{order.status|title}}</td>
-                            <td scope="col">{{order.released_by|title}}</td>
-                            <td scope="col">{{order.returned_to|title}}</td>
-                          </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div style="max-height: 25rem; overflow-y: auto;">
+                    <table class="table table-bordered">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Order ID</th>
+                            <th scope="col">Item Name</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Date Created</th>
+                            <th scope="col">Date Received</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Released By</th>
+                            <th scope="col">Received By</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in order_list %}
+                            <tr>
+                                <td scope="col">{{order.users.username|title}}</td>
+                                <td scope="col">{{order.id}}</td>
+                                <td scope="col">{{order.item_name.name|title}}</td>
+                                <td scope="col">{{order.order_quantity|title}}</td>
+                                <td scope="col">{{order.date}}</td>
+                                <td scope="col">{{order.returned_date}}</td>
+                                <td scope="col">{{order.status|title}}</td>
+                                <td scope="col">{{order.released_by|title}}</td>
+                                <td scope="col">{{order.returned_to|title}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

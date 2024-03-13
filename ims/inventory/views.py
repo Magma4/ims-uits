@@ -161,9 +161,14 @@ def delete_order(request, pk):
     if request.method == 'POST':       
         order.delete()
         if request.user.is_superuser:
+            messages.success(request, f"Order has been deletd")
             return redirect('requisition')
+            
         else:
+            messages.success(request, f"Order has been deleted")
             return redirect('dashboard')
+            
+        
     return render(request, 'dashboard/order_delete.html')
 
 @login_required
@@ -424,10 +429,21 @@ def order_excel(request):
         # Adjust row height based on content
         worksheet.row_dimensions[row_num].height = 14.4  
 
+    # Write total count to the last cell
+    total_count_cell = worksheet.cell(row=row_num + 1, column=1)
+    total_count_cell.value = "Total Count"
+    total_count_cell.font = Font(bold=True)
+    total_count_cell.alignment = Alignment(horizontal="center", vertical="center")
+    
+    total_count_value_cell = worksheet.cell(row=row_num + 1, column=2)
+    total_count_value_cell.value = len(ol)
+    total_count_value_cell.font = Font(bold=True)
+    total_count_value_cell.alignment = Alignment(horizontal="center", vertical="center")
+
     workbook.save(response)
     return response
 
-
+@login_required
 def order_pdf(request):
     # Your existing code to fetch orders
     ol = Order.objects.order_by('users')
@@ -472,6 +488,9 @@ def order_pdf(request):
                      order.returned_date.replace(tzinfo=None) if order.returned_date else None,
                      order.status, order.released_by, order.returned_to])
 
+    # Calculate total count of orders
+    total_count = len(ol)
+
     # Create PDF document
     doc = SimpleDocTemplate(response, pagesize=landscape(letter), leftMargin=20, rightMargin=20, topMargin=20, bottomMargin=20)
     
@@ -491,6 +510,7 @@ def order_pdf(request):
     elements.append(Paragraph(f"Filters used:", styles['title']))
     elements.append(Paragraph(f"Order ID: {order_id if order_id else 'All'}, Name: {name if name else 'All'}, Item Name: {itemName if itemName else 'All'}, Date Created: {date_created if date_created else 'All'}, Date Returned: {date_returned if date_returned else 'All'}, Status: {status if status else 'All'}, Released By: {released_by if released_by else 'All'}, Received By: {received_by if received_by else 'All'}", styles['Normal']))
     elements.append(table)
+    elements.append(Paragraph(f"Total Count of Orders: {total_count}", styles['Normal']))
     
     doc.build(elements)
     return response
