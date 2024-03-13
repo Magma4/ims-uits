@@ -60,9 +60,9 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                     </a>
                     <form class="d-flex" role="search">
                         {% if user.is_authenticated %}
-                        <p style="margin-top: 1rem;">Welcome {{ user.username|title }}</p>
+                        <p style="margin-top: 1rem;"><strong>Welcome {{ user.username|title }}</strong></p>
                         {% elif new_user.is_authenticated %}
-                        <p style="margin-top: 1rem;">Welcome {{ new_user.username|title }}</p>
+                        <p style="margin-top: 1rem;"><strong>Welcome {{ new_user.username|title }}</strong></p>
 
                         {% endif %}
                         <a href="{% url 'profile' %}">
@@ -393,7 +393,7 @@ background: linear-gradient(to right, #ffffff, #abbaab); /* W3C, IE 10+/ Edge, F
                 <div class="container-fluid" style="margin-bottom: 20rem;">
                 <div class="row">
                     <div class="col-md-12">
-                        <footer class="fixed-bottom" style=" text-align: center; background: white">
+                        <footer class="margin-bottom" style=" text-align: center; ">
                             <p>UITS INVENTORY MANAGEMENT SYSTEM 2024&copy;</p>
 
                         </footer>
