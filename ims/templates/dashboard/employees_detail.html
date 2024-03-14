@@ -34,12 +34,12 @@
                           <a class="nav-link" href="{% url 'report' %}"><i class="fa fa-book"
                                   style="margin-right: 5px;margin-top: 1rem;"></i>Report</a>
                       </li>
+                      
+                      {% endif %}
                       <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'instructions' %}"><i class="fa fa-rule"
+                        <a class="nav-link" href="{% url 'instructions' %}"><i class="fa fa-map"
                                 style="margin-right: 5px;margin-top: 1rem;"></i>Instructions</a>
                     </li>
-                      {% endif %}
-
                       <li class="nav-item">
                           <a class="nav-link" href="{% url 'user-logout' %}"><i class="fa fa-sign-out"
                                   style="margin-right: 5px;margin-top: 1rem;"></i>Sign Out</a>

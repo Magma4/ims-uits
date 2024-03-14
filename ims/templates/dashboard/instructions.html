@@ -2,7 +2,7 @@
 
 {% block title %} Instructions {% endblock %}
 
-{% block contents %}
+{% block content %}
 
 <div class="row">
     <div class="col-md-2">
@@ -36,11 +36,12 @@
                             <a class="nav-link" href="{% url 'report' %}"><i class="fa fa-book"
                                     style="margin-right: 5px;margin-top: 1rem;"></i>Report</a>
                         </li>
+                        
+                        {% endif %}
                         <li class="nav-item">
-                            <a class="nav-link active" href="{% url 'instructions' %}"><i class="fa fa-rule"
+                            <a class="nav-link" href="{% url 'instructions' %}"><i class="fa fa-map"
                                     style="margin-right: 5px;margin-top: 1rem;"></i>Instructions</a>
                         </li>
-                        {% endif %}
   
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'user-logout' %}"><i class="fa fa-sign-out"
@@ -54,7 +55,34 @@
     </div>
   
   <div class="row" style="max-width: 83rem; min-height: 60vh;border-radius: 20px; margin-top: 2rem;">
-      <div class="col-md-12" >
+      <div class="col-md-12" >  
+        <div class="row">
+            <div class="col-md-6" style="margin: 2rem auto 0 auto;">
+                <p class="display-4" id="instructions" name="about" style="text-align: center;">
+                    Instructions
+                </p>
+                <hr>
+                <ol class="list-group">
+                    {% if user.is_authenticated and user.is_staff and user.is_superuser %}
+                    <li class="list-group-item">- Please click on the avatar at the top right corner to view and edit your profile details.</li>
+                    <li class="list-group-item">- Before making a request, please click on "Stock the check for the items available and the quantity in stock then proceed.</li>
+                    <li class="list-group-item">- To make an order, click on "Requisitions", select "Request Items" the key in your order and hit submit. NB. Description has to be the reason you are requesting for the items.</li>
+                    <li class="list-group-item">- As an admin, you can see all orders and change the status of all orders. By default, all orders will be pending. When approved by the admin, the status of the order will change on the users dashboard and the view requests tab in the admin "Requisitions" panel.</li>
+                    {% else %}
+                    <li class="list-group-item">- To make an order, click on requisitions, key in your order and hit submit. NB. Description has to be the reason you are coming for the items.</li>
+                    <li class="list-group-item">- As long as your order status is pending, you can edit your order. NB. This does not apply to admins.</li>
+                    <li class="list-group-item">- By default, all orders will be pending. When approved by the admin, the status of the order will change on the your dashboard. Or you can call any of the admins after you have made an order. </li>
+                    <li class="list-group-item">// for Floor Division</li>
+                    <li class="list-group-item">( ) for Parenthesis</li>
+                    {% endif %}
+
+                </ol>
+
+            </div>
+        </div>
+    </div>
+
+        
 
 
 
