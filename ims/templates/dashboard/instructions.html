@@ -57,7 +57,7 @@
   <div class="row" style="max-width: 83rem; min-height: 60vh;border-radius: 20px; margin-top: 2rem;">
       <div class="col-md-12" >  
         <div class="row">
-            <div class="col-md-6" style="margin: 2rem auto 0 auto;">
+            <div class="col-md-8" style="margin: 0rem auto 0 auto;">
                 <p class="display-4" id="instructions" name="about" style="text-align: center;">
                     Instructions
                 </p>
@@ -65,12 +65,17 @@
                 <ol class="list-group">
                     {% if user.is_authenticated and user.is_staff and user.is_superuser %}
                     <li class="list-group-item">- Please click on the avatar at the top right corner to view and edit your profile details.</li>
-                    <li class="list-group-item">- Before making a request, please click on "Stock the check for the items available and the quantity in stock then proceed.</li>
+                    <li class="list-group-item">- Before making a request, please click on "Stock" to check for the items available and the quantity in stock then proceed.</li>
                     <li class="list-group-item">- To make an order, click on "Requisitions", select "Request Items" the key in your order and hit submit. NB. Description has to be the reason you are requesting for the items.</li>
                     <li class="list-group-item">- As an admin, you can see all orders and change the status of all orders. By default, all orders will be pending. When approved by the admin, the status of the order will change on the users dashboard and the view requests tab in the admin "Requisitions" panel.</li>
                     {% else %}
-                    <li class="list-group-item">- To make an order, click on requisitions, key in your order and hit submit. NB. Description has to be the reason you are coming for the items.</li>
-                    <li class="list-group-item">- As long as your order status is pending, you can edit your order. NB. This does not apply to admins.</li>
+                    <li class="list-group-item">- Please click on the avatar at the top right corner to view and edit your profile details.</li>
+                    <li class="list-group-item">- Before making a request, please click on "Stock" to check for the items available and the quantity in stock then proceed.</li>
+                    <li class="list-group-item">- To make an order, click on requisitions, key in your order and hit submit. NB. Description should be the reason you are coming for the items.</li>
+                    <li class="list-group-item">- Before making a request, please click on "Stock the check for the items available and the quantity in stock then proceed.</li>
+                    <li class="list-group-item">- As long as your order status is pending, you can edit your order.</li>
+                    <li class="list-group-item">- When an order status is approved, you can proceed to the support center to take your items. Please make sure the admin updates the status to released after picking up all items. Also crosscheck on your dashboard to be sure. </li>
+                    <li class="list-group-item">- After you have returned the items to an admin, make sure the status has been updated as "returned". Also, crosscheck from your dashboard</li>
                     <li class="list-group-item">- By default, all orders will be pending. When approved by the admin, the status of the order will change on the your dashboard. Or you can call any of the admins after you have made an order. </li>
                     <li class="list-group-item">// for Floor Division</li>
                     <li class="list-group-item">( ) for Parenthesis</li>
