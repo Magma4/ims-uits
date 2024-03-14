@@ -95,6 +95,10 @@ def employees(request):
     }
     return render(request, 'dashboard/employees.html', context)
 
+def instructions(request):
+
+    return render(request, 'dashboard/instructions.html')
+
 
 @login_required
 def stock_delete(request, pk):
