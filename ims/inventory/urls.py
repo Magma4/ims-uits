@@ -19,5 +19,6 @@ urlpatterns = [
     path('report', views.report, name='report'),
     path('order_excel', views.order_excel, name='order_excel'),
     path('order_pdf', views.order_pdf, name='order_pdf'),
+    path()
     
 ]
