@@ -1,0 +1,183 @@
+{% extends 'dashboard/dashboard.html' %}
+{% block title %} View Stock {% endblock %}
+{% block content %}
+{% load crispy_forms_tags %}
+{% for message in messages %}
+
+  <div class="toast notification bg-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}" role="alert" aria-live="assertive" aria-atomic="true" data-delay="4000" style="
+    position: absolute;
+    top: 10rem;
+    right: 1rem;
+    z-index: 1000;
+    color: white;
+    font-weight: normal;
+">
+    <div class="toast-header">
+      <strong class="mr-auto">
+        {% if message.tags == 'error' %}
+          <i class="fas fa-times mr-2"></i>
+        {% elif message.tags == 'warning' %}
+          <i class="fas fa-exclamation mr-2"></i>
+        {% elif message.tags == 'info' %}
+          <i class="fas fa-info mr-2"></i>
+        {% elif message.tags == 'success' %}
+          <i class="fas fa-check mr-2"></i>
+        {% endif %}
+        {{message.tags|capfirst}}
+      </strong>
+      
+    </div>
+    <div class="toast-body">
+      {{message|safe}}
+    </div>
+  </div>
+{% endfor %}
+
+<div class="row" style="background-color: #1c4f24;" >
+    <div class="col-12" style="background-color: #1c4f24;">
+        <div class="page-title-box d-flex align-items-center justify-content-between" >
+            <h4 class="page-title mb-0 font-size-18">View Stock</h4>
+
+            <div class="page-title-right" style="background-color: #1c4f24;">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item active">Welcome {{user.first_name|title}} {{user.last_name|title}}</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class=" card col-md-12">
+    <div class="card-body">
+        <h4 class="card-title mb-4" style="text-align: center;">All Items {% with stocks.count as total_stocks %}
+            ({{ total_stocks }})
+        {% endwith %}</h4>
+
+        <div class="table-responsive">
+            <table class="table table-centered">
+                <tbody>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Available </th>
+                        <th scope="col">Total</th>
+                        {% if request.user.is_superuser %}
+                            <th scope="col">Action</th>
+                        {% endif %}
+                    </tr>
+                    {% if stocks|length == 0 %}
+                        <tr>
+                            <td colspan="4" style="text-align: center;">There are no stocks</td>
+                        </tr>
+                    {% endif %}
+                    {% for stock in stocks %}
+                        <tr>
+                            <td scope="col">{{ stock.name|title }}</td>
+                            <td scope="col">{{ stock.description|title }}</td>
+                            
+                            <td scope="col">
+                                {% if stock.get_total_quantity < 10 %}
+                                    <div class="progress mb-8" style="height: 30px;">
+                                        <div class="progress-bar bg-danger " role="progressbar" style="height: 10px; width: {{ stock.quantity }}%;" aria-valuenow="{{ stock.get_total_quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}"><strong>{{ stock.get_total_quantity }}</strong></div>
+                                    </div>
+                                {% elif stock.get_total_quantity < 20 %}
+                                    <div class="progress mb-8">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="height: 10px;width: {{ stock.quantity }}%;" aria-valuenow="{{ stock.get_total_quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}"><strong>{{ stock.get_total_quantity }}</strong></div>
+                                    </div>
+                                {% else %}
+                                    <div class="progress mb-8">
+                                        <div class="progress-bar bg-success " role="progressbar" style="height: 10px;width: {{ stock.quantity }}%;" aria-valuenow="{{ stock.get_total_quantity }}" aria-valuemin="0" aria-valuemax="{{ max_stock_quantity }}"><strong>{{ stock.get_total_quantity }}</strong></div>
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td scope="col">{{ stock.quantity }}</td>
+                            {% if user.is_authenticated and user.is_staff and user.is_superuser %}
+                            <td scope="col">
+                                <a href="{% url 'stock-update' pk=stock.id %}"><button class="btn btn-primary">Edit</button></a>
+                                <!-- Delete button triggers modal -->
+                                <button class="btn btn-danger delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal{{ stock.id }}">Delete</button>
+                            </td>
+                            
+                            <!-- Modal for delete confirmation -->
+                            <div class="modal fade" id="deleteModal{{ stock.id }}" tabindex="-1" aria-labelledby="deleteModal{{ stock.id }}Label" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModal{{ stock.id }}Label">Delete Item</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h4 class="alert alert-warning" style="text-align: center;">
+                                                <i class="mdi mdi-alert-outline me-2"></i>
+                                                <div role="alert" style="text-align: center;">
+                                                    Are you sure you want to delete this item?
+                                                </div>
+                                            </h4>
+                                        </div>
+                                        <div class="row justify-content-center mt-3">
+                                            <div class="col-md-6">
+                                                <form id="deleteForm{{ stock.id }}" action="{% url 'stock-delete' pk=stock.id %}" method="POST">
+                                                    {% csrf_token %}
+                                                    <div style="text-align: center;">
+                                                        <!-- Cancel button with data-bs-dismiss attribute to close the modal -->
+                                                        <a class="btn btn-secondary" href="{% url 'view-stock' %}" data-bs-dismiss="modal">Cancel</a>
+                                                        <!-- Confirm button with an ID for event handling -->
+                                                        <button class="btn btn-danger delete-confirm-btn" type="submit">Confirm</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Find the confirm delete button and add a click event listener
+        document.querySelectorAll('.delete-confirm-btn').forEach(function(button) {
+            button.addEventListener("click", function() {
+                // Find the corresponding delete form
+                var formId = button.closest('form').id;
+                var deleteForm = document.getElementById(formId);
+                // Submit the form asynchronously
+                fetch(deleteForm.action, {
+                    method: "POST",
+                    body: new FormData(deleteForm),
+                })
+                .then(function(response) {
+                    if (response.ok) {
+                        // If form submission is successful, hide the modal
+                        var modalId = button.closest('.modal').id;
+                        var modal = new bootstrap.Modal(document.getElementById(modalId));
+                        modal.hide();
+                        // You might also want to reload the page or update the UI after successful deletion
+                    } else {
+                        // Handle errors if any
+                        console.error("Error occurred:", response.statusText);
+                    }
+                })
+                .catch(function(error) {
+                    console.error("Error occurred:", error);
+                });
+            });
+        });
+    });
+</script>
+
+
+
+
+{% endblock %}

@@ -4,8 +4,6 @@ from . import views
 urlpatterns = [
     
     path('dashboard/', views.dashboard, name='dashboard'),
-    path('stock', views.stock, name='stock'),
-    path('requisition', views.requisition, name='requisition'),
     path('employees', views.employees, name='employees'),
     path('stock/delete/<int:pk>/', views.stock_delete, name='stock-delete'),
     path('stock/update/<int:pk>/', views.stock_update, name='stock-update'),
@@ -19,6 +17,10 @@ urlpatterns = [
     path('report', views.report, name='report'),
     path('order_excel', views.order_excel, name='order_excel'),
     path('order_pdf', views.order_pdf, name='order_pdf'),
-    path('instructions', views.instructions, name='instructions')
+    path('instructions', views.instructions, name='instructions'),
+    path('view_stock', views.viewstock, name='view-stock'),
+    path('add_stock', views.addstock, name='add-stock'),
+    path('view_request', views.viewrequest, name='view-request'),
+    path('add_request', views.addrequest, name='add-request')
     
 ]

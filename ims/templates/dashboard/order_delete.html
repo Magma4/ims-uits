@@ -15,7 +15,7 @@
                                     style="margin-right: 5px;margin-top: 1rem;"></i>Dashboard</a>
                         </li>
 
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link active" href="{% url 'requisition' %}"><i class="fa fa-plus-square"
                                     style="margin-right: 5px;margin-top: 1rem;"></i>Requisitions</a>
                         </li>
@@ -23,7 +23,7 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'stock' %}"><i class="fa fa-table"
                                     style="margin-right: 5px;margin-top: 1rem;"></i>Stock</a>
-                        </li>
+                        </li> -->
 
                         {% if user.is_authenticated and user.is_staff and user.is_superuser %}
                         <li class="nav-item">

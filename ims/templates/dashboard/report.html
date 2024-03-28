@@ -1,160 +1,167 @@
 {% extends 'dashboard/dashboard.html' %}
 {% block title %} Report {% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-md-2">
-        <div class="card" style="width: 11rem;height: 92vh; border: none; border-radius: 0%;display: contents;">
-            <div class="card-body">
-                <div class="offcanvas-body">
-                    <ul class="navbar-nav justify-content-end flex-grow-1 ">
+{% for message in messages %}
 
-                        <li class="nav-item" style="margin-top: 0.5rem;">
-                            <a class="nav-link " aria-current="page" href="{% url 'dashboard' %}"><i
-                                    class="fa fa-tachometer"
-                                    style="margin-right: 5px;margin-top: 1rem;"></i>Dashboard</a>
-                        </li>
+  <div class="toast notification bg-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}" role="alert" aria-live="assertive" aria-atomic="true" data-delay="4000" style="
+    position: absolute;
+    top: 10rem;
+    right: 1rem;
+    z-index: 1000;
+    color: white;
+    font-weight: normal;
+">
+    <div class="toast-header">
+      <strong class="mr-auto">
+        {% if message.tags == 'error' %}
+          <i class="fas fa-times mr-2"></i>
+        {% elif message.tags == 'warning' %}
+          <i class="fas fa-exclamation mr-2"></i>
+        {% elif message.tags == 'info' %}
+          <i class="fas fa-info mr-2"></i>
+        {% elif message.tags == 'success' %}
+          <i class="fas fa-check mr-2"></i>
+        {% endif %}
+        {{message.tags|capfirst}}
+      </strong>
+      
+    </div>
+    <div class="toast-body">
+      {{message|safe}}
+    </div>
+  </div>
+{% endfor %}
+<div class="row" style="background-color: #1c4f24;" >
+    <div class="col-12" style="background-color: #1c4f24;">
+        <div class="page-title-box d-flex align-items-center justify-content-between" >
+            <h4 class="page-title mb-0 font-size-18">View Requests</h4>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'requisition' %}"><i class="fa fa-plus-square"
-                                    style="margin-right: 5px;margin-top: 1rem;"></i>Requisitions</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'stock' %}"><i class="fa fa-table"
-                                    style="margin-right: 5px;margin-top: 1rem;"></i>Stock</a>
-                        </li>
-
-                        {% if user.is_authenticated and user.is_staff and user.is_superuser %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'employees' %}"><i class="fa fa-users"
-                                    style="margin-right:5px;margin-top: 1rem;"></i>Employees</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="{% url 'report' %}"><i class="fa fa-book"
-                                    style="margin-right: 5px;margin-top: 1rem;"></i>Report</a>
-                        </li>
-                        {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'instructions' %}"><i class="fa fa-map"
-                                    style="margin-right: 5px;margin-top: 1rem;"></i>Instructions</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'user-logout' %}"><i class="fa fa-sign-out"
-                                    style="margin-right: 5px;margin-top: 1rem;"></i>Sign Out</a>
-                        </li>
-
-                    </ul>
-                </div>
+            <div class="page-title-right" style="background-color: #1c4f24;">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item active">Welcome {{user.first_name|title}} {{user.last_name|title}}</li>
+                </ol>
             </div>
+
         </div>
     </div>
+</div>
 
-<div class="col-md-10" style="margin: 2rem auto 0 auto; display:block;">
-    <div class="card shadow-lg" style="max-width: 100%; min-height: 70vh;border-radius: 20px;">
-        <div class="card-body">
-            <div class="container">
-                <a href="{% url 'order_excel' %}" type="button" class="btn btn-sm btn-warning">Download Excel Report</a>
-                <a href="{% url 'order_pdf' %}" type="button" class="btn btn-sm btn-danger">Download PDF Report</a>
+<div class="card col-md-12" >
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="btn-group me-1 mt-2">
+                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Download Report <i class="mdi mdi-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'order_excel' %}">Excel</a>
+                        <a class="dropdown-item" href="{% url 'order_pdf' %}">PDF</a>
+                    </div>
+                </div>
+
             </div>
-            <br>
-            <div class="container">
-                <form action="{% url 'report' %}" method="GET">
-                    <div class="row">
-                        <div class="col">
-                            <label>Username</label>
-                            <input type="text" class="form-control" placeholder="Username" name='name' {% if name %} value="{{name}}" {% endif %}>
-                        </div>
-                        <div class="col">
-                            <label>Order ID</label>
-                            <input type="text" class="form-control" placeholder="Order ID" name='id' {% if order_id %} value="{{order_id}}" {% endif %}>
-                        </div>
-                        <div class="col">
-                            <label>Item Name</label>
-                            <input type="text" class="form-control" placeholder="Item Name" name='item_name' {% if itemName %} value="{{itemName}}" {% endif %}>
-                        </div>
-                        <div class="col">
-                            <label>Date Range</label>
-                            <div class="input-group">
-                                <input type="date" class="form-control" name="date_from" placeholder="From" {% if date_from %} value="{{ date_from }}" {% endif %}>
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">to</span>
-                                </div>
-                                <input type="date" class="form-control" name="date_to" placeholder="To" {% if date_to %} value="{{ date_to }}" {% endif %}>
+            
+        </div>
+        <br>
+        <div class="col-12">
+            <form action="{% url 'report' %}" method="GET">
+                <div class="row">
+                    <div class="col">
+                        <label>Username</label>
+                        <input type="text" class="form-control" placeholder="Username" name='name' {% if name %} value="{{name}}" {% endif %}>
+                    </div>
+                    <div class="col">
+                        <label>Order ID</label>
+                        <input type="text" class="form-control" placeholder="Order ID" name='id' {% if order_id %} value="{{order_id}}" {% endif %}>
+                    </div>
+                    <div class="col">
+                        <label>Item Name</label>
+                        <input type="text" class="form-control" placeholder="Item Name" name='item_name' {% if itemName %} value="{{itemName}}" {% endif %}>
+                    </div>
+                    <div class="col">
+                        <label>Date Range</label>
+                        <div class="input-group">
+                            <input type="date" class="form-control" name="date_from" placeholder="From" {% if date_from %} value="{{ date_from }}" {% endif %}>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">to</span>
                             </div>
-                        </div>
-                        
-                        <div class="col">
-                            <label>Status</label>
-                            <select class="form-control" name='status'>
-                                <option value="" {% if not status %} selected {% endif %}>Select Status</option>
-                                <option value="all" {% if status == 'all' %} selected {% endif %}>All Status</option>
-                                {% for order_status in status_options %}
-                                    <option value="{{ order_status }}" {% if status == order_status %} selected {% endif %}>{{ order_status }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        
-                        <div class="col">
-                            <label>Released By</label>
-                            <select class="form-control" name='released_by'>
-                                <option value="" {% if not released_by %} selected {% endif %}>Select Admin</option>
-                                <option value="all" {% if released_by == 'all' %} selected {% endif %}>All Admins</option>
-                                {% for admin in released_by_options %}
-                                    <option value="{{ admin }}" {% if released_by == admin %} selected {% endif %}>{{ admin }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col">
-                            <label>Received By</label>
-                            <select class="form-control" name='received_by'>
-                                <option value="" {% if not received_by %} selected {% endif %}>Select Admin</option>
-                                <option value="all" {% if received_by == 'all' %} selected {% endif %}>All Admins</option>
-                                {% for admin in received_by_options %}
-                                    <option value="{{ admin }}" {% if received_by == admin %} selected {% endif %}>{{ admin }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col" style="padding-top: 2%;">
-                            <button type="submit" class="btn btn-primary">Search</button>
+                            <input type="date" class="form-control" name="date_to" placeholder="To" {% if date_to %} value="{{ date_to }}" {% endif %}>
                         </div>
                     </div>
-                </form>
-            </div>
-            <br>
-            <div class="container">
-                <div style="max-height: 25rem; overflow-y: auto;">
-                    <table class="table table-bordered">
-                        <thead class="thead-dark">
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Order ID</th>
-                            <th scope="col">Item Name</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Date Created</th>
-                            <th scope="col">Date Received</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Released By</th>
-                            <th scope="col">Received By</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            {% for order in order_list %}
-                            <tr>
-                                <td scope="col">{{order.users.username|title}}</td>
-                                <td scope="col">{{order.id}}</td>
-                                <td scope="col">{{order.item_name.name|title}}</td>
-                                <td scope="col">{{order.order_quantity|title}}</td>
-                                <td scope="col">{{order.date}}</td>
-                                <td scope="col">{{order.returned_date}}</td>
-                                <td scope="col">{{order.status|title}}</td>
-                                <td scope="col">{{order.released_by|title}}</td>
-                                <td scope="col">{{order.returned_to|title}}</td>
-                            </tr>
+                    
+                    <div class="col">
+                        <label>Status</label>
+                        <select class="form-control" name='status'>
+                            <option value="" {% if not status %} selected {% endif %}>Select Status</option>
+                            <option value="all" {% if status == 'all' %} selected {% endif %}>All Status</option>
+                            {% for order_status in status_options %}
+                                <option value="{{ order_status }}" {% if status == order_status %} selected {% endif %}>{{ order_status }}</option>
                             {% endfor %}
-                        </tbody>
-                    </table>
+                        </select>
+                    </div>
+                    
+                    <div class="col">
+                        <label>Released By</label>
+                        <select class="form-control" name='released_by'>
+                            <option value="" {% if not released_by %} selected {% endif %}>Select Admin</option>
+                            <option value="all" {% if released_by == 'all' %} selected {% endif %}>All Admins</option>
+                            {% for admin in released_by_options %}
+                                <option value="{{ admin }}" {% if released_by == admin %} selected {% endif %}>{{ admin }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label>Received By</label>
+                        <select class="form-control" name='received_by'>
+                            <option value="" {% if not received_by %} selected {% endif %}>Select Admin</option>
+                            <option value="all" {% if received_by == 'all' %} selected {% endif %}>All Admins</option>
+                            {% for admin in received_by_options %}
+                                <option value="{{ admin }}" {% if received_by == admin %} selected {% endif %}>{{ admin }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col" style="padding-top: 2%;">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
                 </div>
+            </form>
+        </div>
+            <br>
+        <div class="col-12">
+            <div style="max-height: 100%; overflow-y: auto;">
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Order ID</th>
+                        <th scope="col">Item Name</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Date Created</th>
+                        <th scope="col">Date Received</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Released By</th>
+                        <th scope="col">Received By</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in order_list %}
+                        <tr>
+                            <td scope="col">{{order.users.username|title}}</td>
+                            <td scope="col">{{order.id}}</td>
+                            <td scope="col">{{order.item_name.name|title}}</td>
+                            <td scope="col">{{order.order_quantity|title}}</td>
+                            <td scope="col">{{order.date}}</td>
+                            <td scope="col">{{order.returned_date}}</td>
+                            <td scope="col">{{order.status|title}}</td>
+                            <td scope="col">{{order.released_by|title}}</td>
+                            <td scope="col">{{order.returned_to|title}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             </div>
         </div>
     </div>

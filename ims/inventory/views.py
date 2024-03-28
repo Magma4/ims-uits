@@ -4,7 +4,7 @@ from .models import *
 from django.contrib.auth.decorators import login_required
 from .forms import *
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from openpyxl import Workbook
@@ -16,6 +16,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import PatternFill, Font, Alignment
 from django.db.models.functions import TruncMonth
 from django.db.models import Count
+
 from django.template.loader import render_to_string
 from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib import colors
@@ -28,20 +29,75 @@ import os
 @login_required(login_url='user-login')
 def dashboard(request):
     user = request.user
-    orders = Order.objects.all()
     items = Stock.objects.all()
     order_count = Order.objects.filter(users=user).count()
+    workers = User.objects.all()
+    all_orders = Order.objects.all().order_by('-date')
+    total_released_quantity = Order.objects.filter(status='released').aggregate(total_quantity=Sum('order_quantity'))['total_quantity'] or 0
+    released_orders = Order.objects.filter(users=user, status='released').count()
+    pending_orders = Order.objects.filter(users=user, status='pending').count()
     
+    # Calculate percentage of released orders and pending orders
+    if order_count > 0:
+        released_percentage = (released_orders / order_count) * 100
+        pending_percentage = (pending_orders / order_count) * 100
+    else:
+        released_percentage = 0
+        pending_percentage = 0
+
+    orders_by_month = Order.objects.filter(date__isnull=False).extra(select={'month': "strftime('%m', date)"}).values('month').annotate(count=Count('id'))
+    
+    # Prepare data for the chart
+    months = []
+    order_counts = []
+    for order_month in orders_by_month:
+        months.append(order_month['month'])
+        order_counts.append(order_month['count'])
+
+    released_items = Order.objects.filter(status='released').select_related('item_name')
+
     context = {
-        'orders' : orders,
         'order_count': order_count,
-        'items' : items
+        'items' : items,
+        'workers' : workers,
+        'months': months,
+        'order_counts': order_counts,
+        'all_orders': all_orders,
+        'total_released_quantity': total_released_quantity,
+        'released_items': released_items,
+        'released_orders' : released_orders,
+        'pending_orders' : pending_orders,
+        'released_percentage': released_percentage,
+        'pending_percentage': pending_percentage
     }
     
     return render(request, 'dashboard/dashboard.html', context)
 
 @login_required
-def stock(request):
+def viewstock(request):
+    items = Stock.objects.all()
+    orders = Order.objects.all()
+
+
+    if request.method == 'POST':
+        form = StockForm(request.POST)
+        if form.is_valid():
+            form.save()
+            stock_name = form.cleaned_data.get('name')
+            stock_quantity = form.cleaned_data.get('quantity')
+            messages.success(request, f'{stock_quantity} {stock_name} has been added.')
+            return redirect('stock')
+    else:
+        form = StockForm()
+    mydictionary = {
+        "stocks" : items,
+        "form" : form,
+        "orders" : orders
+    }
+    return render(request, 'dashboard/view_stock.html', context=mydictionary)
+
+@login_required
+def addstock(request):
     items = Stock.objects.all()
     orders = Order.objects.all()
 
@@ -52,7 +108,7 @@ def stock(request):
             form.save()
             stock_name = form.cleaned_data.get('name')
             messages.success(request, f'{stock_name} has been added.')
-            return redirect('stock')
+            return redirect('view-stock')
     else:
         form = StockForm()
     mydictionary = {
@@ -60,10 +116,11 @@ def stock(request):
         "form" : form,
         "orders" : orders
     }
-    return render(request, 'dashboard/stock.html', context=mydictionary)
+    return render(request, 'dashboard/add_stock.html', context=mydictionary)
+
 
 @login_required
-def requisition(request):
+def viewrequest(request):
     orders = Order.objects.all()
     if request.method == 'POST':
         form = OrderForm(request.POST)
@@ -78,20 +135,45 @@ def requisition(request):
                 return redirect('dashboard')
             else:
                 messages.error(request, "Order quantity cannot be more than stock quantity")
-                return redirect('requisition')  # Redirect back to the requisition page
+                return redirect('add-request')  # Redirect back to the requisition page
     else:
         form = OrderForm()
     context = {
         'orders': orders,
         'form': form,
     }
-    return render(request, 'dashboard/requisition.html', context)
+    return render(request, 'dashboard/view_request.html', context)
+
+def addrequest(request):
+    orders = Order.objects.all()
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.users = request.user
+            order_quantity = instance.order_quantity
+            stock_quantity = instance.item_name.quantity
+            if order_quantity <= stock_quantity:
+                instance.save()
+                messages.success(request, "Order succesfully created")
+                return redirect('dashboard')
+            else:
+                messages.error(request, "Order quantity cannot be more than stock quantity")
+                return redirect('add-request')  # Redirect back to the requisition page
+    else:
+        form = OrderForm()
+    context = {
+        'orders': orders,
+        'form': form,
+    }
+    return render(request, 'dashboard/add_request.html', context)
 
 @login_required
 def employees(request):
-    workers = User.objects.all()
-    context={
-        'workers' : workers
+    workers = User.objects.filter(is_active=True)
+    
+    context = {
+        'workers': workers
     }
     return render(request, 'dashboard/employees.html', context)
 
@@ -105,9 +187,9 @@ def stock_delete(request, pk):
     item = Stock.objects.get(id=pk)
     if request.method == 'POST':
         item.delete()
-        messages.error(request, "Item deleted")
-        return redirect('stock')
-    return render(request, 'dashboard/stock_delete.html')
+        messages.success(request, "Item has been deleted")
+        return redirect('view-stock')
+    return render(request, 'dashboard/view_stock.html')
 
 @login_required
 def stock_update(request, pk):
@@ -117,7 +199,7 @@ def stock_update(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, "Stock Updated")
-            return redirect('stock')
+            return redirect('view-stock')
     else:
         form = StockForm(instance=item)
     context = {
@@ -156,7 +238,7 @@ def update_order_status(request, order_id):
             order.save()
             messages.success(request, f"Order {order.id} status has been updated.")
     
-    return redirect('requisition')
+    return redirect('view-request')
 
 
 @login_required
@@ -166,14 +248,14 @@ def delete_order(request, pk):
         order.delete()
         if request.user.is_superuser:
             messages.success(request, f"Order has been deletd")
-            return redirect('requisition')
+            return redirect('view-request')
             
         else:
             messages.success(request, f"Order has been deleted")
             return redirect('dashboard')
             
         
-    return render(request, 'dashboard/order_delete.html')
+    return render(request, 'dashboard/view_request.html')
 
 @login_required
 def order_update(request, pk):
@@ -190,7 +272,7 @@ def order_update(request, pk):
                 instance.save()
                 messages.success(request, f"Order {order.id} has been updated")
                 if request.user.is_superuser:
-                    return redirect('requisition')
+                    return redirect('view-request')
                 else:
                     return redirect('dashboard')
     else:
@@ -200,9 +282,9 @@ def order_update(request, pk):
     }
     return render(request, 'dashboard/order_update.html', context)
 
-@login_required
-def list_requisition(request):
-    return render(request, 'dashboard/list_requisition.html')
+# @login_required
+# def list_requisition(request):
+#     return render(request, 'dashboard/list_requisition.html')
 
 @login_required
 def searchdata(request):
@@ -216,7 +298,7 @@ def searchdata(request):
     context = {
         "orders": orders,
     }
-    return render(request, 'dashboard/requisition.html', context=context)
+    return render(request, 'dashboard/view_request.html', context=context)
 
 @login_required
 def searchdata2(request):
@@ -244,7 +326,7 @@ def searchdata3(request):
     context = {
         "stocks": stocks,
     }
-    return render(request, 'dashboard/stock.html', context=context)
+    return render(request, 'dashboard/view_stock.html', context=context)
 
 def is_valid_queryparam(param):
     return param != '' and param is not None

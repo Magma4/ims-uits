@@ -1,0 +1,52 @@
+{% extends 'dashboard/dashboard.html' %}
+{% block title %} View Requests {% endblock %}
+{% block content %}
+{% load crispy_forms_tags %}
+<div class="row" style="background-color: #1c4f24;" >
+    <div class="col-12" style="background-color: #1c4f24;">
+        <div class="page-title-box d-flex align-items-center justify-content-between" >
+            <h4 class="page-title mb-0 font-size-18">Request Items</h4>
+
+            <div class="page-title-right" style="background-color: #1c4f24;">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item active">Welcome {{user.first_name|title}} {{user.last_name|title}}</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="card col-md-12" >
+    <div class="card-body">
+        <div class="row">
+            <h5 class="card-title" style="text-align: center;">Request For Items</h5>
+                <div class="row">
+                    <div class="col-md-12" style="max-height: 60vh; overflow-y: auto; margin-top: 2rem;">
+                        <form id="itemForm" method="POST">
+                            {% csrf_token %}
+
+                            
+                            <div class="form-group col-md-4 mx-auto" >
+                                {{ form.item_name|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-4 mx-auto" style=" margin-top: 2rem;">
+                                {{ form.order_description|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-4 mx-auto" style=" margin-top: 2rem;">
+                                {{ form.order_quantity|as_crispy_field }}
+                            </div>
+                            
+                            
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary mx-auto d-block" style="margin-top: 2rem;">
+                                    Request
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
