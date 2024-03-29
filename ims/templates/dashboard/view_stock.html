@@ -54,9 +54,9 @@
             ({{ total_stocks }})
         {% endwith %}</h4>
 
-        <div class="table-responsive">
-            <table class="table table-centered">
-                <tbody>
+        <div style="max-height: 70vh; overflow-y: auto;">
+            <table class="table">
+                <thead>
                     <tr>
                         <th scope="col">Name</th>
                         <th scope="col">Description</th>
@@ -66,12 +66,14 @@
                             <th scope="col">Action</th>
                         {% endif %}
                     </tr>
+                </thead>
                     {% if stocks|length == 0 %}
                         <tr>
                             <td colspan="4" style="text-align: center;">There are no stocks</td>
                         </tr>
                     {% endif %}
                     {% for stock in stocks %}
+                    <tbody>
                         <tr>
                             <td scope="col">{{ stock.name|title }}</td>
                             <td scope="col">{{ stock.description|title }}</td>
@@ -98,6 +100,7 @@
                                 <!-- Delete button triggers modal -->
                                 <button class="btn btn-danger delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal{{ stock.id }}">Delete</button>
                             </td>
+                        </tbody>
                             
                             <!-- Modal for delete confirmation -->
                             <div class="modal fade" id="deleteModal{{ stock.id }}" tabindex="-1" aria-labelledby="deleteModal{{ stock.id }}Label" aria-hidden="true">

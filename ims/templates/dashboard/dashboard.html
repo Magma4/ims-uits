@@ -948,7 +948,13 @@
 <script src="{% static 'libs/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
 <script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
-
+<script>
+    $(document).ready(function() {
+        $('#datatable').DataTable({
+            "order": [[5, "desc"]]  // Sort by the 5th column (index 4) in descending order
+        });
+    });
+</script>
 
 <!-- <script>
     var currentPage = {{ orders.number }}; // Set the initial page based on the current page number

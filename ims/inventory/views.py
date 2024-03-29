@@ -121,7 +121,7 @@ def addstock(request):
 
 @login_required
 def viewrequest(request):
-    orders = Order.objects.all()
+    orders = Order.objects.all().order_by('-date')
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
