@@ -1,9 +1,5 @@
 /*
-Template Name: Qovex - Admin & Dashboard Template
-Author: Themesbrand
-Version: 2.1.0
-Website: https://themesbrand.com/
-Contact: themesbrand@gmail.com
+
 File: Main Css File
 */
 #page-topbar {
@@ -73,7 +69,7 @@ File: Main Css File
   line-height: 38px;
   left: 13px;
   top: 0;
-  color: #8687a7;
+  color: #000000;
 }
 
 .megamenu-list li {
@@ -118,15 +114,7 @@ File: Main Css File
   padding: 3px;
 }
 
-/* .noti-icon i {
-  font-size: 22px;
-  color: var(--bs-header-item-color);
-}
-.noti-icon .badge {
-  position: absolute;
-  top: 12px;
-  right: 5px;
-} */
+
 
 .notification-item .d-flex {
   padding: 0.75rem 1rem;
@@ -146,7 +134,7 @@ File: Main Css File
   padding: 15px 0 9px;
   display: block;
   border: 1px solid transparent;
-  color: #8687a7;
+  color: #000000;
 }
 .dropdown-icon-item img {
   height: 24px;
@@ -212,13 +200,13 @@ body[data-topbar=colored] .logo-light {
 body[data-topbar=dark] .app-search .form-control,
 body[data-topbar=colored] .app-search .form-control {
   background-color: var(--bs-topbar-search-bg);
-  color: #fff;
+  color: #000000;
 }
 body[data-topbar=dark] .app-search span,
 body[data-topbar=dark] .app-search input.form-control::-webkit-input-placeholder,
 body[data-topbar=colored] .app-search span,
 body[data-topbar=colored] .app-search input.form-control::-webkit-input-placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(0, 0, 0, 0.5);
 }
 
 body[data-topbar=colored] #page-topbar {
@@ -1213,13 +1201,6 @@ body[data-layout=detached] .page-title-box .breadcrumb-item.active, body[data-la
     background: linear-gradient(to right, #273c92, #293e92);
   }
 }
-/*!
- * Waves v0.7.6
- * http://fian.my.id/Waves 
- * 
- * Copyright 2014-2018 Alfiana E. Sibuea and other contributors 
- * Released under the MIT license 
- * https://github.com/fians/Waves/blob/master/LICENSE */
 .waves-effect {
   position: relative;
   cursor: pointer;
@@ -2474,7 +2455,7 @@ small {
 .select2-container--default .select2-search--dropdown .select2-search__field {
   border: 1px solid var(--bs-border-color);
   background-color: var(--bs-input-bg);
-  color: #8687a7;
+  color: #000000;
   outline: none;
 }
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
@@ -3217,7 +3198,7 @@ div.dt-button-collection {
 }
 
 .apexcharts-legend-text {
-  color: #8687a7 !important;
+  color: #000000 !important;
   font-family: var(--bs-font-sans-serif) !important;
   font-size: 13px !important;
 }

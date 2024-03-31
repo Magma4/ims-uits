@@ -2474,7 +2474,7 @@ small {
 .select2-container--default .select2-search--dropdown .select2-search__field {
   border: 1px solid var(--bs-border-color);
   background-color: var(--bs-input-bg);
-  color: #8687a7;
+  color: #000000;
   outline: none;
 }
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
@@ -3217,7 +3217,7 @@ div.dt-button-collection {
 }
 
 .apexcharts-legend-text {
-  color: #8687a7 !important;
+  color: #000000 !important;
   font-family: var(--bs-font-sans-serif) !important;
   font-size: 13px !important;
 }

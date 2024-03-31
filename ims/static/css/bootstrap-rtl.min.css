@@ -26,19 +26,19 @@ File: Custom Bootstrap Css File
   --bs-cyan: #0caadc;
   --bs-black: #000;
   --bs-white: #fff;
-  --bs-gray: #8687a7;
+  --bs-gray: #000000;
   --bs-gray-dark: #1e2938;
   --bs-gray-100: #f8f9fa;
   --bs-gray-200: #eff2f7;
   --bs-gray-300: #f6f6f6;
   --bs-gray-400: #e0e0e0;
   --bs-gray-500: #adb5bd;
-  --bs-gray-600: #8687a7;
+  --bs-gray-600: #000000;
   --bs-gray-700: #364458;
   --bs-gray-800: #1e2938;
   --bs-gray-900: #17212f;
   --bs-primary: #3b5de7;
-  --bs-secondary: #8687a7;
+  --bs-secondary: #000000;
   --bs-success: #45cb85;
   --bs-info: #0caadc;
   --bs-warning: #eeb902;
@@ -88,7 +88,7 @@ File: Custom Bootstrap Css File
   --bs-body-font-size: 0.875rem;
   --bs-body-font-weight: 400;
   --bs-body-line-height: 1.5;
-  --bs-body-color: #8687a7;
+  --bs-body-color: #000000;
   --bs-body-color-rgb: 134, 135, 167;
   --bs-body-bg: #f3f5f7;
   --bs-body-bg-rgb: 243, 245, 247;
@@ -709,7 +709,7 @@ progress {
   margin-top: -1rem;
   margin-bottom: 1rem;
   font-size: 0.875em;
-  color: #8687a7;
+  color: #000000;
 }
 .blockquote-footer::before {
   content: "— ";
@@ -3030,7 +3030,7 @@ textarea.form-control-lg {
 }
 .form-floating > :disabled ~ label,
 .form-floating > .form-control:disabled ~ label {
-  color: #8687a7;
+  color: #000000;
 }
 .form-floating > :disabled ~ label::after,
 .form-floating > .form-control:disabled ~ label::after {
