@@ -7,10 +7,6 @@
         <meta charset="utf-8" />
         <title>{% block title %} Dashboard {% endblock %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
-        <meta content="Themesbrand" name="author" />
-        <!-- App favicon -->
-        <link rel="shortcut icon" href="assets/images/favicon.ico">
 
         <!-- jquery.vectormap css -->
         <link href="{% static 'libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css' %}" rel="stylesheet"
@@ -345,7 +341,7 @@
                                     {% endwith %}</h4>
                                 <div class="row">
                                     <div class="col-6">
-                                        <p class="mb-0" style="margin-top: 1rem;"><span class="text-success me-2"> <a href="#" style="color: #359e45;">See All Orders</a> </span></p>
+                                        <p class="mb-0" style="margin-top: 1rem;"><span class="text-success me-2"> <a href="{% url 'view-request' %}" style="color: #359e45;">See All Orders</a> </span></p>
                                     </div>
                                     <div class="col-6 align-self-center">
                                         <div>
@@ -433,7 +429,7 @@
                                 </h4>
                                 <div class="row">
                                     <div class="col-6">
-                                        <p class="mb-0" style="margin-top: 1rem;"><span class="text-success me-2"> <a href="#" style="color: #359e45;">See All Products</a> </span></p>
+                                        <p class="mb-0" style="margin-top: 1rem;"><span class="text-success me-2"> <a href="{% url 'view-stock' %}" style="color: #359e45;">See All Products</a> </span></p>
                                     </div>
                                     <div class="col-6 align-self-center">
                                         <div>
@@ -903,7 +899,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="text-sm-end d-none d-sm-block">
-                                Design & Develop by Themesbrand
+                                Design & Developed by USSD
                             </div>
                         </div>
                     </div>
@@ -954,59 +950,11 @@
 <script>
     $(document).ready(function() {
         $('#datatable').DataTable({
-            "order": [[5, "desc"]]  // Sort by the 5th column (index 4) in descending order
+            "order": [[5, "desc"]] 
         });
     });
 </script>
 
-<!-- <script>
-    var currentPage = {{ orders.number }}; // Set the initial page based on the current page number
-
-    $(document).ready(function() {
-        // Function to handle pagination link clicks
-        $('#pagination').on('click', 'a.page-link', function(event) {
-            event.preventDefault(); // Prevent default link behavior
-
-            // Get the URL from the data-url attribute
-            var url = $(this).data('url');
-
-            // Make an AJAX request to fetch the new page content
-            $.ajax({
-                url: url,
-                type: 'GET',
-                success: function(response) {
-                    // Replace the current table content with the new page content
-                    $('.table-responsive').html($(response).find('.table-responsive').html());
-                    
-                    // Remove active class from all page links
-                    $('#pagination .page-item').removeClass('active');
-                    
-                    // Highlight the clicked page link
-                    $(event.target).closest('li').addClass('active');
-                    
-                    // Update currentPage
-                    if ($(event.target).text() === "Next") {
-                        currentPage++;
-                    } else if ($(event.target).text() === "Previous") {
-                        currentPage--;
-                    } else {
-                        currentPage = parseInt($(event.target).text());
-                    }
-                    
-                    // Show or hide Previous link based on currentPage
-                    if (currentPage === 1) {
-                        $('#pagination li:first-child').addClass('disabled');
-                    } else {
-                        $('#pagination li:first-child').removeClass('disabled');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
-        });
-    });
-</script> -->
 
 
 
