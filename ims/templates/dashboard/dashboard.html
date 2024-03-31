@@ -386,24 +386,48 @@
                             <div class="card-body">
                                 <h4 class="card-title mb-4">Monthly Orders Report</h4>
 
-                                <div id="order_line_chart">
+                                <div id="size_monitor_chart">
                                     <script>
-                                        var options = {
-                                            chart: {
-                                                height: 260,
-                                                type: 'line',
-                                            },
-                                            series: [{
-                                                name: 'Orders',
-                                                data: {{ order_counts | safe }},
-                                            }],
-                                            xaxis: {
-                                                categories: {{ months | safe }},
-                                            },
-                                        };
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            var options = {
+                                                chart: {
+                                                    height: 300,
+                                                    type: 'line',
+                                                    toolbar: {
+                                                        show: false // Hide toolbar
+                                                    }
+                                                },
+                                                series: [{
+                                                    name: 'Size',
+                                                    data: {{ order_counts | safe }}, // Replace with your size data
+                                                }],
+                                                xaxis: {
+                                                    type: 'category',
+                                                    categories: {{ months | safe }}, // Replace with your categories (e.g., months)
+                                                },
+                                                yaxis: {
+                                                    title: {
+                                                        text: 'Size' // Label for Y-axis
+                                                    }
+                                                },
+                                                colors: ['#007bff'], // Line color
+                                                markers: {
+                                                    size: 5 // Marker size
+                                                },
+                                                dataLabels: {
+                                                    enabled: false // Hide data labels
+                                                },
+                                                legend: {
+                                                    show: false // Hide legend
+                                                },
+                                                grid: {
+                                                    borderColor: '#f0f2f6' // Grid color
+                                                }
+                                            };
                                     
-                                        var chart = new ApexCharts(document.querySelector("#order_line_chart"), options);
-                                        chart.render();
+                                            var chart = new ApexCharts(document.querySelector("#size_monitor_chart"), options);
+                                            chart.render();
+                                        });
                                     </script>
                                 </div>
                             </div>
