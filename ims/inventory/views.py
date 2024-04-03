@@ -23,6 +23,7 @@ from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 import os
+from django.db.models.functions import ExtractMonth, ExtractDay
 # Create your views here.
 
 
@@ -121,7 +122,7 @@ def addstock(request):
 
 @login_required
 def viewrequest(request):
-    orders = Order.objects.all().order_by('-date')
+    orders = Order.objects.annotate(month=ExtractMonth('date'),day=ExtractDay('date')).order_by('-month', '-day')
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():

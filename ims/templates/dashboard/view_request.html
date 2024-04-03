@@ -64,10 +64,11 @@
                                     <thead >
                                         <tr >
                                             <th scope="col">Order ID</th>
+                                            <th scope="col">Order By</th>
                                             <th scope="col">Item Name</th>
                                             <th scope="col">Description</th>
                                             <th scope="col">Quantity</th>
-                                            <th scope="col">Order By</th>
+                                            
                                             <th scope="col">Date</th>
                                             <th scope="col">Date Returned</th>
                                             <th scope="col">Released by</th>
@@ -84,10 +85,11 @@
                                         {% for order in orders %}
                                         <tr>
                                             <td scope="col">{{order.id}}</td>
+                                            <td scope="col">{{ order.users.username|title }}</td>
                                             <td scope="col">{{ order.item_name|title }}</td>
                                             <td scope="col">{{ order.order_description|title }}</td>
                                             <td scope="col">{{ order.order_quantity }}</td>
-                                            <td scope="col">{{ order.users.username|title }}</td>
+                                            
                                             <td scope="col">{{ order.date }}</td>
                                             <td scope="col">{{ order.returned_date }}</td>
                                             
