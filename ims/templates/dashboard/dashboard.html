@@ -385,9 +385,89 @@
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="card-title mb-4">Monthly Orders Report</h4>
-
-                                <div id="order_line_chart">
+                                <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+                                <div id="main-chart">
                                     <script>
+                                        var options = {
+                                            chart: {
+                                                height: 480,
+                                                type: 'area',
+                                                fontFamily: 'Inter, sans-serif',
+                                                foreColor: '#6B7280',
+                                                toolbar: {
+                                                    show: false
+                                                }
+                                            },
+                                            fill: {
+                                                type: 'solid',
+                                                opacity: 0.3,
+                                            },
+                                            dataLabels: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+                                                style: {
+                                                    fontSize: '14px',
+                                                    fontFamily: 'Inter, sans-serif',
+                                                },
+                                            },
+                                            grid: {
+                                                show: false,
+                                            },
+                                            series: [
+                                                {
+                                                    name: 'Revenue',
+                                                    data: [{{order_counts}}],
+                                                    color: '#0694a2'
+                                                },
+                                            ],
+                                            xaxis: {
+                                                categories: [{{months}}],
+                                                labels: {
+                                                    style: {
+                                                        colors: ['#6B7280'],
+                                                        fontSize: '14px',
+                                                        fontWeight: 500,
+                                                    },
+                                                },
+                                                axisBorder: {
+                                                    color: '#F3F4F6',
+                                                },
+                                                axisTicks: {
+                                                    color: '#F3F4F6',
+                                                }
+                                            },
+                                            yaxis: {
+                                                labels: {
+                                                    style: {
+                                                        colors: ['#6B7280'],
+                                                        fontSize: '14px',
+                                                        fontWeight: 500,
+                                                    },
+                                                    formatter: function (value) {
+                                                        return '$' + value;
+                                                    }
+                                                },
+                                            },
+                                            responsive: [
+                                                {
+                                                    breakpoint: 1024,
+                                                    options: {
+                                                        xaxis: {
+                                                            labels: {
+                                                                show: false
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        };
+                                    
+                                        var chart = new ApexCharts(document.getElementById('main-chart'), options);
+                                        chart.render();
+                                    </script>
+                                    
+                                    <!-- <script>
                                         var options = {
                                             chart: {
                                                 height: 260,
@@ -404,7 +484,7 @@
                                     
                                         var chart = new ApexCharts(document.querySelector("#order_line_chart"), options);
                                         chart.render();
-                                    </script>
+                                    </script> -->
                                 </div>
                             </div>
                         </div>
@@ -584,6 +664,7 @@
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead >
                                             <tr style="background-color: #1c4f24;">
+                                                <th scope="col">Order ID</th>
                                                 <th scope="col">Name</th>
                                                 <th scope="col">Item Name</th>
                                                 <th scope="col">Quantity</th>
@@ -597,13 +678,14 @@
                                         <tbody>
                                             {% for order in all_orders %}
                                             <tr>
+                                                <td>{{order.id}}</td>
                                                 <td ><img src="{{order.users.profile.image.url}}" alt=" "
                                                     class="rounded-circle img-fluid" style="width: 35px;"> {{ order.users.first_name|title }} {{ order.users.last_name|title }}</td>
                                                 <td>{{ order.item_name|title }}</td>
                                                 <td>{{ order.order_quantity }}</td>
                                                 <td>{{ order.users.profile.department|upper }}</td>
                                                 <td>{{ order.users.profile.contact|title }}</td>
-                                                <td>{{order.date}}</td>
+                                                <td>{{ order.date}}</td>
                                                 <td>
                                                     <span class="badge 
                                                         {% if order.status == 'pending' %}
@@ -793,7 +875,7 @@
                                 <table id="datatable" class="table table-bordered dt-responsive nowrap"
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead >
-                                        <tr style="background-color: #1c4f24;">
+                                        <tr>
                                             <th scope="col">Order ID</th>
                                             <th scope="col">Item Name</th>
                                             <th scope="col">Description</th>
@@ -890,6 +972,13 @@
 
             
             {% endif %}
+            <script>
+                $(document).ready(function() {
+                    $('#datatable').DataTable({
+                        "order": [[0, "desc"]] 
+                    });
+                });
+            </script>
             {% endblock %}
             <footer class="footer">
                 <div class="container-fluid">
@@ -899,7 +988,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="text-sm-end d-none d-sm-block">
-                                Design & Developed by USSD
+                                Designed & Developed by USSD
                             </div>
                         </div>
                     </div>
@@ -947,13 +1036,7 @@
 <script src="{% static 'libs/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
 <script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
-<script>
-    $(document).ready(function() {
-        $('#datatable').DataTable({
-            "order": [[5, "desc"]] 
-        });
-    });
-</script>
+
 
 
 

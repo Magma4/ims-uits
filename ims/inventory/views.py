@@ -23,7 +23,7 @@ from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 import os
-from django.db.models.functions import ExtractMonth, ExtractDay
+from django.db.models.functions import ExtractMonth, ExtractDay, ExtractYear
 # Create your views here.
 
 
@@ -122,7 +122,7 @@ def addstock(request):
 
 @login_required
 def viewrequest(request):
-    orders = Order.objects.annotate(month=ExtractMonth('date'),day=ExtractDay('date')).order_by('-month', '-day')
+    orders = Order.objects.annotate(month=ExtractMonth('date'),day=ExtractDay('date'),year=ExtractYear('date')).order_by('-month', '-day','year')
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
@@ -160,14 +160,14 @@ def addrequest(request):
                 return redirect('dashboard')
             else:
                 messages.error(request, "Order quantity cannot be more than stock quantity")
-                return redirect('add-request')  # Redirect back to the requisition page
+                return redirect('dashboard')  # Redirect back to the requisition page
     else:
         form = OrderForm()
     context = {
         'orders': orders,
         'form': form,
     }
-    return render(request, 'dashboard/add_request.html', context)
+    return render(request, 'dashboard/add_rquest.html', context)
 
 @login_required
 def employees(request):

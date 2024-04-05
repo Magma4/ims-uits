@@ -85,14 +85,14 @@
                                         {% for order in orders %}
                                         <tr>
                                             <td scope="col">{{order.id}}</td>
-                                            <td scope="col">{{ order.users.username|title }}</td>
+                                            <td scope="col"><img src="{{order.users.profile.image.url}}" alt=" "
+                                                class="rounded-circle img-fluid" style="width: 35px;"> {{ order.users.username|title }}</td>
                                             <td scope="col">{{ order.item_name|title }}</td>
                                             <td scope="col">{{ order.order_description|title }}</td>
                                             <td scope="col">{{ order.order_quantity }}</td>
                                             
-                                            <td scope="col">{{ order.date }}</td>
-                                            <td scope="col">{{ order.returned_date }}</td>
-                                            
+                                            <td scope="col">{{ order.date}}</td>
+                                            <td scope="col">{{ order.returned_date}}</td>
                                             <td scope="col">{{ order.released_by|title }}</td>
                                             <td scope="col">{{ order.returned_to|title }}</td>
                                             <td scope="col">
@@ -160,4 +160,11 @@
         </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $('#datatable').DataTable({
+                "order": [[0, "desc"]] 
+            });
+        });
+    </script>
 {% endblock %}
