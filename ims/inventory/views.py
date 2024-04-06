@@ -160,7 +160,7 @@ def addrequest(request):
                 return redirect('dashboard')
             else:
                 messages.error(request, "Order quantity cannot be more than stock quantity")
-                return redirect('dashboard')  # Redirect back to the requisition page
+                return redirect('add-request')  # Redirect back to the requisition page
     else:
         form = OrderForm()
     context = {
