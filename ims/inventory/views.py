@@ -167,7 +167,7 @@ def addrequest(request):
         'orders': orders,
         'form': form,
     }
-    return render(request, 'dashboard/add_rquest.html', context)
+    return render(request, 'dashboard/add_request.html', context)
 
 @login_required
 def employees(request):
