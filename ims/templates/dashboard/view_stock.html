@@ -61,8 +61,9 @@
                         <th scope="col">Name</th>
                         <th scope="col">Description</th>
                         <th scope="col">Available </th>
-                        <th scope="col">Total</th>
                         {% if request.user.is_superuser %}
+                        <th scope="col">Total</th>
+                        
                             <th scope="col">Action</th>
                         {% endif %}
                     </tr>
@@ -93,12 +94,17 @@
                                     </div>
                                 {% endif %}
                             </td>
-                            <td scope="col">{{ stock.quantity }}</td>
                             {% if user.is_authenticated and user.is_staff and user.is_superuser %}
+                            <td scope="col">{{ stock.quantity }}</td>
+                            
                             <td scope="col">
                                 <a href="{% url 'stock-update' pk=stock.id %}"><button class="btn btn-primary">Edit</button></a>
                                 <!-- Delete button triggers modal -->
                                 <button class="btn btn-danger delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal{{ stock.id }}">Delete</button>
+                            </td>
+                            {% endif %}
+                            <td scope="col">
+                                <a href="{% url 'add-request' %}"><button class="btn btn-success btn-sm">Order</button></a>
                             </td>
                         </tbody>
                             
@@ -136,7 +142,7 @@
                             </div>
 
 
-                        {% endif %}
+                        
                         </tr>
                     {% endfor %}
                 </tbody>
