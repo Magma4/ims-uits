@@ -386,7 +386,7 @@
                             <div class="card-body">
                                 <h4 class="card-title mb-4">Monthly Orders Report</h4>
                                 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-                                <div id="order_line_chart">
+                                <div id="timeline-chart">
                                     
                                     <script>
                                         var options = {
@@ -403,7 +403,7 @@
                                             },
                                         };
                                     
-                                        var chart = new ApexCharts(document.querySelector("#order_line_chart"), options);
+                                        var chart = new ApexCharts(document.querySelector("#timeline-chart"), options);
                                         chart.render();
                                     </script>
                                 </div>
