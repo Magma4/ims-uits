@@ -390,21 +390,72 @@
                                     
                                     <script>
                                         var options = {
-                                            chart: {
-                                                height: 260,
-                                                type: 'line',
-                                            },
-                                            series: [{
-                                                name: 'Orders',
-                                                data: {{ order_counts | safe }},
-                                            }],
-                                            xaxis: {
-                                                categories: {{ months | safe }},
-                                            },
-                                        };
-                                    
-                                        var chart = new ApexCharts(document.querySelector("#timeline-chart"), options);
-                                        chart.render();
+  chart: {
+    type: "line",
+    height: 260,
+  },
+  colors: ['#00E396', '#0090FF'],
+  series: [{
+    name: 'Total Orders',
+    data: {{ order_counts | safe }},
+  }],
+  stroke: {
+    curve: "smooth",
+    width: 3
+  },
+  markers: {
+    size: 0,
+    strokeColor: "#fff",
+    strokeWidth: 3,
+    strokeOpacity: 1,
+    fillOpacity: 1,
+    hover: {
+      size: 6
+    }
+  },
+  xaxis: {
+    categories: {{ months | safe }},
+    axisBorder: {
+      show: false
+    },
+    axisTicks: {
+      show: false
+    }
+  },
+  yaxis: {
+    labels: {
+      offsetX: 14,
+      offsetY: -5
+    },
+    tooltip: {
+      enabled: true
+    }
+  },
+  grid: {
+    padding: {
+      left: -5,
+      right: 5
+    }
+  },
+  tooltip: {
+    x: {
+      format: "MM"
+    },
+  },
+  legend: {
+    position: 'top',
+    horizontalAlign: 'left'
+  },
+  fill: {
+    type: "solid",
+    fillOpacity: 0.7
+  }
+};
+
+var chart = new ApexCharts(document.querySelector("#timeline-chart"), options);
+
+chart.render();
+
                                     </script>
                                 </div>
                             </div>
