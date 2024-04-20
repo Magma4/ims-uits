@@ -66,6 +66,16 @@
             color: black;
         }
 
+
+        #mcard {
+        margin: 2px;
+        opacity: 0.9;
+        }
+
+        #timeline-chart .apexcharts-toolbar {
+        opacity: 1;
+        border: 0;
+        }
     </style>
 
 </head>
@@ -383,78 +393,95 @@
 
                     <div class="col-xl-6">
                         <div class="card">
-                            <div class="card-body">
+                            <div class="card-body" id="mcard">
                                 <h4 class="card-title mb-4">Monthly Orders Report</h4>
                                 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
                                 <div id="timeline-chart">
                                     
-                                    <script>
-                                        var options = {
-  chart: {
-    type: "line",
-    height: 260,
-  },
-  colors: ['#00E396', '#0090FF'],
-  series: [{
-    name: 'Total Orders',
-    data: {{ order_counts | safe }},
-  }],
-  stroke: {
-    curve: "smooth",
-    width: 3
-  },
-  markers: {
-    size: 0,
-    strokeColor: "#fff",
-    strokeWidth: 3,
-    strokeOpacity: 1,
-    fillOpacity: 1,
-    hover: {
-      size: 6
-    }
-  },
-  xaxis: {
-    categories: {{ months | safe }},
-    axisBorder: {
-      show: false
-    },
-    axisTicks: {
-      show: false
-    }
-  },
-  yaxis: {
-    labels: {
-      offsetX: 14,
-      offsetY: -5
-    },
-    tooltip: {
-      enabled: true
-    }
-  },
-  grid: {
-    padding: {
-      left: -5,
-      right: 5
-    }
-  },
-  tooltip: {
-    x: {
-      format: "MM"
-    },
-  },
-  legend: {
-    position: 'top',
-    horizontalAlign: 'left'
-  },
-  fill: {
-    type: "solid",
-    fillOpacity: 0.7
-  }
-};
+                                                                    <script>
+                                                                        var options = {
+                                chart: {
+                                    type: "area",
+                                    height: 300,
+                                    foreColor: "#999",
+                                    stacked: true,
+                                    dropShadow: {
+                                    enabled: true,
+                                    enabledSeries: [0],
+                                    top: -2,
+                                    left: 2,
+                                    blur: 5,
+                                    opacity: 0.06
+                                    }
+                                },
+                                colors: ['#00E396', '#0090FF'],
+                                stroke: {
+                                        curve: "smooth",
+                                        width: 3
+                                    },
+                                    dataLabels: {
+                                        enabled: false
+                                    },
+                                series: [{
+                                    name: 'Total Orders',
+                                    data: {{ order_counts | safe }},
+                                }],
+                                stroke: {
+                                    curve: "smooth",
+                                    width: 3
+                                },
+                                markers: {
+                                    size: 0,
+                                    strokeColor: "#fff",
+                                    strokeWidth: 3,
+                                    strokeOpacity: 1,
+                                    fillOpacity: 1,
+                                    hover: {
+                                    size: 6
+                                    }
+                                },
+                                xaxis: {
+                                    categories: {{ months | safe }},
+                                    axisBorder: {
+                                    show: false
+                                    },
+                                    axisTicks: {
+                                    show: false
+                                    }
+                                },
+                                yaxis: {
+                                    labels: {
+                                    offsetX: 14,
+                                    offsetY: -5
+                                    },
+                                    tooltip: {
+                                    enabled: true
+                                    }
+                                },
+                                grid: {
+                                    padding: {
+                                    left: -5,
+                                    right: 5
+                                    }
+                                },
+                                tooltip: {
+                                    x: {
+                                    format: "MMM yyyy"
+                                    },
+                                },
+                                legend: {
+                                    position: 'top',
+                                    horizontalAlign: 'left'
+                                },
+                                fill: {
+                                    type: "solid",
+                                    fillOpacity: 0.7
+                                }
+                                };
 
-var chart = new ApexCharts(document.querySelector("#timeline-chart"), options);
+                                var chart = new ApexCharts(document.querySelector("#timeline-chart"), options);
 
-chart.render();
+                                chart.render();
 
                                     </script>
                                 </div>
