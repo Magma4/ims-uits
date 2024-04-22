@@ -169,6 +169,7 @@ def addrequest(request):
     }
     return render(request, 'dashboard/add_request.html', context)
 
+
 @login_required
 def employees(request):
     workers = User.objects.filter(is_active=True)
@@ -204,7 +205,8 @@ def stock_update(request, pk):
     else:
         form = StockForm(instance=item)
     context = {
-        'form' : form
+        'form' : form,
+        'item' : item
     }
     return render(request, 'dashboard/stock_update.html', context)
 
