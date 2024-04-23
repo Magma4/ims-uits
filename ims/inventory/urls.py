@@ -21,6 +21,6 @@ urlpatterns = [
     path('view_stock', views.viewstock, name='view-stock'),
     path('add_stock', views.addstock, name='add-stock'),
     path('view_request', views.viewrequest, name='view-request'),
-    path('add_request/add', views.addrequest, name='add-request')
+    path('add_request', views.addrequest, name='add-request')
     
 ]

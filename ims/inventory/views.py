@@ -145,6 +145,7 @@ def viewrequest(request):
     }
     return render(request, 'dashboard/view_request.html', context)
 
+
 def addrequest(request):
     orders = Order.objects.all()
     if request.method == 'POST':
@@ -160,14 +161,17 @@ def addrequest(request):
                 return redirect('dashboard')
             else:
                 messages.error(request, "Order quantity cannot be more than stock quantity")
-                return redirect('add-request')  # Redirect back to the requisition page
+                return redirect('dashboard')  # Redirect back to the requisition page
     else:
         form = OrderForm()
+
     context = {
-        'orders': orders,
         'form': form,
+        'order': orders
     }
-    return render(request, 'dashboard/add_request.html', context)
+
+    # Render form as a partial
+    return render(request, 'dashboard/add_request_partial.html', context)
 
 
 @login_required
@@ -205,8 +209,7 @@ def stock_update(request, pk):
     else:
         form = StockForm(instance=item)
     context = {
-        'form' : form,
-        'item' : item
+        'form' : form
     }
     return render(request, 'dashboard/stock_update.html', context)
 

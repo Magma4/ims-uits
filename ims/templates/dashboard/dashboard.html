@@ -2,6 +2,7 @@
 <!doctype html>
 <html lang="en" >
     {% load static %}
+    {% load crispy_forms_tags %}
 
     <head>
         <meta charset="utf-8" />
@@ -349,16 +350,37 @@
                                     {% with all_orders.count as total_orders %}
                                     {{ total_orders }}
                                     {% endwith %}</h4>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <p class="mb-0" style="margin-top: 1rem;"><span class="text-success me-2"> <a href="{% url 'view-request' %}" style="color: #359e45;">See All Orders</a> </span></p>
-                                    </div>
-                                    <div class="col-6 align-self-center">
-                                        <div>
-                                           <a href="{% url 'add-request' %}"><button class="btn mdi mdi-plus" style="background-color: #359e45;color: white;"> Add Request</button></a>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <p class="mb-0" style="margin-top: 1rem;">
+                                                <span class="text-success me-2">
+                                                    <a href="{% url 'view-request' %}" style="color: #359e45;">See All Orders</a>
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="col-6 align-self-center">
+                                            <div>
+                                                <button onclick="openAddRequestModal()" class="btn mdi mdi-plus" style="background-color: #359e45;color: white;">Add Request</button>
+                                            </div>
+                                        
+                                            <!-- Add Request Modal -->
+                                            <div class="modal fade" id="addRequestModal" tabindex="-1" role="dialog" aria-labelledby="addRequestModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="addRequestModalLabel">Add Request</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <!-- Form content will be loaded here -->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
                             </div>
                         </div>
                         <div class="card">
@@ -1016,7 +1038,49 @@
 
 <!-- JAVASCRIPT -->
 <!-- JAVASCRIPT -->
-<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+<script>
+    function openAddRequestModal() {
+        // Fetch form content using AJAX
+        $.ajax({
+            url: "{% url 'add-request' %}",
+            type: "GET",
+            success: function(response) {
+                $('#addRequestModal .modal-body').html(response);
+                $('#addRequestModal').modal('show');
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function submitForm() {
+        $.ajax({
+            type: "POST",
+            url: "{% url 'add-request' %}",
+            data: $('#addRequestForm').serialize(),
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    alert(response.message);
+                    $('#addRequestModal').modal('hide');  // Close the modal
+                    location.reload();  // Reload the page to see the updated data
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function(error) {
+                console.log(error.responseJSON);
+                alert('Error creating order');
+            }
+        });
+    }
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>

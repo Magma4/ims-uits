@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "user",
     'crispy_forms',
     "crispy_bootstrap4",
+    'widget_tweaks',
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
