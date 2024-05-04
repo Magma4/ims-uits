@@ -5,36 +5,6 @@
 
 {% load static %}
 
-{% for message in messages %}
-
-  <div class="toast notification bg-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}" role="alert" aria-live="assertive" aria-atomic="true" data-delay="4000" style="
-    position: absolute;
-    top: 10rem;
-    right: 1rem;
-    z-index: 1000;
-    color: white;
-    font-weight: normal;
-">
-    <div class="toast-header">
-      <strong class="mr-auto">
-        {% if message.tags == 'error' %}
-          <i class="fas fa-times mr-2"></i>
-        {% elif message.tags == 'warning' %}
-          <i class="fas fa-exclamation mr-2"></i>
-        {% elif message.tags == 'info' %}
-          <i class="fas fa-info mr-2"></i>
-        {% elif message.tags == 'success' %}
-          <i class="fas fa-check mr-2"></i>
-        {% endif %}
-        {{message.tags|capfirst}}
-      </strong>
-      
-    </div>
-    <div class="toast-body">
-      {{message|safe}}
-    </div>
-  </div>
-{% endfor %}
 <div class="row" style="background-color: #1c4f24;" >
     <div class="col-12" style="background-color: #1c4f24;">
         <div class="page-title-box d-flex align-items-center justify-content-between" >

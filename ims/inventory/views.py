@@ -46,14 +46,17 @@ def dashboard(request):
         released_percentage = 0
         pending_percentage = 0
 
-    orders_by_month = Order.objects.filter(date__isnull=False).extra(select={'month': "strftime('%m', date)"}).values('month').annotate(count=Count('id'))
-    
-    # Prepare data for the chart
-    months = []
-    order_counts = []
-    for order_month in orders_by_month:
-        months.append(order_month['month'])
-        order_counts.append(order_month['count'])
+    current_year = timezone.now().year
+    orders_by_month = Order.objects.filter(date__year=current_year).annotate(
+        month=TruncMonth('date')
+    ).values('month').annotate(count=Count('id')).order_by('month')
+
+    months = [datetime(2000, i + 1, 1).strftime('%b') for i in range(12)]  # Generate month names
+    order_counts = [0] * 12  # Initialize list to hold counts for each month
+
+    for order in orders_by_month:
+        month_index = order['month'].month - 1  # Get month index (0 for Jan, 1 for Feb, etc.)
+        order_counts[month_index] = order['count']
 
     released_items = Order.objects.filter(status='released').select_related('item_name')
 
@@ -155,22 +158,20 @@ def addrequest(request):
             instance.users = request.user
             order_quantity = instance.order_quantity
             stock_quantity = instance.item_name.quantity
-            if order_quantity <= stock_quantity:
+            if instance.order_quantity <= instance.item_name.quantity:
                 instance.save()
-                messages.success(request, "Order succesfully created")
-                return redirect('dashboard')
+                messages.success(request, "Order successfully created")
             else:
                 messages.error(request, "Order quantity cannot be more than stock quantity")
-                return redirect('dashboard')  # Redirect back to the requisition page
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
     else:
         form = OrderForm()
+        orders = Order.objects.all()  # If needed elsewhere
 
     context = {
-        'form': form,
-        'order': orders
-    }
-
-    # Render form as a partial
+                'form': form,
+               'orders': orders
+            }
     return render(request, 'dashboard/add_request_partial.html', context)
 
 

@@ -2,7 +2,6 @@
 <!doctype html>
 <html lang="en" >
     {% load static %}
-    {% load crispy_forms_tags %}
 
     <head>
         <meta charset="utf-8" />
@@ -81,7 +80,7 @@
 
 </head>
 
-<body data-layout="detached" data-topbar="colored" style="color:black">
+<body data-layout="detached" data-topbar="colored" style="color:black" data-new-gr-c-s-check-loaded="14.1171.0" data-new-gr-ext-installed >
 
     {% for message in messages %}
 
@@ -196,7 +195,7 @@
                         <div class="navbar-brand-box">
                             
 
-                            <a href="index.html" class="logo logo-light">
+                            <a href="{% url 'dashboard' %}" class="logo logo-light">
                                 
                                 <span class="logo-lg">
                                     <h4 style="margin-top: 1rem;color: white;"><img src="{% static 'knustlogo.png' %}" alt="" height="30" >  UITS - IMS</h4>
@@ -256,7 +255,7 @@
                     <i class="mdi mdi-plus-box"></i>
                     <span>Requisitions</span>
                 </a>
-                <ul class="sub-menu" aria-expanded="false">
+                <ul class="sub-menu" aria-expanded="false" style="display: none;">
                     <li><a href="{% url 'view-request' %}"><i class="mdi mdi-eye-plus"></i>View Requests</a></li>
                     <li><a href="{% url 'add-request' %}"><i class="mdi mdi-pen-plus"></i>Request Items</a></li>
                 </ul>
@@ -276,7 +275,7 @@
                     <i class="mdi mdi-warehouse"></i>
                     <span>Stock</span>
                 </a>
-                <ul class="sub-menu" aria-expanded="false">
+                <ul class="sub-menu" aria-expanded="false" style="display: none;">
                     <li><a href="{% url 'view-stock' %}"><i class="mdi mdi-table-headers-eye"></i>View Items</a></li>
                     <li><a href="{% url 'add-stock' %}"><i class="mdi mdi-table-plus"></i>Add Items</a></li>
                 </ul>
@@ -350,37 +349,16 @@
                                     {% with all_orders.count as total_orders %}
                                     {{ total_orders }}
                                     {% endwith %}</h4>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <p class="mb-0" style="margin-top: 1rem;">
-                                                <span class="text-success me-2">
-                                                    <a href="{% url 'view-request' %}" style="color: #359e45;">See All Orders</a>
-                                                </span>
-                                            </p>
-                                        </div>
-                                        <div class="col-6 align-self-center">
-                                            <div>
-                                                <button onclick="openAddRequestModal()" class="btn mdi mdi-plus" style="background-color: #359e45;color: white;">Add Request</button>
-                                            </div>
-                                        
-                                            <!-- Add Request Modal -->
-                                            <div class="modal fade" id="addRequestModal" tabindex="-1" role="dialog" aria-labelledby="addRequestModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="addRequestModalLabel">Add Request</h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <!-- Form content will be loaded here -->
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <p class="mb-0" style="margin-top: 1rem;"><span class="text-success me-2"> <a href="{% url 'view-request' %}" style="color: #359e45;">See All Orders</a> </span></p>
+                                    </div>
+                                    <div class="col-6 align-self-center">
+                                        <div>
+                                           <a href="{% url 'add-request' %}"><button class="btn mdi mdi-plus" style="background-color: #359e45;color: white;"> Add Request</button></a>
                                         </div>
                                     </div>
+                                </div>
                             </div>
                         </div>
                         <div class="card">
@@ -411,105 +389,89 @@
                         </div>
                     </div>
 
-                    
 
                     <div class="col-xl-6">
                         <div class="card">
-                            <div class="card-body" id="mcard">
+                            <div class="card-body" id="">
                                 <h4 class="card-title mb-4">Monthly Orders Report</h4>
                                 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-                                <div id="timeline-chart">
-                                    
-                                                                    <script>
-                                                                        var options = {
-                                chart: {
-                                    type: "area",
-                                    height: 300,
-                                    foreColor: "#999",
-                                    stacked: true,
-                                    dropShadow: {
-                                    enabled: true,
-                                    enabledSeries: [0],
-                                    top: -2,
-                                    left: 2,
-                                    blur: 5,
-                                    opacity: 0.06
-                                    }
-                                },
-                                colors: ['#00E396', '#0090FF'],
-                                stroke: {
-                                        curve: "smooth",
-                                        width: 3
-                                    },
-                                    dataLabels: {
-                                        enabled: false
-                                    },
-                                series: [{
-                                    name: 'Total Orders',
-                                    data: {{ order_counts | safe }},
-                                }],
-                                stroke: {
-                                    curve: "smooth",
-                                    width: 3
-                                },
-                                markers: {
-                                    size: 0,
-                                    strokeColor: "#fff",
-                                    strokeWidth: 3,
-                                    strokeOpacity: 1,
-                                    fillOpacity: 1,
-                                    hover: {
-                                    size: 6
-                                    }
-                                },
-                                xaxis: {
-                                    categories: {{ months | safe }},
-                                    axisBorder: {
-                                    show: false
-                                    },
-                                    axisTicks: {
-                                    show: false
-                                    }
-                                },
-                                yaxis: {
-                                    labels: {
-                                    offsetX: 14,
-                                    offsetY: -5
-                                    },
-                                    tooltip: {
-                                    enabled: true
-                                    }
-                                },
-                                grid: {
-                                    padding: {
-                                    left: -5,
-                                    right: 5
-                                    }
-                                },
-                                tooltip: {
-                                    x: {
-                                    format: "MMM yyyy"
-                                    },
-                                },
-                                legend: {
-                                    position: 'top',
-                                    horizontalAlign: 'left'
-                                },
-                                fill: {
-                                    type: "solid",
-                                    fillOpacity: 0.7
-                                }
-                                };
+                                <div id="timeline-chart"></div>
+                                <script>
+                                    var months = {{ months | safe }};
+                                    var orderCounts = {{ order_counts | safe }};
 
-                                var chart = new ApexCharts(document.querySelector("#timeline-chart"), options);
+                                    var options = {
+                                        chart: {
+                                            type: 'line',  // Use 'area' if you want a standard area chart look
+                                            height: 280,
+                                            foreColor: "#999",
+                                            dropShadow: {
+                                                enabled: true,
+                                                top: -2,
+                                                left: 2,
+                                                blur: 5,
+                                                opacity: 0.06
+                                            }
+                                        },
+                                        colors: ['#00E396'], // Single color for the current year
+                                        stroke: {
+                                            curve: 'smooth',
+                                            width: 3
+                                        },
+                                        series: [{
+                                            name: 'Total Orders',
+                                            data: orderCounts
+                                        }],
+                                        markers: {
+                                            size: 5,
+                                            hover: {
+                                                size: 8
+                                            }
+                                        },
+                                        xaxis: {
+                                            categories: months,
+                                            tickPlacement: 'on'
+                                        },
+                                        tooltip: {
+                                            x: {
+                                                format: 'MMM'
+                                            },
+                                            y: {
+                                                formatter: function(value) {
+                                                    return value + " orders";
+                                                }
+                                            }
+                                        },
+                                        legend: {
+                                            position: 'top',
+                                            horizontalAlign: 'right'
+                                        },
+                                        grid: {
+                                            row: {
+                                                colors: ['#f3f3f3', 'transparent'],
+                                                opacity: 0.5
+                                            },
+                                        },
+                                        fill: {
+                                            type: 'gradient',
+                                            gradient: {
+                                                shadeIntensity: 1,
+                                                opacityFrom: 0.7,
+                                                opacityTo: 0.3,
+                                                stops: [0, 100],
+                                                type: 'vertical'  // Ensure vertical filling if needed
+                                            }
+                                        }
+                                    };
 
-                                chart.render();
+                                    var chart = new ApexCharts(document.querySelector("#timeline-chart"), options);
+                                    chart.render();
+                                </script>
 
-                                    </script>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    
                     <div class="col-xl-3">
                         <div class="card">
                             <div class="card-body">
@@ -557,7 +519,7 @@
                                 </div>
                                 <h4 class="mt-4"><marquee behavior="scroll" direction="left" scrollamount="5">
                                     {% for released_item in released_items %}
-                                        {{ released_item.item_name.name|title }}: {{ released_item.order_quantity }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    {{ released_item.order_quantity }} {{ released_item.item_name.name|title }}:{{released_item.users.username | title}}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     {% endfor %}
                                 </marquee></h4>
                                 <div class="row">
@@ -735,7 +697,7 @@
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
                                                                     <h1 class="modal-title fs-5"
-                                                                        id="orderModalLabel{{ order.id }}" style="color: #1c4f24;"> Details of Order {{order.id}}
+                                                                        id="orderModalLabel{{ order.id }}">Order Details
                                                                     </h1>
                                                                     <button type="button" class="btn-close"
                                                                         data-bs-dismiss="modal" aria-label="Close"></button>
@@ -1038,49 +1000,6 @@
 
 <!-- JAVASCRIPT -->
 <!-- JAVASCRIPT -->
-<script>
-    function openAddRequestModal() {
-        // Fetch form content using AJAX
-        $.ajax({
-            url: "{% url 'add-request' %}",
-            type: "GET",
-            success: function(response) {
-                $('#addRequestModal .modal-body').html(response);
-                $('#addRequestModal').modal('show');
-            },
-            error: function(error) {
-                console.log(error);
-            }
-        });
-    }
-</script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    function submitForm() {
-        $.ajax({
-            type: "POST",
-            url: "{% url 'add-request' %}",
-            data: $('#addRequestForm').serialize(),
-            dataType: 'json',
-            success: function(response) {
-                if (response.success) {
-                    alert(response.message);
-                    $('#addRequestModal').modal('hide');  // Close the modal
-                    location.reload();  // Reload the page to see the updated data
-                } else {
-                    alert(response.message);
-                }
-            },
-            error: function(error) {
-                console.log(error.responseJSON);
-                alert('Error creating order');
-            }
-        });
-    }
-</script>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
@@ -1117,7 +1036,31 @@
 <script src="{% static 'js/app.js' %}"></script>
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var toggles = document.querySelectorAll('.has-arrow');
 
+    toggles.forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            var submenu = this.nextElementSibling;
+            var isExpanded = submenu.getAttribute('aria-expanded') === 'true';
+            submenu.style.display = isExpanded ? 'none' : 'block';
+            submenu.setAttribute('aria-expanded', !isExpanded);
+        });
+    });
+});
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var menuButton = document.querySelector('#vertical-menu-btn');
+    var body = document.body;
+
+    menuButton.addEventListener('click', function() {
+        body.classList.toggle('sidebar-enable');
+    });
+});
+</script>
 <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
