@@ -1,52 +1,38 @@
-<!-- {% extends 'dashboard/dashboard.html' %}
-{% block title %} View Requests {% endblock %}
-{% block content %}
-{% load crispy_forms_tags %}
-<div class="row" style="background-color: #1c4f24;" >
-    <div class="col-12" style="background-color: #1c4f24;">
-        <div class="page-title-box d-flex align-items-center justify-content-between" >
-            <h4 class="page-title mb-0 font-size-18">Request Items</h4>
-
-            <div class="page-title-right" style="background-color: #1c4f24;">
-                <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item active">Welcome {{user.first_name|title}} {{user.last_name|title}}</li>
-                </ol>
-            </div>
-
-        </div>
+{% load widget_tweaks %}
+<form method="post" action="" class="form-horizontal">
+    {% csrf_token %}
+    
+    <div class="modal-header "  style="background-color: #0a3816;">
+      <h3 class="modal-title" style="color: white;">Request Item</h3>
+      <button type="button" class="btn-close"
+      data-bs-dismiss="modal"  style="background-color: white; font-weight: bolder; ">
+        <span aria-hidden="true" class="text-white">&times;</span>
+      </button>
     </div>
-</div>
 
-<div class="card col-md-12" >
-    <div class="card-body">
-        <div class="row">
-            <h5 class="card-title" style="text-align: center;">Request For Items</h5>
-                <div class="row">
-                    <div class="col-md-12" style="max-height: 60vh; overflow-y: auto; margin-top: 2rem;">
-                        <form id="itemForm" method="POST">
-                            {% csrf_token %}
+    <div class="modal-body">
+      <div class="{% if form.non_field_errors %}alert alert-danger{% endif %}">
+        {% for error in form.non_field_errors %}
+          <p>{{ error }}</p>
+        {% endfor %}
+      </div>
 
-                            
-                            <div class="form-group col-md-4 mx-auto" >
-                                {{ form.item_name }}
-                            </div>
-                            <div class="form-group col-md-4 mx-auto" style=" margin-top: 2rem;">
-                                {{ form.order_description }}
-                            </div>
-                            <div class="form-group col-md-4 mx-auto" style=" margin-top: 2rem;">
-                                {{ form.order_quantity}}
-                            </div>
-                            
-                            
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-primary mx-auto d-block" style="margin-top: 2rem;">
-                                    Request
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+      {% for field in form %}
+        <div class="form-group" style="margin-top: 2rem;">
+          <label for="{{ field.id_for_label }}" class="col-form-label">{{ field.label }}</label>
+          {% render_field field class="form-control" placeholder=field.label %}
+          {% if field.errors %}
+            <div class="alert alert-danger">
+              {% for error in field.errors %}
+                <p class="help-block">{{ error }}</p>
+              {% endfor %}
             </div>
+          {% endif %}
         </div>
+      {% endfor %}
     </div>
-{% endblock %} -->
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary">Request</button>
+    </div>
+</form>

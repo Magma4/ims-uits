@@ -82,7 +82,14 @@
                                                 </form>
                                             </td>
                                             <td scope="col">
-                                                <a href="{% url 'order-update' pk=order.id %}"><button class="btn btn-primary btn-sm">Edit</button></a>
+                                                <button type="button" class="order-update bs-modal btn btn-sm btn-primary" data-form-url="{% url 'order-update' order.id %}">
+                                                    Edit
+                                                  </button>
+                                                  <div class="modal fade" tabindex="-1" role="dialog" id="modal" role="dialog" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                      <div class="modal-content"></div>
+                                                    </div>
+                                                  </div>
                                                 <button class="btn btn-danger delete-btn btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ order.id }}">Delete</button>
                                             </td>
 

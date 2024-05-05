@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from .models import *
 from django.contrib.auth.decorators import login_required
 from .forms import *
@@ -24,6 +24,61 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 import os
 from django.db.models.functions import ExtractMonth, ExtractDay, ExtractYear
+from django.urls import reverse_lazy
+from django.views import generic
+from bootstrap_modal_forms.generic import (
+  BSModalCreateView,
+  BSModalUpdateView,
+  BSModalDeleteView
+)
+
+class Index(generic.ListView):
+    model = Order
+    context_object_name = 'order'
+    template_name = 'dashboard.html'
+
+# Create
+class OrderCreateView(BSModalCreateView):
+    template_name = 'dashboard/add_request.html'
+    form_class = OrderForm
+    success_message = 'Order was created.'
+    success_url = reverse_lazy('dashboard')
+
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+        instance.users = self.request.user  # Saving the current user to the order
+        order_quantity = instance.order_quantity
+        stock_quantity = instance.item_name.quantity
+
+        if order_quantity <= stock_quantity:
+            messages.success(self.request, "Order successfully created")
+        else:
+            messages.error(self.request, "Order quantity cannot be more than stock quantity")
+            # Redirecting to the same page if the form is not valid
+            return HttpResponseRedirect(self.request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+
+        return super().form_valid(form)  # This saves the form and redirects to success_url
+
+    def get_context_data(self, **kwargs):
+        context = super(OrderCreateView, self).get_context_data(**kwargs)
+        context['orders'] = Order.objects.all()  # Adding orders to the context
+        return context
+
+# Update
+class OrderUpdateView(BSModalUpdateView):
+    model = Order
+    template_name = 'dashboard/order_update.html'
+    form_class = OrderForm
+    success_message = 'Success: Order was updated.'
+    success_url = reverse_lazy('dashboard')
+
+
+# Delete
+class OrderDeleteView(BSModalDeleteView):
+    model = Order
+    template_name = 'dashboard/order_delete.html'
+    success_message = 'Success: Order was deleted.'
+    success_url = reverse_lazy('dashboard')
 # Create your views here.
 
 
@@ -349,7 +404,7 @@ def report(request):
 
     available_months = [(order['month_year'].strftime('%B %Y'), order['month_year'].strftime('%Y-%m-01'), order['month_year'].strftime('%Y-%m-31')) for order in orders]
 
-    ol = Order.objects.order_by('users')
+    ol = Order.objects.order_by('-id')
     orders1 = Order.objects.all()
 
     released_by_set = set()
@@ -410,6 +465,7 @@ def report(request):
         ol = paginator.page(paginator.num_pages)
 
     context = {
+        'orders1' : orders,
         'order_list': ol,
         'order_id' : order_id,
         'name': name,

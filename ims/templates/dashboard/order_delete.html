@@ -1,70 +1,22 @@
-{% extends 'dashboard/dashboard.html' %}
-{% block title %} Delete Order {% endblock %}
-{% block content %}
-{% load crispy_forms_tags %}
-<div class="row">
-    <div class="col-md-2">
-        <div class="card" style="width: 11rem;height: 92vh; border: none; border-radius: 0%;display: contents;">
-            <div class="card-body">
-                <div class="offcanvas-body">
-                    <ul class="navbar-nav justify-content-end flex-grow-1 ">
+{% load widget_tweaks %}
 
-                        <li class="nav-item" style="margin-top: 0.5rem;">
-                            <a class="nav-link " aria-current="page" href="{% url 'dashboard' %}"><i
-                                    class="fa fa-tachometer"
-                                    style="margin-right: 5px;margin-top: 1rem;"></i>Dashboard</a>
-                        </li>
+<form method="post" action="">
+  {% csrf_token %}
 
-                        <!-- <li class="nav-item">
-                            <a class="nav-link active" href="{% url 'requisition' %}"><i class="fa fa-plus-square"
-                                    style="margin-right: 5px;margin-top: 1rem;"></i>Requisitions</a>
-                        </li>
+  <div class="modal-header">
+    <h3 class="modal-title">Delete Order</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'stock' %}"><i class="fa fa-table"
-                                    style="margin-right: 5px;margin-top: 1rem;"></i>Stock</a>
-                        </li> -->
+  <div class="modal-body">
+    <p>Are you sure you want to delete order with id
+      <strong>{{ order.id }}</strong>?</p>
+  </div>
 
-                        {% if user.is_authenticated and user.is_staff and user.is_superuser %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'employees' %}"><i class="fa fa-users"
-                                    style="margin-right:5px;margin-top: 1rem;"></i>Employees</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'report' %}"><i class="fa fa-book"
-                                    style="margin-right: 5px;margin-top: 1rem;"></i>Report</a>
-                        </li>
-                        {% endif %}
-                        
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'instructions' %}"><i class="fa fa-map"
-                                    style="margin-right: 5px;margin-top: 1rem;"></i>Instructions</a>
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'user-logout' %}"><i class="fa fa-sign-out"
-                                    style="margin-right: 5px;margin-top: 1rem;"></i>Sign Out</a>
-                        </li>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-danger">Delete</button>
+  </div>
 
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-<div class="col-md-10 justify-content-center" style="margin: 3rem auto 0 auto; display:block; ">
-    <h5>
-        Are you sure you want to delete this order?
-    </h5>
-    <div class="row">
-        <div class="col-md-12">
-            <form action="" method="POST">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <a class="btn btn-secondary" href="{% url 'requisition' %}">Cancel</a>
-                <input class="btn btn-danger" type="submit" value="Confirm">
-            </form>
-        </div>
-    </div>
-</div>
-{% endblock %}
+</form>
