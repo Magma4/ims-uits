@@ -90,7 +90,14 @@
                                                       <div class="modal-content"></div>
                                                     </div>
                                                   </div>
-                                                <button class="btn btn-danger delete-btn btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ order.id }}">Delete</button>
+                                                  <button type="button" class="order-delete bs-modal btn btn-sm btn-danger" data-form-url="{% url 'order-delete' order.id %}">
+                                                    Delete
+                                                  </button>
+                                                  <div class="modal fade" tabindex="-1" role="dialog" id="modal" role="dialog" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                      <div class="modal-content"></div>
+                                                    </div>
+                                                  </div>
                                             </td>
 
                                             <!-- Modal for delete confirmation -->

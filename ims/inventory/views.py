@@ -69,7 +69,7 @@ class OrderUpdateView(BSModalUpdateView):
     model = Order
     template_name = 'dashboard/order_update.html'
     form_class = OrderForm
-    success_message = 'Success: Order was updated.'
+    success_message = 'Order was updated.'
     success_url = reverse_lazy('dashboard')
 
 
@@ -77,7 +77,7 @@ class OrderUpdateView(BSModalUpdateView):
 class OrderDeleteView(BSModalDeleteView):
     model = Order
     template_name = 'dashboard/order_delete.html'
-    success_message = 'Success: Order was deleted.'
+    success_message = 'Order was deleted.'
     success_url = reverse_lazy('dashboard')
 # Create your views here.
 
@@ -595,7 +595,7 @@ def order_excel(request):
 @login_required
 def order_pdf(request):
     # Your existing code to fetch orders
-    ol = Order.objects.order_by('users')
+    ol = Order.objects.order_by('id')
     # Retrieve filters from session
     order_id = request.session.get('id')
     name = request.session.get('name')
