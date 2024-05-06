@@ -31,6 +31,7 @@ from bootstrap_modal_forms.generic import (
   BSModalUpdateView,
   BSModalDeleteView
 )
+from .tasks import *
 
 class Index(generic.ListView):
     model = Order
@@ -133,7 +134,7 @@ class StockCreateView(BSModalCreateView):
 
         return super().form_valid(form)
     
-    
+
     
 class StockUpdateView(BSModalUpdateView):
     model = Stock
@@ -148,7 +149,9 @@ class StockDeleteView(BSModalDeleteView):
     success_message = 'Product was deleted.'
     success_url = reverse_lazy('view-stock')
 
-
+def celery(request):
+    sleepy(10)
+    return HttpResponse('Done!')
 
 @login_required(login_url='user-login')
 def dashboard(request):
@@ -223,28 +226,6 @@ def viewstock(request):
     }
     return render(request, 'dashboard/view_stock.html', context=mydictionary)
 
-@login_required
-def addstock(request):
-    items = Stock.objects.all()
-    orders = Order.objects.all()
-
-
-    if request.method == 'POST':
-        form = StockForm(request.POST)
-        if form.is_valid():
-            form.save()
-            stock_name = form.cleaned_data.get('name')
-            messages.success(request, f'{stock_name} has been added.')
-            return redirect('view-stock')
-    else:
-        form = StockForm()
-    mydictionary = {
-        "stocks" : items,
-        "form" : form,
-        "orders" : orders
-    }
-    return render(request, 'dashboard/add_stock.html', context=mydictionary)
-
 
 @login_required
 def viewrequest(request):
@@ -272,31 +253,6 @@ def viewrequest(request):
     return render(request, 'dashboard/view_request.html', context)
 
 
-def addrequest(request):
-    orders = Order.objects.all()
-    if request.method == 'POST':
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.users = request.user
-            order_quantity = instance.order_quantity
-            stock_quantity = instance.item_name.quantity
-            if instance.order_quantity <= instance.item_name.quantity:
-                instance.save()
-                messages.success(request, "Order successfully created")
-            else:
-                messages.error(request, "Order quantity cannot be more than stock quantity")
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
-    else:
-        form = OrderForm()
-        orders = Order.objects.all()  # If needed elsewhere
-
-    context = {
-                'form': form,
-               'orders': orders
-            }
-    return render(request, 'dashboard/add_request_partial.html', context)
-
 
 @login_required
 def employees(request):
@@ -311,31 +267,6 @@ def instructions(request):
 
     return render(request, 'dashboard/instructions.html')
 
-
-@login_required
-def stock_delete(request, pk):
-    item = Stock.objects.get(id=pk)
-    if request.method == 'POST':
-        item.delete()
-        messages.success(request, "Item has been deleted")
-        return redirect('view-stock')
-    return render(request, 'dashboard/view_stock.html')
-
-@login_required
-def stock_update(request, pk):
-    item = Stock.objects.get(id=pk)
-    if request.method == 'POST':
-        form = StockForm(request.POST, instance=item)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Stock Updated")
-            return redirect('view-stock')
-    else:
-        form = StockForm(instance=item)
-    context = {
-        'form' : form
-    }
-    return render(request, 'dashboard/stock_update.html', context)
 
 @login_required
 def employees_detail(request, pk):
@@ -371,50 +302,7 @@ def update_order_status(request, order_id):
     return redirect('view-request')
 
 
-@login_required
-def delete_order(request, pk):
-    order = Order.objects.get(id=pk)
-    if request.method == 'POST':       
-        order.delete()
-        if request.user.is_superuser:
-            messages.success(request, f"Order has been deletd")
-            return redirect('view-request')
-            
-        else:
-            messages.success(request, f"Order has been deleted")
-            return redirect('dashboard')
-            
-        
-    return render(request, 'dashboard/view_request.html')
 
-@login_required
-def order_update(request, pk):
-    order = Order.objects.get(id=pk)
-    if request.method == 'POST':
-        form = OrderForm(request.POST, instance=order)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            current_stock_quantity = instance.item_name.quantity
-            if instance.order_quantity > current_stock_quantity:
-                # Add an error message if the condition is met
-                messages.error(request, "Insufficient stock quantity")
-            else:
-                instance.save()
-                messages.success(request, f"Order {order.id} has been updated")
-                if request.user.is_superuser:
-                    return redirect('view-request')
-                else:
-                    return redirect('dashboard')
-    else:
-        form = OrderForm(instance=order)
-    context = {
-        'form': form,
-    }
-    return render(request, 'dashboard/order_update.html', context)
-
-# @login_required
-# def list_requisition(request):
-#     return render(request, 'dashboard/list_requisition.html')
 
 @login_required
 def searchdata(request):

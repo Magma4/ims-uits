@@ -43,6 +43,7 @@ class Order(models.Model):
     order_description = models.CharField(max_length=200, null=True)
     date = models.DateTimeField(auto_now_add=True)
     returned_date = models.DateTimeField(null=True, blank=True)  # New field for returned date
+    intended_date_of_return = models.DateField(null=True, blank=True)
     released_by = models.CharField(max_length=100, null=True)
     returned_to = models.CharField(max_length=100, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
@@ -63,3 +64,5 @@ class Order(models.Model):
             # Set returned date
             self.returned_date = timezone.now()
         super().save(*args, **kwargs)
+
+        
