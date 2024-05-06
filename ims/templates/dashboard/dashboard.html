@@ -1,4 +1,3 @@
-{% include 'dashboard/message.html' %}
 <!doctype html>
 <html lang="en" >
     {% load static %}
@@ -251,34 +250,20 @@
             </li>
             {% if user.is_authenticated and user.is_staff and user.is_superuser %}
             <li>
-                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                <a href="{% url 'view-request' %}" class=" waves-effect">
                     <i class="mdi mdi-plus-box"></i>
                     <span>Requisitions</span>
                 </a>
-                <ul class="sub-menu" aria-expanded="false" style="display: none;">
-                    <li><a href="{% url 'view-request' %}"><i class="mdi mdi-eye-plus"></i>View Requests</a></li>
-                    <li><a href="{% url 'add-request' %}"><i class="mdi mdi-pen-plus"></i>Request Items</a></li>
-                </ul>
-            </li>
-            {% else %}
-            <li>
-                <a href="{% url 'add-request' %}" class="waves-effect">
-                    <i class="mdi mdi-pen-plus"></i>
-                    <span>Request Items</span>
-                </a>
+                
             </li>
             {% endif %}
 
             {% if user.is_authenticated and user.is_staff and user.is_superuser %}
             <li>
-                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                <a href="{% url 'view-stock' %}" class="waves-effect">
                     <i class="mdi mdi-warehouse"></i>
                     <span>Stock</span>
                 </a>
-                <ul class="sub-menu" aria-expanded="false" style="display: none;">
-                    <li><a href="{% url 'view-stock' %}"><i class="mdi mdi-table-headers-eye"></i>View Items</a></li>
-                    <li><a href="{% url 'add-stock' %}"><i class="mdi mdi-table-plus"></i>Add Items</a></li>
-                </ul>
             </li>
             {% else %}
             <li>
@@ -357,7 +342,7 @@
                                       
                                       <div class="col-6 align-self-center">
                                         <div>
-                                            <button id="add-request" class="btn btn-primary" type="button" name="button" style="background-color: #359e45; border: none;" data-bs-toggle="modal" data-bs-target="#request-modal">
+                                            <button id="add-request" class="btn btn-primary btn mdi mdi-plus" type="button" name="button" style="background-color: #359e45; border: none;" data-bs-toggle="modal" data-bs-target="#request-modal">
                                                 Request Item
                                             </button>
                                         </div>
@@ -507,8 +492,16 @@
                                     </div>
                                     <div class="col-6 align-self-center">
                                         <div>
-                                           <a href="{% url 'add-stock' %}"><button class="btn mdi mdi-plus" style="background-color: #359e45;color: white;"> Add Stock</button></a>
+                                            <button id="add-stock" class="btn btn-primary btn mdi mdi-plus" type="button" name="button" style="background-color: #359e45; border: none;" data-bs-toggle="modal" data-bs-target="#stock-modal">
+                                                Add Stock
+                                            </button>
                                         </div>
+                                        <div class="modal fade" id="stock-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                          <div class="modal-content">
+                                          </div>
+                                        </div>
+                                      </div>
                                     </div>
                                 </div>
                             </div>
@@ -763,7 +756,7 @@
                                         
                                         <div class="col-6 align-self-center">
                                             <div>
-                                                <button id="add-request" class="btn btn-primary" type="button" name="button" style="background-color: #359e45; border: none;" data-bs-toggle="modal" data-bs-target="#request-modal">
+                                                <button id="add-request" class="btn btn-primary btn mdi mdi-plus" type="button" name="button" style="background-color: #359e45; border: none;" data-bs-toggle="modal" data-bs-target="#request-modal">
                                                     Request Item
                                                 </button>
                                             </div>
@@ -1103,23 +1096,34 @@ document.addEventListener("DOMContentLoaded", function() {
                 formURL: $(this).data("form-url"),
                 modalID: "#modal"  // Assuming you have a modal with ID "update-modal"
             });
+        }); 
+
+        $(".stock-update").each(function () {
+            $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                modalID: "#modal"  // Assuming you have a modal with ID "update-modal"
+            });
+        }); 
+  
+        // Delete book buttons - formURL is retrieved from the data of the element
+        $(".order-delete").each(function () {
+            $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
         });
 
-      // Read book buttons
-      $(".read-book").each(function () {
-          $(this).modalForm({formURL: $(this).data("form-url")});
-      });
+        $(".stock-delete").each(function () {
+            $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+        });
   
-      // Delete book buttons - formURL is retrieved from the data of the element
-      $(".order-delete").each(function () {
-          $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
-      });
-  
-      // Create book button opens form in modal with id="create-modal"
-      $("#add-request").modalForm({
-          formURL: "{% url 'add-request' %}",
-          modalID: "#request-modal"
-      });
+        // Create book button opens form in modal with id="create-modal"
+        $("#add-request").modalForm({
+            formURL: "{% url 'add-request' %}",
+            modalID: "#request-modal"
+        });
+
+        $("#add-stock").modalForm({
+            formURL: "{% url 'add-stock' %}",
+            modalID: "#stock-modal"
+        });
   
     });
   </script>

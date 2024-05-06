@@ -49,10 +49,10 @@
                         <th scope="col">Description</th>
                         <th scope="col">Available</th>
                         {% if request.user.is_superuser %}
-                            <th scope="col">Total</th>
-                            <th scope="col">Actions</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Actions</th>
                         {% endif %}
-                        <th scope="col">Order</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -72,34 +72,40 @@
                         </td>
                         {% if request.user.is_superuser %}
                         <td>{{ stock.quantity }}</td>
-                        <td>
-                            <a href="{% url 'stock-update' pk=stock.id %}" class="btn btn-primary btn-sm">Edit</a>
-                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ stock.id }}">Delete</button>
+                        <td colspan="12">
+                            <button type="button" class="stock-update bs-modal btn btn-sm btn-primary" data-form-url="{% url 'stock-update' stock.id %}">
+                                Edit
+                              </button>
+                              <div class="modal fade" tabindex="-1" role="dialog" id="modal" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                  <div class="modal-content"></div>
+                                </div>
+                              </div>
+                              <button type="button" class="stock-delete bs-modal btn btn-sm btn-danger" data-form-url="{% url 'stock-delete' stock.id %}">
+                                Delete
+                              </button>
+                              <div class="modal fade" tabindex="-1" role="dialog" id="modal" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                  <div class="modal-content"></div>
+                                </div>
+                              </div>
+                                <div>
+                                    <button id="add-request" class="btn btn-success btn-sm" type="button" name="button" style="background-color: #359e45; border: none;" data-bs-toggle="modal" data-bs-target="#request-modal">
+                                        Order
+                                    </button>
+                                </div>
+                                <div class="modal fade" id="request-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                  <div class="modal-content">
+                                  </div>
+                                </div>
+                              </div>
+                           
                         </td>
                         {% endif %}
-                        <td><a href="{% url 'add-request' %}" class="btn btn-success btn-sm">Order</a></td>
+                        
                     </tr>
-                    <!-- Modal for delete confirmation -->
-                    <div class="modal fade" id="deleteModal{{ stock.id }}" tabindex="-1" aria-labelledby="deleteModal{{ stock.id }}Label" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="deleteModal{{ stock.id }}Label">Confirm Delete</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body text-center">
-                                    <h4 class="alert alert-warning">Are you sure you want to delete this item?</h4>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <form class="d-inline" action="{% url 'stock-delete' pk=stock.id %}" method="POST">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger">Confirm</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        
                     {% endfor %}
                     {% endif %}
                 </tbody>
@@ -111,38 +117,6 @@
 
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Find the confirm delete button and add a click event listener
-        document.querySelectorAll('.delete-confirm-btn').forEach(function(button) {
-            button.addEventListener("click", function() {
-                // Find the corresponding delete form
-                var formId = button.closest('form').id;
-                var deleteForm = document.getElementById(formId);
-                // Submit the form asynchronously
-                fetch(deleteForm.action, {
-                    method: "POST",
-                    body: new FormData(deleteForm),
-                })
-                .then(function(response) {
-                    if (response.ok) {
-                        // If form submission is successful, hide the modal
-                        var modalId = button.closest('.modal').id;
-                        var modal = new bootstrap.Modal(document.getElementById(modalId));
-                        modal.hide();
-                        // You might also want to reload the page or update the UI after successful deletion
-                    } else {
-                        // Handle errors if any
-                        console.error("Error occurred:", response.statusText);
-                    }
-                })
-                .catch(function(error) {
-                    console.error("Error occurred:", error);
-                });
-            });
-        });
-    });
-</script>
 
 
 

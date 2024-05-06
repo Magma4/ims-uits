@@ -24,7 +24,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 import os
 from django.db.models.functions import ExtractMonth, ExtractDay, ExtractYear
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import generic
 from bootstrap_modal_forms.generic import (
   BSModalCreateView,
@@ -70,7 +70,32 @@ class OrderUpdateView(BSModalUpdateView):
     template_name = 'dashboard/order_update.html'
     form_class = OrderForm
     success_message = 'Order was updated.'
-    success_url = reverse_lazy('dashboard')
+
+    def form_valid(self, form):
+        instance = form.save(commit=False) # Saving the current user to the order
+        order_quantity = instance.order_quantity
+        stock_quantity = instance.item_name.quantity
+
+        if order_quantity <= stock_quantity:
+            messages.success(self.request, "Order updated successfully")
+        else:
+            messages.error(self.request, "Order quantity cannot be more than stock quantity")
+            # Redirecting to the same page if the form is not valid
+            return HttpResponseRedirect(self.request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+
+        return super().form_valid(form)  # This saves the form and redirects to success_url
+
+    def get_context_data(self, **kwargs):
+        context = super(OrderUpdateView, self).get_context_data(**kwargs)
+        context['orders'] = Order.objects.all()  # Adding orders to the context
+        return context
+    
+    def get_success_url(self):
+        # Check if the user is a superuser
+        if self.request.user.is_superuser:
+            return reverse('view-request')  # Redirect superusers to the dashboard
+        else:
+            return reverse('dashboard')
 
 
 # Delete
@@ -78,8 +103,51 @@ class OrderDeleteView(BSModalDeleteView):
     model = Order
     template_name = 'dashboard/order_delete.html'
     success_message = 'Order was deleted.'
-    success_url = reverse_lazy('dashboard')
+    
+    def get_success_url(self):
+        # Check if the user is a superuser
+        if self.request.user.is_superuser:
+            return reverse('view-request')  # Redirect superusers to the dashboard
+        else:
+            return reverse('dashboard')
 # Create your views here.
+
+class StockIndex(generic.ListView):
+    model = Stock
+    context_object_name = 'stocks'  # It's good to use the plural form here to reflect multiple items
+    template_name = 'view_stock.html'
+    
+class StockCreateView(BSModalCreateView):
+    template_name = 'dashboard/add_stock.html'  # Ensure you create this template
+    form_class = StockForm
+    success_message = 'Stock was created.'
+    success_url = reverse_lazy('dashboard')
+
+    def form_valid(self, form):
+        # Check if a stock with the same name (or other unique identifier) already exists
+        name = form.cleaned_data.get('name')  # Assuming 'name' is a field in StockForm
+        if Stock.objects.filter(name=name).exists():
+            # Add an error message to the form
+            messages.error(self.request, 'Product with this name already exists.')
+            return self.form_invalid(form)  # Return the form with errors
+
+        return super().form_valid(form)
+    
+    
+    
+class StockUpdateView(BSModalUpdateView):
+    model = Stock
+    template_name = 'dashboard/stock_update.html'
+    form_class = StockForm
+    success_message = 'Product was updated.'
+    success_url = reverse_lazy('view-stock')
+
+class StockDeleteView(BSModalDeleteView):
+    model = Stock
+    template_name = 'dashboard/stock_delete.html'
+    success_message = 'Product was deleted.'
+    success_url = reverse_lazy('view-stock')
+
 
 
 @login_required(login_url='user-login')
