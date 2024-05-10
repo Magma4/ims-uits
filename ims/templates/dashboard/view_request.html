@@ -41,9 +41,6 @@
                                             <th scope="col">Quantity</th>
                                             
                                             <th scope="col">Date</th>
-                                            <th scope="col">Date Returned</th>
-                                            <th scope="col">Released by</th>
-                                            <th scope="col">Recieved By</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Action</th>
 
@@ -63,9 +60,6 @@
                                             <td scope="col">{{ order.order_quantity }}</td>
                                             
                                             <td scope="col">{{ order.date}}</td>
-                                            <td scope="col">{{ order.returned_date}}</td>
-                                            <td scope="col">{{ order.released_by|title }}</td>
-                                            <td scope="col">{{ order.returned_to|title }}</td>
                                             <td scope="col">
 
                                                 <form action="{% url 'update_order_status' order.id %}" method="post">
@@ -98,6 +92,34 @@
                                                       <div class="modal-content"></div>
                                                     </div>
                                                   </div>
+                                                  <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                                                        data-bs-target="#orderModal{{ order.id }}">
+                                                        More Info
+                                                    </button>
+    
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="orderModal{{ order.id }}" tabindex="-1"
+                                                        aria-labelledby="orderModalLabel{{ order.id }}" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5"
+                                                                        id="orderModalLabel{{ order.id }}">More Information
+                                                                    </h1>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+    
+                                                                <div class="modal-body">
+                                                                    <p><b>Intended Date of Return</b>: {{ order.intended_date_of_return }}</p>
+                                                                    <p><b>Returned Date</b>: {{ order.returned_date}}</p>
+                                                                    <p><b>Released By</b>: {{ order.released_by|title }}</p>
+                                                                    <p><b>Returned To</b>: {{ order.returned_to|title }}</p>
+                                                                </div>
+    
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                             </td>
 
                                             <!-- Modal for delete confirmation -->
