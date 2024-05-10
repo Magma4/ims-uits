@@ -40,8 +40,53 @@
 <div class="card col-md-12">
     <div class="card-body">
         <h4 class="card-title mb-4 text-center">All Items {% with stocks.count as total_stocks %}({{ total_stocks }}){% endwith %}</h4>
-
-        <div class="table-responsive" style="max-height: 70vh;">
+        
+            <div class="row align-items-center">
+                <div class="col">
+                    <form class="row g-2" role="search" action="{% url 'searchdata3' %}" method="GET">
+                        <div class="col-auto">
+                            <input type="search" class="form-control" placeholder="Search" aria-label="Search" name="query">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-outline-success">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-auto">
+                    {% if request.user.is_superuser %}
+                    <div>
+                        <button id="add-stock" class="btn btn-primary btn mdi mdi-plus" type="button" name="button" style="background-color: #359e45; border: none;" data-bs-toggle="modal" data-bs-target="#stock-modal">
+                            Add Stock
+                        </button>
+                    </div>
+                    <div class="modal fade" id="stock-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                      </div>
+                    </div>
+                    
+                  </div>
+                  {% endif %}
+                </div>
+                <div class="col-auto">
+                    <button id="add-request" class="btn btn-primary mdi mdi-plus" type="button" style="background-color: #359e45; border: none;" data-bs-toggle="modal" data-bs-target="#request-modal">
+                        Request Item
+                    </button>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="request-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <!-- Modal content goes here -->
+                    </div>
+                </div>
+            </div>
+        
+        
+        
+        <br>
+        <div class="table-responsive" style="max-height: 100vh;">
             <table class="table table-hover">
                 <thead class="thead-dark">
                     <tr>
@@ -87,17 +132,6 @@
                               <div class="modal fade" tabindex="-1" role="dialog" id="modal" role="dialog" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                   <div class="modal-content"></div>
-                                </div>
-                              </div>
-                                <div>
-                                    <button id="add-request" class="btn btn-success btn-sm" type="button" name="button" style="background-color: #359e45; border: none;" data-bs-toggle="modal" data-bs-target="#request-modal">
-                                        Order
-                                    </button>
-                                </div>
-                                <div class="modal fade" id="request-modal" tabindex="-1" role="dialog" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                  <div class="modal-content">
-                                  </div>
                                 </div>
                               </div>
                            
