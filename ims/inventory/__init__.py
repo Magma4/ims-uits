@@ -1,1 +1,1 @@
-default_app_config = 'inventory.apps.YourAppConfig'
+default_app_config = 'inventory.apps.InventoryConfig'

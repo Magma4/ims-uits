@@ -5,6 +5,8 @@ from django.utils import timezone
 # Create your models here.
 from django.db import models
 from django.contrib.auth.models import User
+from model_utils.fields import MonitorField
+from model_utils import FieldTracker
 
 class Stock(models.Model):
     name = models.CharField(max_length=100, null=True)
@@ -47,6 +49,8 @@ class Order(models.Model):
     released_by = models.CharField(max_length=100, null=True)
     returned_to = models.CharField(max_length=100, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    status_changed = MonitorField(monitor='status')
+    tracker = FieldTracker()
 
     class Meta:
         verbose_name_plural = 'Order'
