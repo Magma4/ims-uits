@@ -25,7 +25,7 @@
 <div class="row" style="background-color: #1c4f24;" >
     <div class="col-12" style="background-color: #1c4f24;">
         <div class="page-title-box d-flex align-items-center justify-content-between" >
-            <h4 class="page-title mb-0 font-size-18">View Stock</h4>
+            <h4 class="page-title mb-0 font-size-18">View Items</h4>
 
             <div class="page-title-right" style="background-color: #1c4f24;">
                 <ol class="breadcrumb m-0">
@@ -56,7 +56,7 @@
                     {% if request.user.is_superuser %}
                     <div>
                         <button id="add-stock" class="btn btn-primary btn mdi mdi-plus" type="button" name="button" style="background-color: #359e45; border: none;" data-bs-toggle="modal" data-bs-target="#stock-modal">
-                            Add Stock
+                            Add Item
                         </button>
                     </div>
                     <div class="modal fade" id="stock-modal" tabindex="-1" role="dialog" aria-hidden="true">

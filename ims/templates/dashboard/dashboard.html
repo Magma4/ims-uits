@@ -262,14 +262,14 @@
             <li>
                 <a href="{% url 'view-stock' %}" class="waves-effect">
                     <i class="mdi mdi-warehouse"></i>
-                    <span>Stock</span>
+                    <span>Items</span>
                 </a>
             </li>
             {% else %}
             <li>
                 <a href="{% url 'view-stock' %}" class="waves-effect">
                     <i class="mdi mdi-table-headers-eye"></i>
-                    <span>View Stock</span>
+                    <span>View Items</span>
                 </a>
             </li>
             {% endif %}
@@ -327,7 +327,7 @@
                                         </span>
                                     </div>
                                     <div class="flex-1">
-                                        <div class="font-size-16 mt-2">All Orders</div>
+                                        <div class="font-size-16 mt-2">All Requisitions</div>
                                     </div>
                                 </div>
                                 <h4 class="mt-4">
@@ -336,7 +336,7 @@
                                     {% endwith %}</h4>
                                 <div class="row">
                                     <div class="col-6">
-                                        <p class="mb-0" style="margin-top: 1rem;"><span class="text-success me-2"> <a href="{% url 'view-request' %}" style="color: #359e45;">See All Orders</a> </span></p>
+                                        <p class="mb-0" style="margin-top: 1rem;"><span class="text-success me-2"> <a href="{% url 'view-request' %}" style="color: #359e45;">See All Requisitions</a> </span></p>
                                     </div>
                                     
                                       
@@ -362,34 +362,46 @@
                                 <div class="d-flex align-items-start">
                                     <div class="avatar-sm font-size-20 me-3">
                                         <span class="avatar-title bg-soft-primary text-primary rounded">
-                                            <i class="mdi mdi-account-multiple-outline" style="color: #359e45;"></i>
+                                            <i class="mdi mdi-store" style="color: #359e45;"></i>
                                         </span>
                                     </div>
                                     <div class="flex-1">
-                                        <div class="font-size-16 mt-2">Users</div>
+                                        <div class="font-size-16 mt-2">Items</div>
 
                                     </div>
                                 </div>
                                 <h4 class="mt-4">
-                                    {% with workers.count as total_workers %}
-                                        {{ total_workers }}
+                                    {% with items.count as total_items %}
+                                        {{ total_items }}
                                     {% endwith %}
                                 </h4>
                                 <div class="row">
                                     <div class="col-6">
-                                        <p class="mb-0" style="margin-top: 1rem;"><span class="text-success me-2"> <a href="#" style="color: #359e45;">See All Users</a> </span></p>
+                                        <p class="mb-0" style="margin-top: 1rem;"><span class="text-success me-2"> <a href="{% url 'view-stock' %}" style="color: #359e45;">See All Items</a> </span></p>
                                     </div>
-                                    
+                                    <div class="col-6 align-self-center">
+                                        <div>
+                                            <button id="add-stock" class="btn btn-primary btn mdi mdi-plus" type="button" name="button" style="background-color: #359e45; border: none;" data-bs-toggle="modal" data-bs-target="#stock-modal">
+                                                Add Item
+                                            </button>
+                                        </div>
+                                        <div class="modal fade" id="stock-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                          <div class="modal-content">
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
 
-                    <div class="col-xl-6">
+                    <div class="col-xl-9">
                         <div class="card shadow-lg">
                             <div class="card-body" id="">
-                                <h4 class="card-title mb-4">Monthly Orders Report</h4>
+                                <h4 class="card-title mb-4">Monthly Requisitions Report</h4>
                                 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
                                 <div id="timeline-chart"></div>
                                 <script>
@@ -415,7 +427,7 @@
                                             width: 3
                                         },
                                         series: [{
-                                            name: 'Total Orders',
+                                            name: 'Total Request',
                                             data: orderCounts
                                         }],
                                         markers: {
@@ -434,7 +446,7 @@
                                             },
                                             y: {
                                                 formatter: function(value) {
-                                                    return value + " orders";
+                                                    return value + " request(s)";
                                                 }
                                             }
                                         },
@@ -468,74 +480,12 @@
                             </div>
                         </div>
                     
-                    <div class="col-xl-3">
-                        <div class="card shadow-lg">
-                            <div class="card-body">
-                                <div class="d-flex align-items-start">
-                                    <div class="avatar-sm font-size-20 me-3">
-                                        <span class="avatar-title bg-soft-primary text-primary rounded">
-                                            <i class="mdi mdi-store" style="color: #359e45;"></i>
-                                        </span>
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="font-size-16 mt-2">Products</div>
-                                    </div>
-                                </div>
-                                <h4 class="mt-4">
-                                    {% with items.count as total_items %}
-                                        {{ total_items }}
-                                    {% endwith %}
-                                </h4>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <p class="mb-0" style="margin-top: 1rem;"><span class="text-success me-2"> <a href="{% url 'view-stock' %}" style="color: #359e45;">See All Products</a> </span></p>
-                                    </div>
-                                    <div class="col-6 align-self-center">
-                                        <div>
-                                            <button id="add-stock" class="btn btn-primary btn mdi mdi-plus" type="button" name="button" style="background-color: #359e45; border: none;" data-bs-toggle="modal" data-bs-target="#stock-modal">
-                                                Add Stock
-                                            </button>
-                                        </div>
-                                        <div class="modal fade" id="stock-modal" tabindex="-1" role="dialog" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                          <div class="modal-content">
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                </div>
-                            </div>
+                    
                             
-                        </div>
-                        <div class="card shadow-lg">
-                            <div class="card-body">
-                                <div class="d-flex align-items-start">
-                                    <div class="avatar-sm font-size-20 me-3">
-                                        <span class="avatar-title bg-soft-primary text-primary rounded">
-                                            <i class="mdi mdi-home-export-outline" style="color: #359e45;"></i>
-                                        </span>
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="font-size-16 mt-2">
-                                            Total Items In Use: <strong>{{ total_released_quantity }}</strong>
-                                        </div>
-                                    </div>
-                                </div>
-                                <h4 class="mt-4"><marquee behavior="scroll" >
-                                    {% for released_item in released_items %}
-                                    {{ released_item.order_quantity }} {{ released_item.item_name.name|title }}:{{released_item.users.username | title}}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    {% endfor %}
-                                </marquee></h4>
-                                <div class="row">
-                                    <div class="col-7">
-                                        <p class="mb-0"><span class="text-success me-2"> 
-                                            
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </div>
+                        
+                        
+
+                    
 
                     
                 </div>
@@ -545,7 +495,8 @@
                     <div class="col-xl-6">
                         <div class="card shadow-lg">
                             <div class="card-body">
-                                <h4 class="card-title mb-4">Order Analytics</h4>
+                                <h4 class="card-title mb-4">Requisition Analytics</h4>
+                                Total Items In Use: <strong>{{ total_released_quantity }}</strong>
 
                                 <div class="row align-items-center">
                                     <div class="col-sm-12">
@@ -587,12 +538,12 @@
                     <div class="col-xl-6">
                         <div class="card shadow-lg">
                             <div class="card-body">
-                                <h4 class="card-title mb-4">Product In Stock</h4>
+                                <h4 class="card-title mb-4">Items In Stock</h4>
                                 <div id="bar_chart" class="apex-charts">
                                     <script>
                                         var options = {
                                             chart: {
-                                                height: 295,
+                                                height: 320,
                                                 type: 'bar',
                                             },
                                             plotOptions: {
@@ -644,14 +595,14 @@
                     <div class="col-12">
                         <div class="card shadow-lg">
                             <div class="card-body">
-                                <h4 class="card-title" style="text-align: center;">Latest orders</h4>
+                                <h4 class="card-title" style="text-align: center;">Requests</h4>
 
                                 <div class="table-responsive">
                                     <table id="datatable" class="table table-bordered dt-responsive nowrap"
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead >
                                             <tr style="background-color: #1c4f24;">
-                                                <th scope="col">Order ID</th>
+                                                <th scope="col">Request ID</th>
                                                 <th scope="col">Name</th>
                                                 <th scope="col">Item Name</th>
                                                 <th scope="col">Quantity</th>
@@ -701,14 +652,14 @@
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
                                                                     <h1 class="modal-title fs-5"
-                                                                        id="orderModalLabel{{ order.id }}">Order Details
+                                                                        id="orderModalLabel{{ order.id }}">Request Details
                                                                     </h1>
                                                                     <button type="button" class="btn-close"
                                                                         data-bs-dismiss="modal" aria-label="Close"></button>
                                                                 </div>
     
                                                                 <div class="modal-body">
-                                                                    {{order.users.username|title}} ordered
+                                                                    {{order.users.username|title}} requested
                                                                     {{order.order_quantity}}
                                                                     {{order.item_name.name|title}}(s) for
                                                                     {{order.order_description|title}} on {{order.date}}
@@ -748,7 +699,7 @@
                                             </span>
                                         </div>
                                         <div class="flex-1">
-                                            <div class="font-size-16 mt-2">All Orders</div>
+                                            <div class="font-size-16 mt-2">All Requests</div>
                                         </div>
                                     </div>
                                     <h4 class="mt-4">{{ order_count }}</h4>
@@ -781,7 +732,7 @@
                                 <div class="card-body">
                                     <div class="row align-items-center" >
                                         <div class="col-8">
-                                            <p class="mb-2">Products in use</p>
+                                            <p class="mb-2">Items in use</p>
                                             <h4 class="mb-0">{{ released_orders }}</h4>
                                         </div>
                                         <div class="col-4">
@@ -804,7 +755,7 @@
                                 <div class="card-body">
                                     <div class="row align-items-center">
                                         <div class="col-8">
-                                            <p class="mb-2">Pending Orders</p>
+                                            <p class="mb-2">Pending Requests</p>
                                             <h4 class="mb-0">{{ pending_orders }}</h4>
                                         </div>
                                         <div class="col-4">
@@ -833,7 +784,7 @@
                                             </span>
                                         </div>
                                         <div class="flex-1">
-                                            <div class="font-size-16 mt-2">Products</div>
+                                            <div class="font-size-16 mt-2">Items</div>
                                         </div>
                                     </div>
                                     <h4 class="mt-4">{% with items.count as total_items %}
@@ -862,18 +813,18 @@
                 <div class="col-md-12">
                     <div class="card shadow-lg">
                         <div class="card-body">
-                            <h4 class="card-title" style="text-align: center;">Your Orders</h4>
+                            <h4 class="card-title" style="text-align: center;">Your Requests</h4>
 
                             <div class="table-responsive">
                                 <table id="datatable" class="table table-bordered dt-responsive nowrap"
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead >
                                         <tr>
-                                            <th scope="col">Order ID</th>
+                                            <th scope="col">Request ID</th>
                                             <th scope="col">Item Name</th>
                                             <th scope="col">Description</th>
                                             <th scope="col">Quantity</th>
-                                            <th scope="col">Date Ordered</th>
+                                            <th scope="col">Request Date</th>
                                             <th scope="col">Date Returned</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Actions</th>
@@ -934,7 +885,7 @@
                                                                 <h4 class="alert alert-warning" style="text-align: center;">
                                                                     <i class="mdi mdi-alert-outline me-2"></i>
                                                                     <div role="alert" style="text-align: center;">
-                                                                        Are you sure you want to delete this order?
+                                                                        Are you sure you want to delete this request?
                                                                     </div>
                                                                 </h4>
                                                             </div>

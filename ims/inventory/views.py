@@ -16,7 +16,6 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import PatternFill, Font, Alignment
 from django.db.models.functions import TruncMonth
 from django.db.models import Count
-
 from django.template.loader import render_to_string
 from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib import colors
@@ -42,7 +41,7 @@ class Index(generic.ListView):
 class OrderCreateView(BSModalCreateView):
     template_name = 'dashboard/add_request.html'
     form_class = OrderForm
-    success_message = 'Order was created.'
+    success_message = 'Request was created.'
     success_url = reverse_lazy('dashboard')
 
     def form_valid(self, form):
@@ -52,9 +51,9 @@ class OrderCreateView(BSModalCreateView):
         stock_quantity = instance.item_name.quantity
 
         if order_quantity <= stock_quantity:
-            messages.success(self.request, "Order successfully created")
+            messages.success(self.request, "Request successfully created")
         else:
-            messages.error(self.request, "Order quantity cannot be more than stock quantity")
+            messages.error(self.request, "Requested quantity cannot be more than stock quantity")
             # Redirecting to the same page if the form is not valid
             return HttpResponseRedirect(self.request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
@@ -78,9 +77,9 @@ class OrderUpdateView(BSModalUpdateView):
         stock_quantity = instance.item_name.quantity
 
         if order_quantity <= stock_quantity:
-            messages.success(self.request, "Order updated successfully")
+            messages.success(self.request, "Request updated successfully")
         else:
-            messages.error(self.request, "Order quantity cannot be more than stock quantity")
+            messages.error(self.request, "Requested quantity cannot be more than stock quantity")
             # Redirecting to the same page if the form is not valid
             return HttpResponseRedirect(self.request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
@@ -103,7 +102,7 @@ class OrderUpdateView(BSModalUpdateView):
 class OrderDeleteView(BSModalDeleteView):
     model = Order
     template_name = 'dashboard/order_delete.html'
-    success_message = 'Order was deleted.'
+    success_message = 'Request was deleted.'
     
     def get_success_url(self):
         # Check if the user is a superuser
@@ -121,7 +120,7 @@ class StockIndex(generic.ListView):
 class StockCreateView(BSModalCreateView):
     template_name = 'dashboard/add_stock.html'  # Ensure you create this template
     form_class = StockForm
-    success_message = 'Stock was created.'
+    success_message = 'Item was added.'
     success_url = reverse_lazy('dashboard')
 
     def form_valid(self, form):
@@ -129,7 +128,7 @@ class StockCreateView(BSModalCreateView):
         name = form.cleaned_data.get('name')  # Assuming 'name' is a field in StockForm
         if Stock.objects.filter(name=name).exists():
             # Add an error message to the form
-            messages.error(self.request, 'Product with this name already exists.')
+            messages.error(self.request, 'Item with this name already exists.')
             return self.form_invalid(form)  # Return the form with errors
 
         return super().form_valid(form)
@@ -140,13 +139,13 @@ class StockUpdateView(BSModalUpdateView):
     model = Stock
     template_name = 'dashboard/stock_update.html'
     form_class = StockForm
-    success_message = 'Product was updated.'
+    success_message = 'Item was updated.'
     success_url = reverse_lazy('view-stock')
 
 class StockDeleteView(BSModalDeleteView):
     model = Stock
     template_name = 'dashboard/stock_delete.html'
-    success_message = 'Product was deleted.'
+    success_message = 'Item was deleted.'
     success_url = reverse_lazy('view-stock')
 
 def celery(request):
@@ -239,10 +238,10 @@ def viewrequest(request):
             stock_quantity = instance.item_name.quantity
             if order_quantity <= stock_quantity:
                 instance.save()
-                messages.success(request, "Order succesfully created")
+                messages.success(request, "Request succesfully created")
                 return redirect('dashboard')
             else:
-                messages.error(request, "Order quantity cannot be more than stock quantity")
+                messages.error(request, "Requested quantity cannot be more than stock quantity")
                 return redirect('add-request')  # Redirect back to the requisition page
     else:
         form = OrderForm()
@@ -288,16 +287,16 @@ def update_order_status(request, order_id):
             order.status = new_status
             order.released_by = request.user.username  # Set the released_by field to the username of the admin
             order.save()
-            messages.success(request, f"Order {order.id} has been released by {request.user.username}.")
+            messages.success(request, f"Request with ID {order.id} has been released by {request.user.username}.")
         elif new_status == 'returned':
             order.status = new_status
             order.returned_to = request.user.username  # Set the returned_to field to the username of the admin
             order.save()
-            messages.success(request, f"Order {order.id} has been marked as received by {request.user.username}.")
+            messages.success(request, f"Request with ID {order.id} has received by {request.user.username}.")
         else:
             order.status = new_status
             order.save()
-            messages.success(request, f"Order {order.id} status has been updated.")
+            messages.success(request, f"Request {order.id} status has been updated.")
     
     return redirect('view-request')
 
@@ -468,8 +467,8 @@ def order_excel(request):
     if is_valid_queryparam(received_by):
         ol = ol.filter(returned_to__icontains=received_by)
 
-    order_id = order_id if order_id else "All Order ID's"
-    name = name if name else "All Orders"
+    order_id = order_id if order_id else "All Request ID's"
+    name = name if name else "All Requests"
     itemName = itemName if itemName else "All Items"
     date_created = date_created if date_created else "2024 - 2090"
     date_returned = date_returned if date_returned else "2024 - 2090"
@@ -481,7 +480,7 @@ def order_excel(request):
     date_to = request.GET.get('date_to')
 
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = f'attachment; filename="Order Report {date_from} to {date_to}.xlsx"'
+    response['Content-Disposition'] = f'attachment; filename="Request Report {date_from} to {date_to}.xlsx"'
     workbook = Workbook()
 
     worksheet = workbook.active
@@ -489,15 +488,15 @@ def order_excel(request):
     worksheet.merge_cells('A1:I1')
     worksheet.merge_cells('A2:I2')
     first_cell = worksheet.cell(row=1, column=1)
-    first_cell.value = f"Report For Orders Generated on {timezone.now()}"
+    first_cell.value = f"Report For Requests Generated on {timezone.now()}"
 
     first_cell.font = Font(bold=True)
     first_cell.alignment = Alignment(horizontal="center", vertical="center")
 
-    worksheet.title = f'Order List {date_from} to {date_to}'
+    worksheet.title = f'Request List {date_from} to {date_to}'
 
     # Define the titles for columns
-    columns = ['Username', 'Order ID', 'Item Name', 'Quantity', 'Date Created', 'Date Received', 'Status', 'Released By', 'Received By']
+    columns = ['Username', 'Request ID', 'Item Name', 'Quantity', 'Date Created', 'Date Received', 'Status', 'Released By', 'Received By']
     row_num = 3
 
     # Assign the titles for each cell of the header
@@ -581,11 +580,11 @@ def order_pdf(request):
 
     # Create a PDF report
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="Order_Report.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="Inventory_Request_Report.pdf"'
 
     # Define the data for PDF
     data = []
-    header = ['Username', 'Order ID', 'Item Name', 'Quantity', 'Date Created', 'Date Received', 'Status', 'Released By', 'Received By']
+    header = ['Username', 'Request ID', 'Item Name', 'Quantity', 'Date Created', 'Date Received', 'Status', 'Released By', 'Received By']
     data.append(header)
     for order in ol:
         data.append([order.users.username, order.id, order.item_name.name, order.order_quantity,
@@ -611,11 +610,11 @@ def order_pdf(request):
     styles = getSampleStyleSheet()
     
     elements = []
-    elements.append(Paragraph(f"A Report of Orders Generated on {timezone.now()}", styles['title']))
+    elements.append(Paragraph(f"A Report of Requests Generated on {timezone.now()}", styles['title']))
     elements.append(Paragraph(f"Filters used:", styles['title']))
-    elements.append(Paragraph(f"Order ID: {order_id if order_id else 'All'}, Name: {name if name else 'All'}, Item Name: {itemName if itemName else 'All'}, Date Created: {date_created if date_created else 'All'}, Date Returned: {date_returned if date_returned else 'All'}, Status: {status if status else 'All'}, Released By: {released_by if released_by else 'All'}, Received By: {received_by if received_by else 'All'}", styles['Normal']))
+    elements.append(Paragraph(f"Request ID: {order_id if order_id else 'All'}, Name: {name if name else 'All'}, Item Name: {itemName if itemName else 'All'}, Date Created: {date_created if date_created else 'All'}, Date Returned: {date_returned if date_returned else 'All'}, Status: {status if status else 'All'}, Released By: {released_by if released_by else 'All'}, Received By: {received_by if received_by else 'All'}", styles['Normal']))
     elements.append(table)
-    elements.append(Paragraph(f"Total Count of Orders: {total_count}", styles['Normal']))
+    elements.append(Paragraph(f"Total Count of Requests: {total_count}", styles['Normal']))
     
     doc.build(elements)
     return response

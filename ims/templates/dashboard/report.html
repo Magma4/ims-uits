@@ -21,7 +21,7 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="btn-group me-1 mt-2">
-                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button"
+                    <button class="btn btn-info btn-sm dropdown-toggle" type="button"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Download Report <i class="mdi mdi-chevron-down"></i>
                     </button>
@@ -44,7 +44,7 @@
                         <input type="text" class="form-control" placeholder="Username" name='name' {% if name %} value="{{name}}" {% endif %}>
                     </div>
                     <div class="col">
-                        <label>Order ID</label>
+                        <label>Request ID</label>
                         <input type="text" class="form-control" placeholder="Order ID" name='id' {% if order_id %} value="{{order_id}}" {% endif %}>
                     </div>
                     <div class="col">
@@ -101,7 +101,7 @@
         </div>
         <hr>
         
-            <h3 style="text-align: center;">Generate Report</h3>
+            <h3 style="text-align: center;">Report</h3>
         <hr>
         <div class="col-12">
             <div style="max-height: 70vh; overflow-y: auto;">
@@ -109,7 +109,7 @@
                     <thead class="thead-dark">
                     <tr>
                         <th scope="col">Name</th>
-                        <th scope="col">Order ID</th>
+                        <th scope="col">Request ID</th>
                         <th scope="col">Item Name</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Date Created</th>
