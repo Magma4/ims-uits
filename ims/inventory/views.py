@@ -30,7 +30,7 @@ from bootstrap_modal_forms.generic import (
   BSModalUpdateView,
   BSModalDeleteView
 )
-from .tasks import *
+
 
 class Index(generic.ListView):
     model = Order
@@ -41,7 +41,7 @@ class Index(generic.ListView):
 class OrderCreateView(BSModalCreateView):
     template_name = 'dashboard/add_request.html'
     form_class = OrderForm
-    success_message = 'Request was created.'
+    success_message = 'Request created.'
     success_url = reverse_lazy('dashboard')
 
     def form_valid(self, form):
@@ -51,7 +51,7 @@ class OrderCreateView(BSModalCreateView):
         stock_quantity = instance.item_name.quantity
 
         if order_quantity <= stock_quantity:
-            messages.success(self.request, "Request successfully created")
+            messages.success(self.request, "Request created")
         else:
             messages.error(self.request, "Requested quantity cannot be more than stock quantity")
             # Redirecting to the same page if the form is not valid
@@ -148,9 +148,6 @@ class StockDeleteView(BSModalDeleteView):
     success_message = 'Item was deleted.'
     success_url = reverse_lazy('view-stock')
 
-def celery(request):
-    sleepy(10)
-    return HttpResponse('Done!')
 
 @login_required(login_url='user-login')
 def dashboard(request):
@@ -228,7 +225,14 @@ def viewstock(request):
 
 @login_required
 def viewrequest(request):
-    orders = Order.objects.annotate(month=ExtractMonth('date'),day=ExtractDay('date'),year=ExtractYear('date')).order_by('-month', '-day','year')
+    # Annotate orders and order them
+    orders = Order.objects.annotate(month=ExtractMonth('date'), day=ExtractDay('date'), year=ExtractYear('date')).order_by('-id')
+    
+    # Paginate the orders, showing 10 per page
+    paginator = Paginator(orders, 10)  # Show 10 orders per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
@@ -238,15 +242,16 @@ def viewrequest(request):
             stock_quantity = instance.item_name.quantity
             if order_quantity <= stock_quantity:
                 instance.save()
-                messages.success(request, "Request succesfully created")
+                messages.success(request, "Request successfully created")
                 return redirect('dashboard')
             else:
                 messages.error(request, "Requested quantity cannot be more than stock quantity")
                 return redirect('add-request')  # Redirect back to the requisition page
     else:
         form = OrderForm()
+
     context = {
-        'orders': orders,
+        'page_obj': page_obj,
         'form': form,
     }
     return render(request, 'dashboard/view_request.html', context)
@@ -269,6 +274,7 @@ def instructions(request):
 
 @login_required
 def employees_detail(request, pk):
+    """This function renders a preview page of users on the system"""
     workers = User.objects.get(id=pk)
     context={
         'workers' : workers,
@@ -278,6 +284,7 @@ def employees_detail(request, pk):
 
 @login_required
 def update_order_status(request, order_id):
+    """This function updates order status"""
     if request.method == 'POST' and request.user.is_superuser:
         order = Order.objects.get(id=order_id)
         new_status = request.POST.get('status')
@@ -307,7 +314,7 @@ def update_order_status(request, order_id):
 def searchdata(request):
     q = request.GET.get('query') # Get the query parameter from the request
     if q:
-        orders = Order.objects.filter(Q(users__username__icontains=q) | Q(order_description__icontains=q) | Q(users__first_name__icontains=q) | Q(users__last_name__icontains=q) | Q(id=q))
+        orders = Order.objects.filter(Q(users__username__icontains=q) | Q(order_description__icontains=q) | Q(users__first_name__icontains=q) | Q(users__last_name__icontains=q))
     else:
         orders = Order.objects.all()
         messages.error(request, "No results found")

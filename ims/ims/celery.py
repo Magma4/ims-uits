@@ -8,11 +8,15 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ims.settings')
 
 app = Celery('ims')
 app.config_from_object('django.conf:settings', namespace='CELERY')
-app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
+app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
     'send_due_reminders_every_morning': {
         'task': 'inventory.tasks.send_reminder_emails',
-        'schedule': crontab(hour=13, minute=18), 
+        'schedule': crontab(hour=13, minute=32), 
     },
 }
+
+@app.task(bind=True)
+def debug_task(self):
+    print(f'Request: {self.request!r}')
