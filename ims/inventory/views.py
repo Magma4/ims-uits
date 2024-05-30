@@ -10,6 +10,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from openpyxl import Workbook
 from openpyxl.styles import *
 import decimal
+from django.contrib.auth.models import Group
 from datetime import datetime
 from collections import defaultdict
 from openpyxl.utils import get_column_letter
@@ -182,6 +183,8 @@ def dashboard(request):
 
     released_items = Order.objects.filter(status='released').select_related('item_name')
 
+    is_sub_admin = user.groups.filter(name='sub-admin').exists()
+
     context = {
         'order_count': order_count,
         'items' : items,
@@ -194,7 +197,8 @@ def dashboard(request):
         'released_orders' : released_orders,
         'pending_orders' : pending_orders,
         'released_percentage': released_percentage,
-        'pending_percentage': pending_percentage
+        'pending_percentage': pending_percentage,
+        'is_sub_admin' : is_sub_admin
     }
     
     return render(request, 'dashboard/dashboard.html', context)
@@ -215,10 +219,14 @@ def viewstock(request):
             return redirect('stock')
     else:
         form = StockForm()
+    
+    user = request.user
+    is_sub_admin = user.groups.filter(name='sub-admin').exists()
     mydictionary = {
         "stocks" : items,
         "form" : form,
-        "orders" : orders
+        "orders" : orders,
+        'is_sub_admin' : is_sub_admin
     }
     return render(request, 'dashboard/view_stock.html', context=mydictionary)
 
@@ -232,6 +240,8 @@ def viewrequest(request):
     paginator = Paginator(orders, 10)  # Show 10 orders per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+    user = request.user
+    is_sub_admin = user.groups.filter(name='sub-admin').exists()
 
     if request.method == 'POST':
         form = OrderForm(request.POST)
@@ -253,6 +263,7 @@ def viewrequest(request):
     context = {
         'page_obj': page_obj,
         'form': form,
+        'is_sub_admin' : is_sub_admin
     }
     return render(request, 'dashboard/view_request.html', context)
 
@@ -285,7 +296,9 @@ def employees_detail(request, pk):
 @login_required
 def update_order_status(request, order_id):
     """This function updates order status"""
-    if request.method == 'POST' and request.user.is_superuser:
+    user = request.user
+    is_sub_admin = user.groups.filter(name='sub-admin').exists()
+    if request.method == 'POST' and request.user.is_superuser or is_sub_admin:
         order = Order.objects.get(id=order_id)
         new_status = request.POST.get('status')
         
@@ -426,6 +439,9 @@ def report(request):
     except EmptyPage:
         ol = paginator.page(paginator.num_pages)
 
+    user = request.user
+    is_sub_admin = user.groups.filter(name='sub-admin').exists()
+
     context = {
         'orders1' : orders,
         'order_list': ol,
@@ -441,7 +457,8 @@ def report(request):
         'available_months': available_months,
         'released_by_options': released_by_set,
         'received_by_options': received_by_set,
-        'status_options' : status_options
+        'status_options' : status_options,
+        'is_sub_admin' : is_sub_admin
     }
     return render(request, 'dashboard/report.html', context)
 

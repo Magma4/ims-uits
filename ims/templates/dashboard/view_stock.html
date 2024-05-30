@@ -93,8 +93,10 @@
                         <th scope="col">Name</th>
                         <th scope="col">Description</th>
                         <th scope="col">Available</th>
-                        {% if request.user.is_superuser %}
+                        {% if request.user.is_superuser or is_sub_admin%}
                         <th scope="col">Total</th>
+                        {% endif %}
+                        {% if request.user.is_superuser %}
                         <th scope="col">Actions</th>
                         {% endif %}
                         
@@ -115,8 +117,10 @@
                                 <div class="progress-bar {% if stock.get_total_quantity < 10 %}bg-danger{% elif stock.get_total_quantity < 20 %}bg-warning{% else %}bg-success{% endif %}" role="progressbar" style="width: {{ stock.get_total_quantity }}%;" aria-valuenow="{{ stock.get_total_quantity }}" aria-valuemin="0" aria-valuemax="100">{{ stock.get_total_quantity }}</div>
                             </div>
                         </td>
-                        {% if request.user.is_superuser %}
+                        {% if request.user.is_superuser or is_sub_admin %}
                         <td>{{ stock.quantity }}</td>
+                        {% endif %}
+                        {% if request.user.is_superuser %}
                         <td colspan="12">
                             <button type="button" class="stock-update bs-modal btn btn-sm btn-primary" data-form-url="{% url 'stock-update' stock.id %}">
                                 Edit

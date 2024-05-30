@@ -64,17 +64,14 @@
                                     <td>{{ order.order_quantity }}</td>
                                     <td>{{ order.date }}</td>
                                     <td>
-                                        <form action="{% url 'update_order_status' order.id %}" method="post">
+                                        <form id="updateOrderForm-{{ order.id }}" action="{% url 'update_order_status' order.id %}" method="post">
                                             {% csrf_token %}
-                                            <select name="status" class="form-select" {% if not request.user.is_superuser %}disabled{% endif %}>
+                                            <select name="status" class="form-select" {% if not request.user.is_superuser and not is_sub_admin %}disabled{% endif %} onchange="submitForm('{{ order.id }}')">
                                                 <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
                                                 <option value="approved" {% if order.status == 'approved' %}selected{% endif %}>Approved</option>
                                                 <option value="released" {% if order.status == 'released' %}selected{% endif %}>Released</option>
                                                 <option value="returned" {% if order.status == 'returned' %}selected{% endif %}>Returned</option>
                                             </select>
-                                            {% if request.user.is_superuser %}
-                                            <button type="submit" class="btn-sm {% if order.status == 'pending' %} btn btn-warning {% elif order.status == 'approved' %} btn btn-success {% elif order.status == 'released' %} btn btn-danger {% else %} btn btn-secondary{% endif %}">Update</button>
-                                            {% endif %}
                                         </form>
                                     </td>
                                     <td scope="col">
@@ -205,4 +202,11 @@
         </div>
     </div>
 </div>
+
+<script>
+    function submitForm(orderId) {
+        var form = document.getElementById('updateOrderForm-' + orderId);
+        form.submit();
+    }
+</script>
 {% endblock %}
