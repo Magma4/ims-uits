@@ -287,8 +287,10 @@ def instructions(request):
 def employees_detail(request, pk):
     """This function renders a preview page of users on the system"""
     workers = User.objects.get(id=pk)
+    is_sub_admin = user.groups.filter(name='sub-admin').exists()
     context={
         'workers' : workers,
+        'is_sub_admin' : is_sub_admin,
     }
 
     return render(request, 'dashboard/employees_detail.html', context)
@@ -325,20 +327,25 @@ def update_order_status(request, order_id):
 
 @login_required
 def searchdata(request):
+    user = request.user
+    is_sub_admin = user.groups.filter(name='sub-admin').exists()
     q = request.GET.get('query') # Get the query parameter from the request
     if q:
-        orders = Order.objects.filter(Q(users__username__icontains=q) | Q(order_description__icontains=q) | Q(users__first_name__icontains=q) | Q(users__last_name__icontains=q))
+        orders = Order.objects.filter(Q(order_description__icontains=q) )
     else:
         orders = Order.objects.all()
         messages.error(request, "No results found")
 
     context = {
         "orders": orders,
+        'is_sub_admin' : is_sub_admin
     }
     return render(request, 'dashboard/view_request.html', context=context)
 
 @login_required
 def searchdata2(request):
+    user = request.user
+    is_sub_admin = user.groups.filter(name='sub-admin').exists()
     q = request.GET.get('query') # Get the query parameter from the request
     if q:
         workers = User.objects.filter(Q(username__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q))
@@ -348,11 +355,14 @@ def searchdata2(request):
 
     context = {
         "workers": workers,
+        'is_sub_admin' : is_sub_admin
     }
     return render(request, 'dashboard/employees.html', context=context)
 
 @login_required
 def searchdata3(request):
+    user = request.user
+    is_sub_admin = user.groups.filter(name='sub-admin').exists()
     q = request.GET.get('query')  # Get the query parameter from the request
     if q:
         stocks = Stock.objects.filter(Q(name__icontains=q) | Q(description__icontains=q) )
@@ -362,6 +372,7 @@ def searchdata3(request):
 
     context = {
         "stocks": stocks,
+        'is_sub_admin' : is_sub_admin
     }
     return render(request, 'dashboard/view_stock.html', context=context)
 

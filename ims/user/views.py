@@ -33,7 +33,13 @@ def logout_view(request):
     return render(request, 'user/logout.html')
 
 def profile(request):
-    return render(request, 'user/profile.html')
+    user = request.user
+    is_sub_admin = user.groups.filter(name='sub-admin').exists()
+
+    context ={
+        'is_sub_admin' : is_sub_admin
+    }
+    return render(request, 'user/profile.html', context)
 
 def profile_update(request):
     if request.method == 'POST':
