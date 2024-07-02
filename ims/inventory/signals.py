@@ -7,8 +7,8 @@ from .models import Order
 def send_status_update_email(sender, instance, created, **kwargs):
     if not created and instance.tracker.has_changed('status'):
         send_mail(
-            'Order Status Updated',
-            f'Hello {instance.users.username}, the status of your order for {instance.item_name.name} has been updated from {instance.tracker.previous("status")} to {instance.status}.',
+            'Request Status Updated',
+            f'Hello {instance.users.username}, the status of your request for {instance.request_quantity} {instance.item_name.name}(s) has been updated from {instance.tracker.previous("status")} to {instance.status}.',
             'uitsims24@gmail.com',
             [instance.users.email],
             fail_silently=False,

@@ -508,7 +508,7 @@
                                                         {% if order.status == 'released' %}
                                                             {
                                                                 name: "{{ order.item_name|title }}",
-                                                                quantity: {{ order.order_quantity }},
+                                                                quantity: {{ order.request_quantity }},
                                                             },
                                                         
                                                         {% endif %}
@@ -596,7 +596,7 @@
                     <div class="col-12">
                         <div class="card shadow-lg">
                             <div class="card-body">
-                                <h4 class="card-title" style="text-align: center;">Requests</h4>
+                                <h4 class="card-title" style="text-align: center;">Overdue Requests({{overdue_orders_total}})</h4>
 
                                 <div class="table-responsive">
                                     <table id="datatable" class="table table-bordered dt-responsive nowrap"
@@ -605,70 +605,40 @@
                                             <tr style="background-color: #1c4f24;">
                                                 <th scope="col">Request ID</th>
                                                 <th scope="col">Name</th>
+                                                <th scope="col">Issued To</th>
                                                 <th scope="col">Item Name</th>
                                                 <th scope="col">Quantity</th>
-                                                <th scope="col">Department</th>
                                                 <th scope="col">Mobile No</th>
+                                                <th scope="col">Released By</th>
                                                 <th scope="col">Date</th>
-                                                <th scope="col">Status</th>
+                                                <th scope="col">Due Date</th>
                                                 <th scope="col">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for order in all_orders %}
+                                            {% for overdue in overdue_orders %}
                                             <tr>
-                                                <td>{{order.id}}</td>
-                                                <td ><img src="{{order.users.profile.image.url}}" alt=" "
-                                                    class="rounded-circle img-fluid" style="width: 35px;"> {{ order.users.first_name|title }} {{ order.users.last_name|title }}</td>
-                                                <td>{{ order.item_name|title }}</td>
-                                                <td>{{ order.order_quantity }}</td>
-                                                <td>{{ order.users.profile.department|upper }}</td>
-                                                <td>{{ order.users.profile.contact|title }}</td>
-                                                <td>{{ order.date}}</td>
+                                                <td>{{overdue.id}}</td>
+                                                <td ><img src="{{overdue.users.profile.image.url}}" alt=" "
+                                                    class="rounded-circle img-fluid" style="width: 35px;"> {{ overdue.users.first_name|title }} {{ overdue.users.last_name|title }}</td>
                                                 <td>
-                                                    <span class="badge 
-                                                        {% if order.status == 'pending' %}
-                                                            badge-soft-warning
-                                                        {% elif order.status == 'approved' %}
-                                                            badge-soft-success
-                                                        {% elif order.status == 'released' %}
-                                                            badge-soft-danger
-                                                        {% elif order.status == 'returned' %}
-                                                            badge-soft-secondary
-                                                        {% endif %}
-                                                        font-size-12">
-                                                        {{ order.status|title }}
-                                                    </span>
+                                                    {% if overdue.issued_to == None %}
+                                                        Self
+                                                    {% else %}
+                                                        {{ overdue.issued_to|title }}
+                                                    {% endif %}
                                                 </td>
-                                                <td><!-- Button trigger modal -->
-                                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                                        data-bs-target="#orderModal{{ order.id }}">
-                                                        View
-                                                    </button>
-    
-                                                    <!-- Modal -->
-                                                    <div class="modal fade" id="orderModal{{ order.id }}" tabindex="-1"
-                                                        aria-labelledby="orderModalLabel{{ order.id }}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h1 class="modal-title fs-5"
-                                                                        id="orderModalLabel{{ order.id }}">Request Details
-                                                                    </h1>
-                                                                    <button type="button" class="btn-close"
-                                                                        data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-    
-                                                                <div class="modal-body">
-                                                                    {{order.users.username|title}} requested
-                                                                    {{order.order_quantity}}
-                                                                    {{order.item_name.name|title}}(s) for
-                                                                    {{order.order_description|title}} on {{order.date}}
-                                                                </div>
-    
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                <td>{{ overdue.item_name|title }}</td>
+                                                <td>{{ overdue.request_quantity }}</td>
+                                                <td>{{ overdue.users.profile.contact|title }}</td>
+                                                <td>{{ overdue.released_by|title }}</td>
+                                                <td>{{ overdue.date}}</td>
+                                                <td>{{ overdue.intended_date_of_return}}</td>
+                                                <td><form id="send_email" method="POST" action="{% url 'dashboard' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="order_id" value="{{ overdue.id }}">
+                                                    <button class="btn btn-secondary" type="submit" name="send_email">Send Reminder Email</button>
+                                                </form>
                                                 </td>
                                             </tr>
                                             {% endfor %}
@@ -757,7 +727,7 @@
                                     <div class="row align-items-center">
                                         <div class="col-8">
                                             <p class="mb-2">Pending Requests</p>
-                                            <h4 class="mb-0">{{ pending_orders }}</h4>
+                                            <h4 class="mb-0">{{ pending_user_orders }}</h4>
                                         </div>
                                         <div class="col-4">
                                             <div class="text-end">
@@ -823,6 +793,7 @@
                                         <tr>
                                             <th scope="col">Request ID</th>
                                             <th scope="col">Item Name</th>
+                                            <th scope="col">Issued To</th>
                                             <th scope="col">Description</th>
                                             <th scope="col">Quantity</th>
                                             <th scope="col">Request Date</th>
@@ -837,20 +808,27 @@
                                         <tr>
                                             <td >{{ order.id}}</td>
                                             <td>{{ order.item_name.name|title }}</td>
-                                            <td>{{ order.order_description|title }}</td>
-                                            <td>{{ order.order_quantity }}</td>
+                                            <td>
+                                                {% if order.issued_to == None %}
+                                                    Self
+                                                {% else %}
+                                                    {{ order.issued_to|title }}
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ order.request_description|title }}</td>
+                                            <td>{{ order.request_quantity }}</td>
                                             <td>{{ order.date }}</td>
                                             <td>{{ order.returned_date }}</td>
                                             <td>
                                                 <span class="badge 
                                                     {% if order.status == 'pending' %}
-                                                        badge-soft-warning
+                                                        text-bg-warning
                                                     {% elif order.status == 'approved' %}
-                                                        badge-soft-success
+                                                        text-bg-success
                                                     {% elif order.status == 'released' %}
-                                                        badge-soft-danger
+                                                        text-bg-danger
                                                     {% elif order.status == 'returned' %}
-                                                        badge-soft-secondary
+                                                        text-bg-secondary
                                                     {% endif %}
                                                     font-size-12">
                                                     {{ order.status|title }}

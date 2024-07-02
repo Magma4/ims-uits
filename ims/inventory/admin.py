@@ -9,7 +9,7 @@ class StockAdmin(admin.ModelAdmin):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('item_name', 'users', 'order_quantity', 'order_description', 'date', 'status')
+    list_display = ('item_name', 'users', 'request_quantity', 'request_description', 'date', 'status')
     list_filter = ('status',)
 
 # class OrderAdmin(admin.ModelAdmin):

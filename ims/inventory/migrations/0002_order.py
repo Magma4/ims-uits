@@ -24,8 +24,8 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("order_quantity", models.PositiveIntegerField(null=True)),
-                ("order_description", models.CharField(max_length=200, null=True)),
+                ("request_quantity", models.PositiveIntegerField(null=True)),
+                ("request_description", models.CharField(max_length=200, null=True)),
                 ("date", models.DateTimeField(auto_now_add=True)),
                 (
                     "stock",

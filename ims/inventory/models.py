@@ -16,7 +16,7 @@ class Stock(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     class Meta:
-        verbose_name_plural = 'Stock'
+        verbose_name_plural = 'Stock'   
 
     def __str__(self):
         return f'{self.name}'
@@ -26,7 +26,7 @@ class Stock(models.Model):
         orders = Order.objects.filter(item_name=self)
         for order in orders:
             if order.status == 'released':
-                total_quantity -= order.order_quantity
+                total_quantity -= order.request_quantity
             elif order.status == 'returned':
                 total_quantity == total_quantity
         return total_quantity
@@ -41,11 +41,13 @@ class Order(models.Model):
     )
     item_name = models.ForeignKey(Stock, on_delete=models.CASCADE, null=True)
     users = models.ForeignKey(User, models.CASCADE, null=True)
-    order_quantity = models.PositiveIntegerField(null=True)
-    order_description = models.CharField(max_length=200, null=True)
+    request_quantity = models.PositiveIntegerField(null=True)
+    issued_to = models.CharField(max_length=200, null=True, blank=users)
+    request_description = models.CharField(max_length=300, null=True)
     date = models.DateTimeField(auto_now_add=True)
     returned_date = models.DateTimeField(null=True, blank=True)  # New field for returned date
     intended_date_of_return = models.DateField(null=True, blank=True)
+    approved_by = models.CharField(max_length=100, null=True)
     released_by = models.CharField(max_length=100, null=True)
     returned_to = models.CharField(max_length=100, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
@@ -60,7 +62,7 @@ class Order(models.Model):
             username = self.users.username
         else:
             username = "Unknown User"
-        return f'{self.order_quantity} - {self.item_name.name} ordered by {username} on {self.date} (Status: {self.get_status_display()})'
+        return f'{self.request_quantity} - {self.item_name.name} ordered by {username} on {self.date} (Status: {self.get_status_display()})'
 
     def save(self, *args, **kwargs):
         if self.status == 'returned':

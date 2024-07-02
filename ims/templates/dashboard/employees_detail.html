@@ -1,55 +1,22 @@
 {% extends 'dashboard/dashboard.html' %}
-{% block title %} Employee Details {% endblock %}
+{% block title %} Profile {% endblock %}
 {% block content %}
 
-<div class="row">
-  <div class="col-md-2">
-      <div class="card" style="width: 11rem;height: 92vh; border: none; border-radius: 0%;display: contents;">
-          <div class="card-body">
-              <div class="offcanvas-body">
-                  <ul class="navbar-nav justify-content-end flex-grow-1 ">
+{% load static %}
+<div class="row" style="background-color: #1c4f24;" >
+  <div class="col-12" style="background-color: #1c4f24;">
+      <div class="page-title-box d-flex align-items-center justify-content-between" >
+          <h4 class="page-title mb-0 font-size-18">Profile</h4>
 
-                      <li class="nav-item" style="margin-top: 0.5rem;">
-                          <a class="nav-link " aria-current="page" href="{% url 'dashboard' %}"><i
-                                  class="fa fa-tachometer"
-                                  style="margin-right: 5px;margin-top: 1rem;"></i>Dashboard</a>
-                      </li>
-
-                      <!-- <li class="nav-item">
-                          <a class="nav-link" href="{% url 'requisition' %}"><i class="fa fa-plus-square"
-                                  style="margin-right: 5px;margin-top: 1rem;"></i>Requisitions</a>
-                      </li> -->
-
-                      <li class="nav-item">
-                          <a class="nav-link" href="{% url 'stock' %}"><i class="fa fa-table"
-                                  style="margin-right: 5px;margin-top: 1rem;"></i>Stock</a>
-                      </li>
-
-                      {% if user.is_authenticated and user.is_staff and user.is_superuser %}
-                      <li class="nav-item">
-                          <a class="nav-link active" href="{% url 'employees' %}"><i class="fa fa-users"
-                                  style="margin-right:5px;margin-top: 1rem;"></i>Employees</a>
-                      </li>
-                      <li class="nav-item">
-                          <a class="nav-link" href="{% url 'report' %}"><i class="fa fa-book"
-                                  style="margin-right: 5px;margin-top: 1rem;"></i>Report</a>
-                      </li>
-                      
-                      {% endif %}
-                      <li class="nav-item">
-                        <a class="nav-link" href="{% url 'instructions' %}"><i class="fa fa-map"
-                                style="margin-right: 5px;margin-top: 1rem;"></i>Instructions</a>
-                    </li>
-                      <li class="nav-item">
-                          <a class="nav-link" href="{% url 'user-logout' %}"><i class="fa fa-sign-out"
-                                  style="margin-right: 5px;margin-top: 1rem;"></i>Sign Out</a>
-                      </li>
-
-                  </ul>
-              </div>
+          <div class="page-title-right" style="background-color: #1c4f24;">
+              <ol class="breadcrumb m-0">
+                  <li class="breadcrumb-item active">Welcome {{user.first_name|title}} {{user.last_name|title}}</li>
+              </ol>
           </div>
+
       </div>
   </div>
+</div>
 
 
 <div class="col-md-10" style="margin: 1rem auto 0 auto; display:block;">
@@ -57,12 +24,12 @@
     <div class="card-body">
       <h5 class="card-title" style="margin-top: 2rem; text-align: center;">
         Staff Profile </h5>
-      <div class="row" style="margin-top: 7rem;">
+      <div class="row" style="margin-top: 2rem;">
         <div class="col-md-12">
           <div style="max-height: 70vh;;">
             <div class="row">
               <div class="col-lg-4">
-                <div class="card mb-4">
+                <div class="card shadow-lg mb-4">
                   <div class="card-body text-center">
                     <img src="{{workers.profile.image.url}}" alt=" " class="rounded-circle img-fluid"
                       style="width: 150px;">
@@ -76,7 +43,7 @@
 
               </div>
               <div class="col-lg-8">
-                <div class="card mb-4">
+                <div class="card mb-4 shadow-lg">
                   <div class="card-body">
                     <div class="row">
                       <div class="col-sm-3">

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import Register, UserCreationForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from inventory.models import *
 
 def register(request):
     if request.method == "POST":
@@ -35,27 +36,32 @@ def logout_view(request):
 def profile(request):
     user = request.user
     is_sub_admin = user.groups.filter(name='sub-admin').exists()
+    pending_orders = Order.objects.filter( status='pending').count()
 
     context ={
-        'is_sub_admin' : is_sub_admin
+        'is_sub_admin' : is_sub_admin,
+        'pending_orders' : pending_orders
     }
     return render(request, 'user/profile.html', context)
 
 def profile_update(request):
+    user = request.user
     if request.method == 'POST':
-        user_form = UserUpdateForm(request.POST, instance=request.user)
         profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
+        if profile_form.is_valid():
             profile_form.save()
             messages.success(request, 'Profile Updated Successfully')
             return redirect('profile')
     else:
-        user_form = UserUpdateForm(instance=request.user)
         profile_form = ProfileUpdateForm(instance=request.user.profile)
+
+    pending_orders = Order.objects.filter( status='pending').count()
+    is_sub_admin = user.groups.filter(name='sub-admin').exists()
+
     context = {
-        'user_form' : user_form,
         'profile_form' : profile_form,
+        'pending_orders' : pending_orders,
+        'is_sub_admin' : is_sub_admin,
     }
     return render(request, 'user/profile_update.html', context)
 

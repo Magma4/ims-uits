@@ -3,14 +3,14 @@
 {% block content %}
 {% load crispy_forms_tags %}
 
-<div class="row" style="background-color: #1c4f24;" >
+<div class="row" style="background-color: #1c4f24;">
     <div class="col-12" style="background-color: #1c4f24;">
-        <div class="page-title-box d-flex align-items-center justify-content-between" >
-            <h4 class="page-title mb-0 font-size-18">View Requests</h4>
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="page-title mb-0 font-size-18">Requisitions</h4>
 
             <div class="page-title-right" style="background-color: #1c4f24;">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item active">Welcome {{user.first_name|title}} {{user.last_name|title}}</li>
+                    <li class="breadcrumb-item active">Welcome {{ user.first_name|title }} {{ user.last_name|title }}</li>
                 </ol>
             </div>
 
@@ -28,7 +28,7 @@
                         <div class="col">
                             <form class="row g-2" role="search" action="{% url 'searchdata' %}" method="GET">
                                 <div class="col-auto">
-                                    <input type="search" class="form-control" placeholder="Search" aria-label="Search" name="query">
+                                    <input type="search" class="form-control" placeholder="Search" aria-label="Search" name="query" value="{{ query|default:'' }}">
                                 </div>
                                 <div class="col-auto">
                                     <button type="submit" class="btn btn-outline-success">Search</button>
@@ -42,117 +42,106 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Request ID</th>
-                                    <th scope="col">Requested By</th>
+                                    <th scope="col">Issued By</th>
+                                    <th scope="col">Issued To</th>
                                     <th scope="col">Item Name</th>
-                                    <th scope="col">Description</th>
                                     <th scope="col">Quantity</th>
                                     <th scope="col">Date</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
-                            {% if page_obj.object_list|length == 0 %}
-                            <td colspan="12" style="text-align: center;"><h5>There are no requests</h5></td>
-                            {% endif %}
                             <tbody>
-                                {% for order in page_obj.object_list %}
+                                {% if page_obj.object_list|length == 0 %}
+                                <tr>
+                                    <td colspan="8" style="text-align: center;"><h5>No results found</h5></td>
+                                </tr>
+                                {% endif %}
+                                {% for order in page_obj %}
                                 <tr>
                                     <td>{{ order.id }}</td>
-                                    <td><img src="{{ order.users.profile.image.url }}" alt=" " class="rounded-circle img-fluid" style="width: 35px;"> {{ order.users.username|title }}</td>
+                                    <td><a href="{% url 'employees-detail' pk=order.users.id %}" title="View Profile"><img src="{{ order.users.profile.image.url }}" alt=" " class="rounded-circle img-fluid" style="width: 35px;"></a> {{ order.users.username|title }}</td>
+                                    <td>
+                                        {% if order.issued_to == None %}
+                                            Self
+                                        {% else %}
+                                            {{ order.issued_to|title }}
+                                        {% endif %}
+                                    </td>
                                     <td>{{ order.item_name|title }}</td>
-                                    <td>{{ order.order_description|title }}</td>
-                                    <td>{{ order.order_quantity }}</td>
+                                    <td>{{ order.request_quantity }}</td>
                                     <td>{{ order.date }}</td>
                                     <td>
                                         <form id="updateOrderForm-{{ order.id }}" action="{% url 'update_order_status' order.id %}" method="post">
                                             {% csrf_token %}
                                             <select name="status" class="form-select" {% if not request.user.is_superuser and not is_sub_admin %}disabled{% endif %} onchange="submitForm('{{ order.id }}')">
+                                                {% if user.is_authenticated and user.is_staff and user.is_superuser %}
                                                 <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
                                                 <option value="approved" {% if order.status == 'approved' %}selected{% endif %}>Approved</option>
                                                 <option value="released" {% if order.status == 'released' %}selected{% endif %}>Released</option>
                                                 <option value="returned" {% if order.status == 'returned' %}selected{% endif %}>Returned</option>
+                                                {% elif is_sub_admin and order.status == 'approved' or order.status == 'released' or order.status == 'returned'%}
+                                                
+                                                <option value="approved"  {% if order.status == 'approved' %}selected{% endif %}>Approved</option>
+                                                <option value="released"  {% if order.status == 'released' %}selected{% endif %}>Released</option>
+                                                <option value="returned"  {% if order.status == 'returned' %}selected{% endif %}>Returned</option>
+                                                {% else %}
+                                                <option value=""  >Awaiting Approval...</option>
+                                                {% endif %}
                                             </select>
                                         </form>
                                     </td>
-                                    <td scope="col">
+                                    <td>
                                         <button type="button" class="order-update bs-modal btn btn-sm btn-primary" data-form-url="{% url 'order-update' order.id %}">
                                             Edit
-                                          </button>
-                                          <div class="modal fade" tabindex="-1" role="dialog" id="modal" role="dialog" aria-hidden="true">
+                                        </button>
+                                        <div class="modal fade" tabindex="-1" role="dialog" id="modal" role="dialog" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
-                                              <div class="modal-content"></div>
+                                                <div class="modal-content"></div>
                                             </div>
-                                          </div>
-                                          <button type="button" class="order-delete bs-modal btn btn-sm btn-danger" data-form-url="{% url 'order-delete' order.id %}">
+                                        </div>
+                                        <button type="button" class="order-delete bs-modal btn btn-sm btn-danger" data-form-url="{% url 'order-delete' order.id %}">
                                             Delete
-                                          </button>
-                                          <div class="modal fade" tabindex="-1" role="dialog" id="modal" role="dialog" aria-hidden="true">
+                                        </button>
+                                        <div class="modal fade" tabindex="-1" role="dialog" id="modal" role="dialog" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
-                                              <div class="modal-content"></div>
+                                                <div class="modal-content"></div>
                                             </div>
-                                          </div>
-                                          <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#orderModal{{ order.id }}">
-                                                More Info
-                                            </button>
+                                        </div>
+                                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#requestModal{{ order.id }}">
+                                            More Info
+                                        </button>
 
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="orderModal{{ order.id }}" tabindex="-1"
-                                                aria-labelledby="orderModalLabel{{ order.id }}" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h1 class="modal-title fs-5"
-                                                                id="orderModalLabel{{ order.id }}">More Information
-                                                            </h1>
-                                                            <button type="button" class="btn-close"
-                                                                data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-
-                                                        <div class="modal-body">
-                                                            <p><b>Intended Date of Return</b>: {{ order.intended_date_of_return }}</p>
-                                                            <p><b>Returned Date</b>: {{ order.returned_date}}</p>
-                                                            <p><b>Released By</b>: {{ order.released_by|title }}</p>
-                                                            <p><b>Returned To</b>: {{ order.returned_to|title }}</p>
-                                                        </div>
-
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="requestModal{{ order.id }}" tabindex="-1" aria-labelledby="requestModalLabel{{ order.id }}" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="requestModalLabel{{ order.id }}">More Information</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
+
+                                                    <div class="modal-body">
+                                                        <p><b>Description</b>: {{ order.request_description|title }}</p>
+                                                        <p><b>Intended Date of Return</b>: {{ order.intended_date_of_return }}</p>
+                                                        <p><b>Returned Date</b>: {{ order.returned_date }}</p>
+                                                        <p><b>Approved By</b>: {{ order.approved_by|title }}</p>
+                                                        <p><b>Released By</b>: {{ order.released_by|title }}</p>
+                                                        <p><b>Returned To</b>: {{ order.returned_to|title }}</p>
+                                                        <p>
+                                                            <form method="post" action="{% url 'view-request' %}">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="order_id" value="{{ order.id }}">
+                                                                <b>Request overdue?:</b>
+                                                                <button class="btn btn-primary" type="submit" name="send_email">Send Reminder Email</button>
+                                                            </form>
+                                                        </p>
+                                                    </div>
+
                                                 </div>
                                             </div>
+                                        </div>
                                     </td>
-
-                                    <!-- Modal for delete confirmation -->
-                            <div class="modal fade" id="deleteModal{{ order.id }}" tabindex="-1" aria-labelledby="deleteModal{{ order.id }}Label" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModal{{ order.id }}Label">Delete</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <h4 class="alert alert-warning" style="text-align: center;">
-                                                <i class="mdi mdi-alert-outline me-2"></i>
-                                                <div role="alert" style="text-align: center;">
-                                                    Are you sure you want to delete this request?
-                                                </div>
-                                            </h4>
-                                        </div>
-                                        <div class="row justify-content-center mt-3">
-                                            <div class="col-md-6">
-                                                <form id="deleteForm{{ order.id }}" action="{% url 'order-delete' pk=order.id %}" method="POST">
-                                                    {% csrf_token %}
-                                                    <div style="text-align: center;">
-                                                        <!-- Cancel button with data-bs-dismiss attribute to close the modal -->
-                                                        <a class="btn btn-secondary" href="{% url 'view-request' %}" data-bs-dismiss="modal">Cancel</a>
-                                                        <!-- Confirm button with an ID for event handling -->
-                                                        <button class="btn btn-danger delete-confirm-btn" type="submit">Confirm</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                                 </tr>
                                 {% endfor %}
                             </tbody>

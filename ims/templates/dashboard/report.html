@@ -4,7 +4,7 @@
 <div class="row" style="background-color: #1c4f24;" >
     <div class="col-12" style="background-color: #1c4f24;">
         <div class="page-title-box d-flex align-items-center justify-content-between" >
-            <h4 class="page-title mb-0 font-size-18">View Requests</h4>
+            <h4 class="page-title mb-0 font-size-18">Report</h4>
 
             <div class="page-title-right" style="background-color: #1c4f24;">
                 <ol class="breadcrumb m-0">
@@ -16,14 +16,14 @@
     </div>
 </div>
 
-<div class="card col-md-12" style="max-width: 100%; min-height: 70vh;border-radius: 20px;">
+<div class="card col-md-12" style="max-width: 100%; min-height: 70vh;border-radius: 0px 0px 20px 20px;">
     <div class="card-body">
         <div class="row">
             <div class="col-md-3">
                 <div class="btn-group me-1 mt-2">
                     <button class="btn btn-info btn-sm dropdown-toggle" type="button"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Download Report <i class="mdi mdi-chevron-down"></i>
+                        Download Report 
                     </button>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="{% url 'order_excel' %}">Excel</a>
@@ -40,8 +40,12 @@
             <form action="{% url 'report' %}" method="GET">
                 <div class="row">
                     <div class="col">
-                        <label>Username</label>
+                        <label>Issued By</label>
                         <input type="text" class="form-control" placeholder="Username" name='name' {% if name %} value="{{name}}" {% endif %}>
+                    </div>
+                    <div class="col">
+                        <label>Issued To</label>
+                        <input type="text" class="form-control" placeholder="Username" name='issued_to' {% if name %} value="{{issued_to}}" {% endif %}>
                     </div>
                     <div class="col">
                         <label>Request ID</label>
@@ -108,8 +112,9 @@
                 <table class="table table-bordered">
                     <thead class="thead-dark">
                     <tr>
-                        <th scope="col">Name</th>
                         <th scope="col">Request ID</th>
+                        <th scope="col">Issued By</th>
+                        <th scope="col">Issued To</th>
                         <th scope="col">Item Name</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Date Created</th>
@@ -122,10 +127,11 @@
                     <tbody>
                         {% for order in order_list %}
                         <tr>
-                            <td scope="col">{{order.users.username|title}}</td>
                             <td scope="col">{{order.id}}</td>
+                            <td scope="col">{{order.users.username|title}}</td>
+                            <td scope="col">{{order.issued_to|title}}</td>
                             <td scope="col">{{order.item_name.name|title}}</td>
-                            <td scope="col">{{order.order_quantity|title}}</td>
+                            <td scope="col">{{order.request_quantity|title}}</td>
                             <td scope="col">{{order.date}}</td>
                             <td scope="col">{{order.returned_date}}</td>
                             <td scope="col">{{order.status|title}}</td>

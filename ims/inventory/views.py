@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from .models import *
 from django.contrib.auth.decorators import login_required
@@ -48,10 +49,10 @@ class OrderCreateView(BSModalCreateView):
     def form_valid(self, form):
         instance = form.save(commit=False)
         instance.users = self.request.user  # Saving the current user to the order
-        order_quantity = instance.order_quantity
+        request_quantity = instance.request_quantity
         stock_quantity = instance.item_name.quantity
 
-        if order_quantity <= stock_quantity:
+        if request_quantity <= stock_quantity:
             messages.success(self.request, "Request created")
         else:
             messages.error(self.request, "Requested quantity cannot be more than stock quantity")
@@ -74,10 +75,10 @@ class OrderUpdateView(BSModalUpdateView):
 
     def form_valid(self, form):
         instance = form.save(commit=False) # Saving the current user to the order
-        order_quantity = instance.order_quantity
+        request_quantity = instance.request_quantity
         stock_quantity = instance.item_name.quantity
 
-        if order_quantity <= stock_quantity:
+        if request_quantity <= stock_quantity:
             messages.success(self.request, "Request updated successfully")
         else:
             messages.error(self.request, "Requested quantity cannot be more than stock quantity")
@@ -157,57 +158,82 @@ def dashboard(request):
     order_count = Order.objects.filter(users=user).count()
     workers = User.objects.all()
     all_orders = Order.objects.all().order_by('-date')
-    total_released_quantity = Order.objects.filter(status='released').aggregate(total_quantity=Sum('order_quantity'))['total_quantity'] or 0
+    total_released_quantity = Order.objects.filter(status='released').aggregate(total_quantity=Sum('request_quantity'))['total_quantity'] or 0
     released_orders = Order.objects.filter(users=user, status='released').count()
-    pending_orders = Order.objects.filter(users=user, status='pending').count()
-    
-    # Calculate percentage of released orders and pending orders
+    pending_orders = Order.objects.filter(status='pending').count()
+    pending_user_orders = Order.objects.filter(users=user, status='pending').count()
+    pending_orders_list = Order.objects.filter(status='pending')
+
     if order_count > 0:
         released_percentage = (released_orders / order_count) * 100
-        pending_percentage = (pending_orders / order_count) * 100
+        pending_percentage = (pending_user_orders / order_count) * 100
     else:
         released_percentage = 0
         pending_percentage = 0
 
+     # Handle email sending request
+    if 'send_email' in request.POST:
+        order_id = request.POST.get('order_id')
+        order = Order.objects.get(id=order_id)
+        send_reminder_email(order)
+        messages.success(request, f"Reminder email sent successfully to {order.users.email}")
+        return redirect('dashboard')
+    
     current_year = timezone.now().year
     orders_by_month = Order.objects.filter(date__year=current_year).annotate(
         month=TruncMonth('date')
     ).values('month').annotate(count=Count('id')).order_by('month')
 
-    months = [datetime(2000, i + 1, 1).strftime('%b') for i in range(12)]  # Generate month names
-    order_counts = [0] * 12  # Initialize list to hold counts for each month
+    months = [datetime(2000, i + 1, 1).strftime('%b') for i in range(12)]
+    order_counts = [0] * 12
 
     for order in orders_by_month:
-        month_index = order['month'].month - 1  # Get month index (0 for Jan, 1 for Feb, etc.)
+        month_index = order['month'].month - 1
         order_counts[month_index] = order['count']
 
     released_items = Order.objects.filter(status='released').select_related('item_name')
 
+    
+    overdue_orders = Order.objects.filter(
+        status='released',
+        intended_date_of_return__lt=timezone.now()
+    )
+    overdue_orders_total = overdue_orders.count
+
     is_sub_admin = user.groups.filter(name='sub-admin').exists()
 
     context = {
+        'overdue_orders_total' : overdue_orders_total,
         'order_count': order_count,
-        'items' : items,
-        'workers' : workers,
+        'items': items,
+        'workers': workers,
         'months': months,
         'order_counts': order_counts,
         'all_orders': all_orders,
         'total_released_quantity': total_released_quantity,
         'released_items': released_items,
-        'released_orders' : released_orders,
-        'pending_orders' : pending_orders,
+        'released_orders': released_orders,
+        'pending_orders': pending_orders,
         'released_percentage': released_percentage,
         'pending_percentage': pending_percentage,
-        'is_sub_admin' : is_sub_admin
+        'is_sub_admin': is_sub_admin,
+        'pending_user_orders': pending_user_orders,
+        'pending_orders_count': pending_orders,
+        'pending_orders_list': pending_orders_list,
+        'overdue_orders': overdue_orders,
     }
-    
+
     return render(request, 'dashboard/dashboard.html', context)
+
+def order_detail(request, id):
+    order = get_object_or_404(Order, id=id)
+    return render(request, 'order_detail.html', {'order': order})
 
 @login_required
 def viewstock(request):
     items = Stock.objects.all()
     orders = Order.objects.all()
-
+    pending_orders = Order.objects.filter(status='pending').count()
 
     if request.method == 'POST':
         form = StockForm(request.POST)
@@ -226,10 +252,17 @@ def viewstock(request):
         "stocks" : items,
         "form" : form,
         "orders" : orders,
-        'is_sub_admin' : is_sub_admin
+        'is_sub_admin' : is_sub_admin,
+        'pending_orders' : pending_orders,
     }
     return render(request, 'dashboard/view_stock.html', context=mydictionary)
 
+def send_reminder_email(order):
+    subject = f'Reminder to Return Item(s) With Request ID {order.id}'
+    message = f'Dear {order.users.username},\n\nThis is a reminder to return the {order.request_quantity} {order.item_name}(s) issued to you on {order.date}. The due date was {order.intended_date_of_return}.\nPlease return item(s) immediately!!.\n\nThank you.'
+    email_from = 'uitsims24@gmail.com'
+    recipient_list = [order.users.email]
+    send_mail(subject, message, email_from, recipient_list)
 
 @login_required
 def viewrequest(request):
@@ -242,15 +275,16 @@ def viewrequest(request):
     page_obj = paginator.get_page(page_number)
     user = request.user
     is_sub_admin = user.groups.filter(name='sub-admin').exists()
+    pending_orders = Order.objects.filter( status='pending').count()
 
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.users = request.user
-            order_quantity = instance.order_quantity
+            request_quantity = instance.request_quantity
             stock_quantity = instance.item_name.quantity
-            if order_quantity <= stock_quantity:
+            if request_quantity <= stock_quantity:
                 instance.save()
                 messages.success(request, "Request successfully created")
                 return redirect('dashboard')
@@ -260,10 +294,18 @@ def viewrequest(request):
     else:
         form = OrderForm()
 
+     # Handle email sending request
+    if 'send_email' in request.POST:
+        order_id = request.POST.get('order_id')
+        order = Order.objects.get(id=order_id)
+        send_reminder_email(order)
+        messages.success(request, f"Reminder email sent successfully to {order.users.email}")
+        return redirect('view-request')
     context = {
         'page_obj': page_obj,
         'form': form,
-        'is_sub_admin' : is_sub_admin
+        'is_sub_admin' : is_sub_admin,
+        'pending_orders' : pending_orders,
     }
     return render(request, 'dashboard/view_request.html', context)
 
@@ -272,9 +314,11 @@ def viewrequest(request):
 @login_required
 def employees(request):
     workers = User.objects.filter(is_active=True)
+    pending_orders = Order.objects.filter(users=user, status='pending').count()
     
     context = {
-        'workers': workers
+        'workers': workers,
+        'pending_orders' : pending_orders,
     }
     return render(request, 'dashboard/employees.html', context)
 
@@ -286,11 +330,14 @@ def instructions(request):
 @login_required
 def employees_detail(request, pk):
     """This function renders a preview page of users on the system"""
+    user = request.user
     workers = User.objects.get(id=pk)
     is_sub_admin = user.groups.filter(name='sub-admin').exists()
+    pending_orders = Order.objects.filter( status='pending').count()
     context={
         'workers' : workers,
         'is_sub_admin' : is_sub_admin,
+        'pending_orders' : pending_orders,
     }
 
     return render(request, 'dashboard/employees_detail.html', context)
@@ -305,7 +352,12 @@ def update_order_status(request, order_id):
         new_status = request.POST.get('status')
         
         # Check if the status is being changed to 'released'
-        if new_status == 'released':
+        if new_status == 'approved':
+            order.status = new_status
+            order.approved_by = request.user.username  # Set the released_by field to the username of the admin
+            order.save()
+            messages.success(request, f"Request with ID {order.id} has been Approved by {request.user.username}.")
+        elif new_status == 'released':
             order.status = new_status
             order.released_by = request.user.username  # Set the released_by field to the username of the admin
             order.save()
@@ -322,31 +374,54 @@ def update_order_status(request, order_id):
     
     return redirect('view-request')
 
-
-
-
 @login_required
 def searchdata(request):
     user = request.user
     is_sub_admin = user.groups.filter(name='sub-admin').exists()
-    q = request.GET.get('query') # Get the query parameter from the request
+    pending_orders = Order.objects.filter( status='pending').count()
+    q = request.GET.get('query')  # Get the query parameter from the request
+
     if q:
-        orders = Order.objects.filter(Q(order_description__icontains=q) )
+        try:
+            q_id = int(q)
+            orders = Order.objects.filter(
+                Q(request_description__icontains=q) |
+                Q(users__username__icontains=q) |
+                Q(issued_to__icontains=q) |  # Search within the issued_to CharField
+                Q(item_name__name__icontains=q) |
+                Q(id=q_id)  # Search by order id if query is a number
+            )
+        except ValueError:
+            orders = Order.objects.filter(
+                Q(request_description__icontains=q) |
+                Q(users__username__icontains=q) |
+                Q(issued_to__icontains=q) |  # Search within the issued_to CharField
+                Q(item_name__name__icontains=q)
+            )
     else:
         orders = Order.objects.all()
         messages.error(request, "No results found")
 
+    paginator = Paginator(orders, 10)  # Paginate the results, 10 per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        "orders": orders,
-        'is_sub_admin' : is_sub_admin
+        'page_obj': page_obj,
+        'is_sub_admin': is_sub_admin,
+        'query': q,
+        'pending_orders' : pending_orders,  # Pass the query back to the template to keep the search input filled
     }
     return render(request, 'dashboard/view_request.html', context=context)
+
+
 
 @login_required
 def searchdata2(request):
     user = request.user
     is_sub_admin = user.groups.filter(name='sub-admin').exists()
     q = request.GET.get('query') # Get the query parameter from the request
+    pending_orders = Order.objects.filter( status='pending').count()
     if q:
         workers = User.objects.filter(Q(username__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q))
     else:
@@ -355,7 +430,8 @@ def searchdata2(request):
 
     context = {
         "workers": workers,
-        'is_sub_admin' : is_sub_admin
+        'is_sub_admin' : is_sub_admin,
+        'pending_orders' : pending_orders,
     }
     return render(request, 'dashboard/employees.html', context=context)
 
@@ -364,6 +440,7 @@ def searchdata3(request):
     user = request.user
     is_sub_admin = user.groups.filter(name='sub-admin').exists()
     q = request.GET.get('query')  # Get the query parameter from the request
+    pending_orders = Order.objects.filter( status='pending').count()
     if q:
         stocks = Stock.objects.filter(Q(name__icontains=q) | Q(description__icontains=q) )
     else:
@@ -372,7 +449,8 @@ def searchdata3(request):
 
     context = {
         "stocks": stocks,
-        'is_sub_admin' : is_sub_admin
+        'is_sub_admin' : is_sub_admin,
+        'pending_orders' : pending_orders,
     }
     return render(request, 'dashboard/view_stock.html', context=context)
 
@@ -387,7 +465,7 @@ def report(request):
         count=Count('id')
     ).order_by('-month_year')
     status_options = Order.objects.values_list('status', flat=True).distinct()
-
+    pending_orders = Order.objects.filter( status='pending').count()
     available_months = [(order['month_year'].strftime('%B %Y'), order['month_year'].strftime('%Y-%m-01'), order['month_year'].strftime('%Y-%m-31')) for order in orders]
 
     ol = Order.objects.order_by('-id')
@@ -404,8 +482,9 @@ def report(request):
     
     order_id = request.GET.get('id')
     name = request.GET.get('name')
+    issued_to = request.GET.get('issued_to')
     itemName = request.GET.get('item_name')
-    quantity = request.GET.get('order_quantity')
+    quantity = request.GET.get('request_quantity')
     date_from = request.GET.get('date_from')
     date_to = request.GET.get('date_to')
     status = request.GET.get('status')
@@ -414,6 +493,7 @@ def report(request):
 
     request.session['id'] = order_id
     request.session['name'] = name
+    request.session['issued_to'] = issued_to
     request.session['item_name'] = itemName
     request.session['date_from'] = date_from
     request.session['date_to'] = date_to
@@ -429,10 +509,12 @@ def report(request):
         ol = ol.filter(id=order_id)
     if is_valid_queryparam(name):
         ol = ol.filter(users__username__icontains=name)
+    if is_valid_queryparam(issued_to):
+        ol = ol.filter(issued_to__icontains=issued_to)
     if is_valid_queryparam(itemName):
         ol = ol.filter(item_name__name__icontains=itemName)
     if is_valid_queryparam(quantity):
-        ol = ol.filter(order_quantity=quantity)
+        ol = ol.filter(request_quantity=quantity)
     if is_valid_queryparam(status):
         ol = ol.filter(status=status)
     if is_valid_queryparam(released_by):
@@ -458,6 +540,7 @@ def report(request):
         'order_list': ol,
         'order_id' : order_id,
         'name': name,
+        'issued_to' : issued_to,
         'itemName': itemName,
         'quantity': quantity,
         'date_from': date_from,
@@ -469,32 +552,37 @@ def report(request):
         'released_by_options': released_by_set,
         'received_by_options': received_by_set,
         'status_options' : status_options,
-        'is_sub_admin' : is_sub_admin
+        'is_sub_admin' : is_sub_admin,
+        'pending_orders' : pending_orders,
     }
     return render(request, 'dashboard/report.html', context)
 
 @login_required
 def order_excel(request):
     ol = Order.objects.order_by('users')
+
     order_id = request.session.get('id')
     name = request.session.get('name')
+    issued_to = request.session.get('issued_to')
     itemName = request.session.get('item_name')
-    date_created = request.session.get('date')
-    date_returned = request.session.get('returned_date')
+    date_from = request.session.get('date_from')
+    date_to = request.session.get('date_to')
     status = request.session.get('status')
     released_by = request.session.get('released_by')
-    received_by = request.session.get('returned_to')
+    received_by = request.session.get('received_by')
 
+    # Apply filters to the queryset
+    ol = ol.filter(
+        Q(date__range=[date_from, date_to]) if date_from and date_to else Q()
+    )
     if is_valid_queryparam(order_id):
         ol = ol.filter(id=order_id)
     if is_valid_queryparam(name):
         ol = ol.filter(users__username__icontains=name)
+    if is_valid_queryparam(issued_to):
+        ol = ol.filter(issued_to__icontains=issued_to)
     if is_valid_queryparam(itemName):
         ol = ol.filter(item_name__name__icontains=itemName)
-    if is_valid_queryparam(date_created):
-        ol = ol.filter(date__icontains=date_created)
-    if is_valid_queryparam(date_returned):
-        ol = ol.filter(returned_date__icontains=date_returned)
     if is_valid_queryparam(status):
         ol = ol.filter(status=status)
     if is_valid_queryparam(released_by):
@@ -502,26 +590,13 @@ def order_excel(request):
     if is_valid_queryparam(received_by):
         ol = ol.filter(returned_to__icontains=received_by)
 
-    order_id = order_id if order_id else "All Request ID's"
-    name = name if name else "All Requests"
-    itemName = itemName if itemName else "All Items"
-    date_created = date_created if date_created else "2024 - 2090"
-    date_returned = date_returned if date_returned else "2024 - 2090"
-    status = status if status else "All Status"
-    released_by = released_by if released_by else "All Admins"
-    received_by = received_by if received_by else "All Admins"
-
-    date_from = request.GET.get('date_from')
-    date_to = request.GET.get('date_to')
-
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = f'attachment; filename="Request Report {date_from} to {date_to}.xlsx"'
     workbook = Workbook()
 
     worksheet = workbook.active
-
-    worksheet.merge_cells('A1:I1')
-    worksheet.merge_cells('A2:I2')
+    worksheet.merge_cells('A1:J1')
+    worksheet.merge_cells('A2:J2')
     first_cell = worksheet.cell(row=1, column=1)
     first_cell.value = f"Report For Requests Generated on {timezone.now()}"
 
@@ -530,45 +605,35 @@ def order_excel(request):
 
     worksheet.title = f'Request List {date_from} to {date_to}'
 
-    # Define the titles for columns
-    columns = ['Username', 'Request ID', 'Item Name', 'Quantity', 'Date Created', 'Date Received', 'Status', 'Released By', 'Received By']
+    columns = ['Request ID', 'Issued By','Issued To', 'Item Name', 'Quantity', 'Date Created', 'Date Received', 'Status', 'Released By', 'Received By']
     row_num = 3
 
-    # Assign the titles for each cell of the header
     for col_num, column_title in enumerate(columns, 1):
         cell = worksheet.cell(row=row_num, column=col_num)
         cell.value = column_title
         cell.font = Font(bold=True)
         cell.alignment = Alignment(horizontal="center", vertical="center")
         
-        # Adjust column width
         column_letter = get_column_letter(col_num)
-        worksheet.column_dimensions[column_letter].width = max(len(str(column_title)), 12)  # Set minimum width
+        worksheet.column_dimensions[column_letter].width = max(len(str(column_title)), 12)
 
     for order in ol:
         row_num += 1
-
-        # Define the data for each cell in the row
-        row = [order.users.username, order.id , order.item_name.name, order.order_quantity,
+        row = [order.id , order.users.username, order.issued_to, order.item_name.name, order.request_quantity,
                order.date.replace(tzinfo=None) if order.date else None,
                order.returned_date.replace(tzinfo=None) if order.returned_date else None,
                order.status, order.released_by, order.returned_to]
 
-        # Assign the data for each cell of the row
         for col_num, cell_value in enumerate(row, 1):
             cell = worksheet.cell(row=row_num, column=col_num)
             cell.value = cell_value
             if isinstance(cell_value, datetime):
-                cell.number_format = 'yyyy-mm-dd HH:MM:SS'  # Set datetime format
-
-            # Adjust column width
+                cell.number_format = 'yyyy-mm-dd HH:MM:SS'
             column_letter = get_column_letter(col_num)
-            worksheet.column_dimensions[column_letter].width = max(worksheet.column_dimensions[column_letter].width, len(str(cell_value)) + 2)  # Set minimum width
+            worksheet.column_dimensions[column_letter].width = max(worksheet.column_dimensions[column_letter].width, len(str(cell_value)) + 2)
 
-        # Adjust row height based on content
-        worksheet.row_dimensions[row_num].height = 14.4  
+        worksheet.row_dimensions[row_num].height = 14.4
 
-    # Write total count to the last cell
     total_count_cell = worksheet.cell(row=row_num + 1, column=1)
     total_count_cell.value = "Total Count"
     total_count_cell.font = Font(bold=True)
@@ -582,30 +647,34 @@ def order_excel(request):
     workbook.save(response)
     return response
 
+
 @login_required
 def order_pdf(request):
-    # Your existing code to fetch orders
     ol = Order.objects.order_by('id')
+
     # Retrieve filters from session
     order_id = request.session.get('id')
     name = request.session.get('name')
+    issued_to = request.session.get('issued_to')
     itemName = request.session.get('item_name')
-    date_created = request.session.get('date')
-    date_returned = request.session.get('returned_date')
+    date_from = request.session.get('date_from')
+    date_to = request.session.get('date_to')
     status = request.session.get('status')
     released_by = request.session.get('released_by')
-    received_by = request.session.get('returned_to')
+    received_by = request.session.get('received_by')
+
     # Apply filters to queryset
+    ol = ol.filter(
+        Q(date__range=[date_from, date_to]) if date_from and date_to else Q()
+    )
     if is_valid_queryparam(order_id):
         ol = ol.filter(id=order_id)
     if is_valid_queryparam(name):
         ol = ol.filter(users__username__icontains=name)
+    if is_valid_queryparam(issued_to):
+        ol = ol.filter(issued_to__icontains=issued_to)
     if is_valid_queryparam(itemName):
         ol = ol.filter(item_name__name__icontains=itemName)
-    if is_valid_queryparam(date_created):
-        ol = ol.filter(date__icontains=date_created)
-    if is_valid_queryparam(date_returned):
-        ol = ol.filter(returned_date__icontains=date_returned)
     if is_valid_queryparam(status):
         ol = ol.filter(status=status)
     if is_valid_queryparam(released_by):
@@ -617,20 +686,17 @@ def order_pdf(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="Inventory_Request_Report.pdf"'
 
-    # Define the data for PDF
     data = []
-    header = ['Username', 'Request ID', 'Item Name', 'Quantity', 'Date Created', 'Date Received', 'Status', 'Released By', 'Received By']
+    header = ['Request ID', 'Issued By', 'Issued To' 'Item Name', 'Quantity', 'Date Created', 'Date Received', 'Status', 'Released By', 'Received By']
     data.append(header)
     for order in ol:
-        data.append([order.users.username, order.id, order.item_name.name, order.order_quantity,
+        data.append([order.id, order.users.username, order.issued_to, order.item_name.name, order.request_quantity,
                      order.date.replace(tzinfo=None) if order.date else None,
                      order.returned_date.replace(tzinfo=None) if order.returned_date else None,
                      order.status, order.released_by, order.returned_to])
 
-    # Calculate total count of orders
     total_count = len(ol)
 
-    # Create PDF document
     doc = SimpleDocTemplate(response, pagesize=landscape(letter), leftMargin=20, rightMargin=20, topMargin=20, bottomMargin=20)
     
     table_style = TableStyle([
@@ -647,7 +713,7 @@ def order_pdf(request):
     elements = []
     elements.append(Paragraph(f"A Report of Requests Generated on {timezone.now()}", styles['title']))
     elements.append(Paragraph(f"Filters used:", styles['title']))
-    elements.append(Paragraph(f"Request ID: {order_id if order_id else 'All'}, Name: {name if name else 'All'}, Item Name: {itemName if itemName else 'All'}, Date Created: {date_created if date_created else 'All'}, Date Returned: {date_returned if date_returned else 'All'}, Status: {status if status else 'All'}, Released By: {released_by if released_by else 'All'}, Received By: {received_by if received_by else 'All'}", styles['Normal']))
+    elements.append(Paragraph(f"Request ID: {order_id if order_id else 'All'}, Name: {name if name else 'All'}, Item Name: {itemName if itemName else 'All'}, Date From: {date_from if date_from else 'All'}, Date To: {date_to if date_to else 'All'}, Status: {status if status else 'All'}, Released By: {released_by if released_by else 'All'}, Received By: {received_by if received_by else 'All'}", styles['Normal']))
     elements.append(table)
     elements.append(Paragraph(f"Total Count of Requests: {total_count}", styles['Normal']))
     

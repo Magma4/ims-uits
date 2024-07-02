@@ -12,7 +12,7 @@ class StockForm(BSModalModelForm):
 class OrderForm(BSModalModelForm):
     class Meta:
         model = Order
-        fields = ['item_name', 'order_description', 'order_quantity', 'intended_date_of_return']
+        fields = ['item_name', 'request_description', 'request_quantity', 'intended_date_of_return', 'issued_to']
         widgets = {
             'intended_date_of_return': forms.DateInput(attrs={'type': 'date'}),
         }
