@@ -127,12 +127,8 @@
                     <div class="float-end" >
 
                         <div class="dropdown d-inline-block d-lg-none ms-2">
-                            <button type="button" class="btn header-item noti-icon waves-effect"
-                                id="page-header-search-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
-                                aria-expanded="false">
-                                <i class="mdi mdi-magnify"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
+                            
+                            <!-- <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
                                 aria-labelledby="page-header-search-dropdown">
 
                                 <form class="p-3">
@@ -147,7 +143,7 @@
                                         </div>
                                     </div>
                                 </form>
-                            </div>
+                            </div> -->
                         </div>
 
                         <div class="dropdown d-none d-sm-inline-block" >
@@ -161,7 +157,7 @@
 
                         <div class="dropdown d-none d-lg-inline-block ms-1" >
                             <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
-                                <i class="mdi mdi-fullscreen"></i>
+                                <i class=""></i>
                             </button>
                         </div>
 
@@ -211,10 +207,10 @@
 
                         <!-- App Search-->
                         <form class="app-search d-none d-lg-inline-block" style="margin-top: 1rem;" >
-                            <div class="position-relative">
+                            <!-- <div class="position-relative">
                                 <input type="text" class="form-control" placeholder="Search...">
                                 <span class="bx bx-search-alt"></span>
-                            </div>
+                            </div> -->
                         </form>
                     </div>
                 </div>
@@ -231,7 +227,7 @@
 
         <div class="mt-3">
 
-            <a href="#" class="text-body fw-medium font-size-16">{{user.first_name|title}} {{user.last_name|title}}</a>
+            <a href="{% url 'profile' %}" class="text-body fw-medium font-size-16">{{user.first_name|title}} {{user.last_name|title}}</a>
             <p class="text-muted mt-1 mb-0 font-size-13">{{user.profile.jobTitle|title}}</p>
 
         </div>
@@ -242,9 +238,9 @@
         <!-- Left Menu Start -->
         <ul class="metismenu list-unstyled" id="side-menu">
             <li class="menu-title">Menu</li>
-
+            {% block content %}
             <li>
-                <a href="{% url 'dashboard' %}" class="waves-effect">
+                <a href="{% url 'dashboard' %}" class="waves-effect active" >
                     <i class="mdi mdi-airplay"></i>
                     <span>Dashboard</span>
                 </a>
@@ -299,7 +295,7 @@
         <div class="main-content" >
 
             <div class="page-content" >
-                {% block content %}
+                
                 <!-- start page title -->
                 <div class="row" style="background-color: #1c4f24;" >
                     <div class="col-12" style="background-color: #1c4f24;">
@@ -615,12 +611,12 @@
                                                 <th scope="col">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody class="table-group-divider">
                                             {% for overdue in overdue_orders %}
                                             <tr>
                                                 <td>{{overdue.id}}</td>
-                                                <td ><img src="{{overdue.users.profile.image.url}}" alt=" "
-                                                    class="rounded-circle img-fluid" style="width: 35px;"> {{ overdue.users.first_name|title }} {{ overdue.users.last_name|title }}</td>
+                                                <td ><a href="{% url 'employees-detail' pk=overdue.users.id %}" title="View Profile"><img src="{{overdue.users.profile.image.url}}" alt=" "
+                                                    class="rounded-circle img-fluid" style="width: 35px;"></a> {{ overdue.users.first_name|title }} {{ overdue.users.last_name|title }}</td>
                                                 <td>
                                                     {% if overdue.issued_to == None %}
                                                         Self

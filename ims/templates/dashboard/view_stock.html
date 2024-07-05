@@ -21,6 +21,63 @@
 }
 </style>
 
+<li>
+    <a href="{% url 'dashboard' %}" class="waves-effect" >
+        <i class="mdi mdi-airplay"></i>
+        <span>Dashboard</span>
+    </a>
+</li>
+{% if request.user.is_superuser or is_sub_admin %}
+<li>
+    <a href="{% url 'view-request' %}" class=" waves-effect">
+        <i class="mdi mdi-plus-box"></i>
+        <span>Requisitions</span>
+    </a>
+    
+</li>
+{% endif %}
+
+{% if user.is_authenticated and user.is_staff and user.is_superuser %}
+<li>
+    <a href="{% url 'view-stock' %}" class="waves-effect active">
+        <i class="mdi mdi-warehouse"></i>
+        <span>Items</span>
+    </a>
+</li>
+{% else %}
+<li>
+    <a href="{% url 'view-stock' %}" class="waves-effect active" >
+        <i class="mdi mdi-table-headers-eye"></i>
+        <span>View Items</span>
+    </a>
+</li>
+{% endif %}
+
+{% if request.user.is_superuser or is_sub_admin %}
+<li>
+    <a href="{% url 'report' %}" class=" waves-effect">
+        <i class="mdi mdi-chart-timeline-variant"></i>
+        <span>Report</span>
+    </a>
+</li>
+{% endif %}
+
+
+
+</ul>
+</div>
+<!-- Sidebar -->
+</div>
+</div>
+<!-- Left Sidebar End -->
+
+<!-- ============================================================== -->
+<!-- Start right Content here -->
+<!-- ============================================================== -->
+<div class="main-content" >
+
+<div class="page-content" >
+
 
 <div class="row" style="background-color: #1c4f24;" >
     <div class="col-12" style="background-color: #1c4f24;">
@@ -102,7 +159,7 @@
                         
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="table-group-divider">
                     {% if stocks|length == 0 %}
                     <tr>
                         <td colspan="6" class="text-center">There are no stocks</td>

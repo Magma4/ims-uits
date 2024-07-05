@@ -71,7 +71,7 @@ class OrderUpdateView(BSModalUpdateView):
     model = Order
     template_name = 'dashboard/order_update.html'
     form_class = OrderForm
-    success_message = 'Order was updated.'
+    success_message = 'Request was updated.'
 
     def form_valid(self, form):
         instance = form.save(commit=False) # Saving the current user to the order
@@ -301,6 +301,7 @@ def viewrequest(request):
         send_reminder_email(order)
         messages.success(request, f"Reminder email sent successfully to {order.users.email}")
         return redirect('view-request')
+    
     context = {
         'page_obj': page_obj,
         'form': form,
@@ -687,7 +688,7 @@ def order_pdf(request):
     response['Content-Disposition'] = 'attachment; filename="Inventory_Request_Report.pdf"'
 
     data = []
-    header = ['Request ID', 'Issued By', 'Issued To' 'Item Name', 'Quantity', 'Date Created', 'Date Received', 'Status', 'Released By', 'Received By']
+    header = ['Request ID', 'Issued By', 'Issued To', 'Item Name', 'Quantity', 'Date Created', 'Date Received', 'Status', 'Released By', 'Received By']
     data.append(header)
     for order in ol:
         data.append([order.id, order.users.username, order.issued_to, order.item_name.name, order.request_quantity,

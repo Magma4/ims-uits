@@ -2,6 +2,63 @@
 {% block title %} Employees {% endblock %}
 {% block content %}
 
+<li>
+    <a href="{% url 'dashboard' %}" class="waves-effect" >
+        <i class="mdi mdi-airplay"></i>
+        <span>Dashboard</span>
+    </a>
+</li>
+{% if request.user.is_superuser or is_sub_admin %}
+<li>
+    <a href="{% url 'view-request' %}" class=" waves-effect">
+        <i class="mdi mdi-plus-box"></i>
+        <span>Requisitions</span>
+    </a>
+    
+</li>
+{% endif %}
+
+{% if user.is_authenticated and user.is_staff and user.is_superuser %}
+<li>
+    <a href="{% url 'view-stock' %}" class="waves-effect">
+        <i class="mdi mdi-warehouse"></i>
+        <span>Items</span>
+    </a>
+</li>
+{% else %}
+<li>
+    <a href="{% url 'view-stock' %}" class="waves-effect">
+        <i class="mdi mdi-table-headers-eye"></i>
+        <span>View Items</span>
+    </a>
+</li>
+{% endif %}
+
+{% if request.user.is_superuser or is_sub_admin %}
+<li>
+    <a href="{% url 'report' %}" class=" waves-effect">
+        <i class="mdi mdi-chart-timeline-variant"></i>
+        <span>Report</span>
+    </a>
+</li>
+{% endif %}
+
+
+
+</ul>
+</div>
+<!-- Sidebar -->
+</div>
+</div>
+<!-- Left Sidebar End -->
+
+<!-- ============================================================== -->
+<!-- Start right Content here -->
+<!-- ============================================================== -->
+<div class="main-content" >
+
+<div class="page-content" >
+
 <div class="row">
     <div class="col-md-2">
         <div class="card" style="width: 11rem;height: 92vh; border: none; border-radius: 0%;display: contents;">
