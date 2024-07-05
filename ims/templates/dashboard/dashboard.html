@@ -637,7 +637,9 @@
                                                 <td><form id="send_email" method="POST" action="{% url 'dashboard' %}">
                                                     {% csrf_token %}
                                                     <input type="hidden" name="order_id" value="{{ overdue.id }}">
-                                                    <button class="btn btn-secondary" type="submit" name="send_email">Send Reminder Email</button>
+                                                    <button type="submit" class="btn btn-warning btn-sm" name="send_email" data-bs-toggle="tooltip2" data-bs-placement="top" title="Send Email Reminder">
+                                                        <i class="fas fa-envelope"></i>
+                                                    </button>
                                                 </form>
                                                 </td>
                                             </tr>
@@ -1037,7 +1039,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         }); 
   
-        // Delete book buttons - formURL is retrieved from the data of the element
+        // Delete request buttons - formURL is retrieved from the data of the element
         $(".order-delete").each(function () {
             $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
         });
@@ -1046,7 +1048,7 @@ document.addEventListener("DOMContentLoaded", function() {
             $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
         });
   
-        // Create book button opens form in modal with id="create-modal"
+        // Create request button opens form in modal with id="create-modal"
         $("#add-request").modalForm({
             formURL: "{% url 'add-request' %}",
             modalID: "#request-modal"

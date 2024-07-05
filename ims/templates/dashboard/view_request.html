@@ -108,19 +108,18 @@
                                                 <div class="modal-content"></div>
                                             </div>
                                         </div>
-                                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#requestModal{{ order.id }}">
-                                            More Info
+                                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#requestModal{{ order.id }}" data-bs-placement="top" data-bs-toggle="tooltip1" title="View More Information">
+                                            More
                                         </button>
-
+                                    
                                         <!-- Modal -->
-                                        <div class="modal fade" id="requestModal{{ order.id }}" tabindex="-1" aria-labelledby="requestModalLabel{{ order.id }}" aria-hidden="true">
+                                        <div class="modal fade" id="requestModal{{ order.id }}" tabindex="-1" aria-labelledby="requestModalLabel{{ order.id }}" aria-hidden="true" >
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h1 class="modal-title fs-5" id="requestModalLabel{{ order.id }}">More Information</h1>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
                                                     </div>
-
                                                     <div class="modal-body">
                                                         <p><b>Description</b>: {{ order.request_description|title }}</p>
                                                         <p><b>Intended Date of Return</b>: {{ order.intended_date_of_return }}</p>
@@ -128,20 +127,20 @@
                                                         <p><b>Approved By</b>: {{ order.approved_by|title }}</p>
                                                         <p><b>Released By</b>: {{ order.released_by|title }}</p>
                                                         <p><b>Returned To</b>: {{ order.returned_to|title }}</p>
-                                                        <p>
-                                                            <form method="post" action="{% url 'view-request' %}">
-                                                                {% csrf_token %}
-                                                                <input type="hidden" name="order_id" value="{{ order.id }}">
-                                                                <b>Request overdue?:</b>
-                                                                <button class="btn btn-primary" type="submit" name="send_email">Send Reminder Email</button>
-                                                            </form>
-                                                        </p>
                                                     </div>
-
                                                 </div>
                                             </div>
                                         </div>
+                                        
+                                        <form method="post" style="display:inline;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="order_id" value="{{ order.id }}">
+                                            <button type="submit" class="btn btn-warning btn-sm" name="send_email" data-bs-toggle="tooltip2" data-bs-placement="top" title="Send Email Reminder">
+                                                <i class="fas fa-envelope"></i>
+                                            </button>
+                                        </form>
                                     </td>
+                                    
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -198,4 +197,14 @@
         form.submit();
     }
 </script>
+<script>
+    $(document).ready(function() {
+        $('[data-bs-toggle="tooltip2"]').tooltip();
+    });
+
+    $(document).ready(function() {
+        $('[data-bs-toggle="tooltip1"]').tooltip();
+    });
+</script>
+
 {% endblock %}
