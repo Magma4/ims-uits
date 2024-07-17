@@ -167,18 +167,18 @@
                     {% else %}
                     {% for stock in stocks %}
                     <tr>
-                        <td>{{ stock.name|title }}</td>
-                        <td>{{ stock.description|title }}</td>
+                        <td style="text-align: center;">{{ stock.name|title }}</td>
+                        <td style="text-align: center;">{{ stock.description|title }}</td>
                         <td>
                             <div class="progress" style="height: 20px;">
                                 <div class="progress-bar {% if stock.get_total_quantity < 10 %}bg-danger{% elif stock.get_total_quantity < 20 %}bg-warning{% else %}bg-success{% endif %}" role="progressbar" style="width: {{ stock.get_total_quantity }}%;" aria-valuenow="{{ stock.get_total_quantity }}" aria-valuemin="0" aria-valuemax="100">{{ stock.get_total_quantity }}</div>
                             </div>
                         </td>
                         {% if request.user.is_superuser or is_sub_admin %}
-                        <td>{{ stock.quantity }}</td>
+                        <td style="text-align: center;">{{ stock.quantity }}</td>
                         {% endif %}
                         {% if request.user.is_superuser %}
-                        <td colspan="12">
+                        <td colspan="12" style="text-align: center;">
                             <button type="button" class="stock-update bs-modal btn btn-sm btn-primary" data-form-url="{% url 'stock-update' stock.id %}">
                                 Edit
                               </button>

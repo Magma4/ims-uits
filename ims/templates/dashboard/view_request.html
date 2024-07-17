@@ -98,14 +98,14 @@
                         <table class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead>
                                 <tr>
-                                    <th scope="col">Request ID</th>
-                                    <th scope="col">Issued By</th>
-                                    <th scope="col">Issued To</th>
-                                    <th scope="col">Item Name</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Action</th>
+                                    <th scope="col" style="text-align: center;">Request ID</th>
+                                    <th scope="col" style="text-align: center;">Issued By</th>
+                                    <th scope="col" style="text-align: center;">Issued To</th>
+                                    <th scope="col" style="text-align: center;">Item Name</th>
+                                    <th scope="col" style="text-align: center;">Quantity</th>
+                                    <th scope="col" style="text-align: center;">Date</th>
+                                    <th scope="col" style="text-align: center;">Status</th>
+                                    <th scope="col" style="text-align: center;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="table-group-divider">
@@ -116,7 +116,7 @@
                                 {% endif %}
                                 {% for order in page_obj %}
                                 <tr>
-                                    <td>{{ order.id }}</td>
+                                    <td style="text-align: center;">{{ order.id }}</td>
                                     <td><a href="{% url 'employees-detail' pk=order.users.id %}" title="View Profile"><img src="{{ order.users.profile.image.url }}" alt=" " class="rounded-circle img-fluid" style="width: 35px;"></a> {{ order.users.username|title }}</td>
                                     <td>
                                         {% if order.issued_to == None %}
@@ -126,12 +126,12 @@
                                         {% endif %}
                                     </td>
                                     <td>{{ order.item_name|title }}</td>
-                                    <td>{{ order.request_quantity }}</td>
-                                    <td>{{ order.date }}</td>
-                                    <td>
+                                    <td style="text-align: center;">{{ order.request_quantity }}</td>
+                                    <td style="text-align: center;">{{ order.date }}</td>
+                                    <td style="text-align: center;">
                                         <form id="updateOrderForm-{{ order.id }}" action="{% url 'update_order_status' order.id %}" method="post">
                                             {% csrf_token %}
-                                            <select name="status" class="form-select" {% if not request.user.is_superuser and not is_sub_admin %}disabled{% endif %} onchange="submitForm('{{ order.id }}')">
+                                            <select name="status" class="form-select {% if order.status == 'pending' %} bg-warning {% elif order.status == 'approved' %} bg-success {% elif order.status == 'released' %} bg-danger {% else %} bg-secondary {%endif%}" {% if not request.user.is_superuser and not is_sub_admin %}disabled{% endif %} onchange="submitForm('{{ order.id }}')">
                                                 {% if user.is_authenticated and user.is_staff and user.is_superuser %}
                                                 <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
                                                 <option value="approved" {% if order.status == 'approved' %}selected{% endif %}>Approved</option>
@@ -148,7 +148,7 @@
                                             </select>
                                         </form>
                                     </td>
-                                    <td>
+                                    <td style="text-align: center;" >
                                         <button type="button" class="order-update bs-modal btn btn-sm btn-primary" data-form-url="{% url 'order-update' order.id %}">
                                             Edit
                                         </button>
