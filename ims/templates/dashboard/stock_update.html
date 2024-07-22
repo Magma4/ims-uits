@@ -5,17 +5,15 @@
 
   <div class="modal-header text-white" style="background-color: #0a3816;">
     <h3 class="modal-title" style="color: white;">Update Item</h3>
-    <button type="button"  class="btn-close"
-    data-bs-dismiss="modal"  style="background-color: white; font-weight: bolder; ">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: white; font-weight: bolder;"></button>
+
   </div>
 
   <div class="modal-body">
     
 
     {% for field in form %}
-      <div class="form-group" style="margin-top: 2rem;">
+      <div class="form-group" style="margin-top: 2rem;text-align: left;">
         <label for="{{ field.id_for_label }}" >{{ field.label }}</label>
         {% render_field field class="form-control" placeholder=field.label %}
        

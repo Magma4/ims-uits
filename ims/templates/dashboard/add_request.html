@@ -4,22 +4,20 @@
     
     <div class="modal-header "  style="background-color: #0a3816;">
       <h3 class="modal-title" style="color: white;">Request Item</h3>
-      <button type="button" class="btn-close"
-      data-bs-dismiss="modal"  style="background-color: white; font-weight: bolder; ">
-        <span aria-hidden="true" class="text-white">&times;</span>
-      </button>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: white; font-weight: bolder;"></button>
+
     </div>
 
-    <div class="modal-body">
-      <div class="{% if form.non_field_errors %}alert alert-danger{% endif %}">
+    <div class="modal-body" style="text-align: left;">
+      <div class="{% if form.non_field_errors %}alert alert-danger{% endif %}" style="text-align: left;">
         {% for error in form.non_field_errors %}
           <p>{{ error }}</p>
         {% endfor %}
       </div>
 
       {% for field in form %}
-        <div class="form-group" style="margin-top: 2rem;">
-          <label for="{{ field.id_for_label }}" class="col-form-label">{{ field.label }}</label>
+        <div class="form-group" style="margin-top: 2rem;text-align: left;">
+          <label for="{{ field.id_for_label }}" class="col-form-label" style="text-align: right;">{{ field.label }}</label>
           {% render_field field class="form-control" placeholder=field.label %}
           {% if field.errors %}
             <div class="alert alert-danger">

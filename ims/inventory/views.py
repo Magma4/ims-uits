@@ -106,6 +106,7 @@ class OrderDeleteView(BSModalDeleteView):
     template_name = 'dashboard/order_delete.html'
     success_message = 'Request was deleted.'
     
+    
     def get_success_url(self):
         # Check if the user is a superuser
         if self.request.user.is_superuser:

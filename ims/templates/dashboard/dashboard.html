@@ -78,6 +78,216 @@
         opacity: 1;
         border: 0;
         }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-pending {
+            background-color: yellow;
+        }
+
+        .status-approved {
+            background-color: green;
+        }
+
+        .status-released {
+            background-color: red;
+        }
+
+        .status-returned {
+            background-color: gray;
+        }
+
+        #sidebar-menu ul li a {
+    
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+        }
+
+        #sidebar-menu ul li a:hover {
+            background-color: #0a3816;
+            color: white;
+            text-decoration: none;
+        }
+
+        #sidebar-menu ul li a.active {
+            background-color: #0a3816;
+            color: white;
+
+            
+        }
+
+        /* #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        } */
+
+        @keyframes rotate {
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Ensure it's above other content */
+}
+
+section.wrapper {
+  padding: 40px 0;
+}
+
+div.spinner {
+  animation: rotate 10s infinite linear;
+  position: relative;
+  display: block;
+  margin: auto;
+  width: 204px;
+  height: 204px;
+}
+
+div.spinner i {
+  animation: rotate 3s infinite cubic-bezier(.09, .6, .8, .03);
+  transform-origin: 50% 100% 0;
+  position: absolute;
+  display: inline-block;
+  top: 50%;
+  left: 50%;
+  border: solid 6px transparent;
+  border-bottom: none;
+}
+
+div.spinner i:nth-child(1) {
+  animation-timing-function: cubic-bezier(.09, .3, .12, .03);
+  width: 42px;
+  height: 21px;
+  margin-top: -21px;
+  margin-left: -21px;
+  border-color: #2172b8;
+  border-top-left-radius: 36px;
+  border-top-right-radius: 36px;
+}
+
+div.spinner i:nth-child(2) {
+  animation-timing-function: cubic-bezier(.09, .6, .24, .03);
+  width: 58px;
+  height: 29px;
+  margin-top: -29px;
+  margin-left: -29px;
+  border-color: #18a39b;
+  border-top-left-radius: 42px;
+  border-top-right-radius: 42px;
+}
+
+div.spinner i:nth-child(3) {
+  animation-timing-function: cubic-bezier(.09, .9, .36, .03);
+  width: 74px;
+  height: 37px;
+  margin-top: -37px;
+  margin-left: -37px;
+  border-color: #82c545;
+  border-top-left-radius: 48px;
+  border-top-right-radius: 48px;
+}
+
+div.spinner i:nth-child(4) {
+  animation-timing-function: cubic-bezier(.09, 1.2, .48, .03);
+  width: 90px;
+  height: 45px;
+  margin-top: -45px;
+  margin-left: -45px;
+  border-color: #f8b739;
+  border-top-left-radius: 54px;
+  border-top-right-radius: 54px;
+}
+
+div.spinner i:nth-child(5) {
+  animation-timing-function: cubic-bezier(.09, 1.5, .6, .03);
+  width: 106px;
+  height: 53px;
+  margin-top: -53px;
+  margin-left: -53px;
+  border-color: #f06045;
+  border-top-left-radius: 60px;
+  border-top-right-radius: 60px;
+}
+
+div.spinner i:nth-child(6) {
+  animation-timing-function: cubic-bezier(.09, 1.8, .72, .03);
+  width: 122px;
+  height: 61px;
+  margin-top: -61px;
+  margin-left: -61px;
+  border-color: #ed2861;
+  border-top-left-radius: 66px;
+  border-top-right-radius: 66px;
+}
+
+div.spinner i:nth-child(7) {
+  animation-timing-function: cubic-bezier(.09, 2.1, .84, .03);
+  width: 138px;
+  height: 69px;
+  margin-top: -69px;
+  margin-left: -69px;
+  border-color: #c12680;
+  border-top-left-radius: 72px;
+  border-top-right-radius: 72px;
+}
+
+div.spinner i:nth-child(8) {
+  animation-timing-function: cubic-bezier(.09, 2.4, .96, .03);
+  width: 154px;
+  height: 77px;
+  margin-top: -77px;
+  margin-left: -77px;
+  border-color: #5d3191;
+  border-top-left-radius: 78px;
+  border-top-right-radius: 78px;
+}
+
+
     </style>
 
 </head>
@@ -114,6 +324,21 @@
     </div>
   </div>
 {% endfor %}
+
+<div id="preloader" style="display: none;">
+    <section class="wrapper dark">
+        <div class="spinner">
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+        </div>
+    </section>
+</div>
+
 
 
 
@@ -236,56 +461,53 @@
     </div>
 
     <!--- Sidemenu -->
-    <div id="sidebar-menu" style="">
+    <div id="sidebar-menu">
         <!-- Left Menu Start -->
         <ul class="metismenu list-unstyled" id="side-menu">
             <li class="menu-title">Menu</li>
             {% block content %}
             <li>
-                <a href="{% url 'dashboard' %}" class="waves-effect active" >
+                <a href="{% url 'dashboard' %}" class="waves-effect {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                     <i class="mdi mdi-airplay"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
             {% if request.user.is_superuser or is_sub_admin %}
             <li>
-                <a href="{% url 'view-request' %}" class=" waves-effect">
+                <a href="{% url 'view-request' %}" class="waves-effect {% if request.resolver_match.url_name == 'view-request' %}active{% endif %}">
                     <i class="mdi mdi-plus-box"></i>
                     <span>Requisitions</span>
                 </a>
-                
             </li>
             {% endif %}
-
+    
             {% if user.is_authenticated and user.is_staff and user.is_superuser %}
             <li>
-                <a href="{% url 'view-stock' %}" class="waves-effect">
+                <a href="{% url 'view-stock' %}" class="waves-effect {% if request.resolver_match.url_name == 'view-stock' %}active{% endif %}">
                     <i class="mdi mdi-warehouse"></i>
                     <span>Items</span>
                 </a>
             </li>
             {% else %}
             <li>
-                <a href="{% url 'view-stock' %}" class="waves-effect">
+                <a href="{% url 'view-stock' %}" class="waves-effect {% if request.resolver_match.url_name == 'view-stock' %}active{% endif %}">
                     <i class="mdi mdi-table-headers-eye"></i>
                     <span>View Items</span>
                 </a>
             </li>
             {% endif %}
-
-            {% if request.user.is_superuser or is_sub_admin %}
+    
+            {% if request.user.is_superuser  %}
             <li>
-                <a href="{% url 'report' %}" class=" waves-effect">
+                <a href="{% url 'report' %}" class="waves-effect {% if request.resolver_match.url_name == 'report' %}active{% endif %}">
                     <i class="mdi mdi-chart-timeline-variant"></i>
                     <span>Report</span>
                 </a>
             </li>
             {% endif %}
-
-           
-
         </ul>
     </div>
+    
     <!-- Sidebar -->
 </div>
 </div>
@@ -886,7 +1108,7 @@
                                                 </div>
                                                 {% else %}
                                                 <td>
-                                                    <p>Item in use or returned</p>
+                                                    <p>Request cannot be altered</p>
                                                 </td>
                                                 {% endif %}
                                         </tr>
@@ -1063,6 +1285,48 @@ document.addEventListener("DOMContentLoaded", function() {
   
     });
   </script>
+  <script>
+    // Function to show the preloader
+    function showPreloader() {
+        document.getElementById('preloader').style.display = 'flex';
+    }
+
+    // Function to hide the preloader
+    function hidePreloader() {
+        document.getElementById('preloader').style.display = 'none';
+    }
+
+    // Show preloader when the form is submitted
+    function submitForm(orderId) {
+        showPreloader();
+        document.getElementById('updateOrderForm-' + orderId).submit();
+    }
+
+    // Show preloader when a link is clicked
+    document.addEventListener('DOMContentLoaded', function() {
+        const links = document.querySelectorAll('a');
+        const forms = document.querySelectorAll('form');
+
+        links.forEach(link => {
+            link.addEventListener('click', function(event) {
+                showPreloader();
+            });
+        });
+
+        forms.forEach(form => {
+            form.addEventListener('submit', function(event) {
+                showPreloader();
+            });
+        });
+    });
+
+    // Hide preloader when the page is fully loaded
+    window.onload = function() {
+        hidePreloader();
+    }
+</script>
+
+
 {% if messages %}
   <script>
       {% for message in messages %}

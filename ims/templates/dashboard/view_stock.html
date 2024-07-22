@@ -53,7 +53,7 @@
 </li>
 {% endif %}
 
-{% if request.user.is_superuser or is_sub_admin %}
+{% if request.user.is_superuser %}
 <li>
     <a href="{% url 'report' %}" class=" waves-effect">
         <i class="mdi mdi-chart-timeline-variant"></i>

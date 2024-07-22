@@ -35,7 +35,7 @@
 </li>
 {% endif %}
 
-{% if request.user.is_superuser or is_sub_admin %}
+{% if request.user.is_superuser  %}
 <li>
     <a href="{% url 'report' %}" class=" waves-effect">
         <i class="mdi mdi-chart-timeline-variant"></i>
@@ -131,21 +131,24 @@
                                     <td style="text-align: center;">
                                         <form id="updateOrderForm-{{ order.id }}" action="{% url 'update_order_status' order.id %}" method="post">
                                             {% csrf_token %}
-                                            <select name="status" class="form-select {% if order.status == 'pending' %} bg-warning {% elif order.status == 'approved' %} bg-success {% elif order.status == 'released' %} bg-danger {% else %} bg-secondary {%endif%}" {% if not request.user.is_superuser and not is_sub_admin %}disabled{% endif %} onchange="submitForm('{{ order.id }}')">
-                                                {% if user.is_authenticated and user.is_staff and user.is_superuser %}
-                                                <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
-                                                <option value="approved" {% if order.status == 'approved' %}selected{% endif %}>Approved</option>
-                                                <option value="released" {% if order.status == 'released' %}selected{% endif %}>Released</option>
-                                                <option value="returned" {% if order.status == 'returned' %}selected{% endif %}>Returned</option>
-                                                {% elif is_sub_admin and order.status == 'approved' or order.status == 'released' or order.status == 'returned'%}
-                                                
-                                                <option value="approved"  {% if order.status == 'approved' %}selected{% endif %}>Approved</option>
-                                                <option value="released"  {% if order.status == 'released' %}selected{% endif %}>Released</option>
-                                                <option value="returned"  {% if order.status == 'returned' %}selected{% endif %}>Returned</option>
-                                                {% else %}
-                                                <option value=""  >Awaiting Approval...</option>
-                                                {% endif %}
-                                            </select>
+                                            <div style="display: flex; align-items: center;">
+                                                <div class="status-indicator {% if order.status == 'pending' %}status-pending{% elif order.status == 'approved' %}status-approved{% elif order.status == 'released' %}status-released{% elif order.status == 'returned' %}status-returned{% else %}status-secondary{% endif %}"></div>
+                                                <select name="status" class="form-select" {% if not request.user.is_superuser and not is_sub_admin %}disabled{% endif %} onchange="submitForm('{{ order.id }}')">
+                                                    {% if user.is_authenticated and user.is_staff and user.is_superuser %}
+                                                    <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                                                    <option value="approved" {% if order.status == 'approved' %}selected{% endif %}>Approved</option>
+                                                    <option value="released" {% if order.status == 'released' %}selected{% endif %}>Released</option>
+                                                    <option value="returned" {% if order.status == 'returned' %}selected{% endif %}>Returned</option>
+                                                    {% elif is_sub_admin and order.status == 'approved' or order.status == 'released' or order.status == 'returned'%}
+                                                    
+                                                    <option value="approved"  {% if order.status == 'approved' %}selected{% endif %}>Approved</option>
+                                                    <option value="released"  {% if order.status == 'released' %}selected{% endif %}>Released</option>
+                                                    <option value="returned"  {% if order.status == 'returned' %}selected{% endif %}>Returned</option>
+                                                    {% else %}
+                                                    <option value=""  >Awaiting Approval...</option>
+                                                    {% endif %}
+                                                </select>
+                                            </div>
                                         </form>
                                     </td>
                                     <td style="text-align: center;" >
