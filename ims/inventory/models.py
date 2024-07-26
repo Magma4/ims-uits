@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 from django.db import models
@@ -65,9 +66,12 @@ class Order(models.Model):
         return f'{self.request_quantity} - {self.item_name.name} ordered by {username} on {self.date} (Status: {self.get_status_display()})'
 
     def save(self, *args, **kwargs):
-        if self.status == 'returned':
+        if self.status == 'released':
+            if self.request_quantity > self.item_name.get_total_quantity():
+                raise ValidationError(f"Request quantity {self.request_quantity} exceeds available stock.")
             self.item_name.save()
-            # Set returned date
+            self.released_by = self.users.username if self.users else "Unknown User"
+        if self.status == 'returned':
             self.returned_date = timezone.now()
         super().save(*args, **kwargs)
 

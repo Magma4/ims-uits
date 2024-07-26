@@ -50,16 +50,15 @@ class OrderCreateView(BSModalCreateView):
         instance = form.save(commit=False)
         instance.users = self.request.user  # Saving the current user to the order
         request_quantity = instance.request_quantity
-        stock_quantity = instance.item_name.quantity
+        stock_quantity = instance.item_name.get_total_quantity()  # Use the method to get the total quantity
 
         if request_quantity <= stock_quantity:
             messages.success(self.request, "Request created")
+            return super().form_valid(form)  # This saves the form and redirects to success_url
         else:
-            messages.error(self.request, "Requested quantity cannot be more than stock quantity")
+            messages.error(self.request, "Requested quantity exceeds available stock")
             # Redirecting to the same page if the form is not valid
             return HttpResponseRedirect(self.request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
-
-        return super().form_valid(form)  # This saves the form and redirects to success_url
 
     def get_context_data(self, **kwargs):
         context = super(OrderCreateView, self).get_context_data(**kwargs)
@@ -74,24 +73,23 @@ class OrderUpdateView(BSModalUpdateView):
     success_message = 'Request was updated.'
 
     def form_valid(self, form):
-        instance = form.save(commit=False) # Saving the current user to the order
+        instance = form.save(commit=False)  # Save the form data without committing to the database yet
         request_quantity = instance.request_quantity
-        stock_quantity = instance.item_name.quantity
+        stock_quantity = instance.item_name.get_total_quantity()  # Use the method to get the total quantity
 
         if request_quantity <= stock_quantity:
             messages.success(self.request, "Request updated successfully")
+            return super().form_valid(form)  # This saves the form and redirects to success_url
         else:
-            messages.error(self.request, "Requested quantity cannot be more than stock quantity")
+            messages.error(self.request, "Requested quantity exceeds available stock")
             # Redirecting to the same page if the form is not valid
             return HttpResponseRedirect(self.request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
-
-        return super().form_valid(form)  # This saves the form and redirects to success_url
 
     def get_context_data(self, **kwargs):
         context = super(OrderUpdateView, self).get_context_data(**kwargs)
         context['orders'] = Order.objects.all()  # Adding orders to the context
         return context
-    
+
     def get_success_url(self):
         # Check if the user is a superuser
         if self.request.user.is_superuser:
@@ -349,30 +347,33 @@ def update_order_status(request, order_id):
     """This function updates order status"""
     user = request.user
     is_sub_admin = user.groups.filter(name='sub-admin').exists()
-    if request.method == 'POST' and request.user.is_superuser or is_sub_admin:
-        order = Order.objects.get(id=order_id)
+    if request.method == 'POST' and (request.user.is_superuser or is_sub_admin):
+        order = get_object_or_404(Order, id=order_id)
         new_status = request.POST.get('status')
-        
-        # Check if the status is being changed to 'released'
-        if new_status == 'approved':
-            order.status = new_status
-            order.approved_by = request.user.username  # Set the released_by field to the username of the admin
-            order.save()
-            messages.success(request, f"Request with ID {order.id} has been Approved by {request.user.username}.")
-        elif new_status == 'released':
-            order.status = new_status
-            order.released_by = request.user.username  # Set the released_by field to the username of the admin
-            order.save()
-            messages.success(request, f"Request with ID {order.id} has been released by {request.user.username}.")
-        elif new_status == 'returned':
-            order.status = new_status
-            order.returned_to = request.user.username  # Set the returned_to field to the username of the admin
-            order.save()
-            messages.success(request, f"Request with ID {order.id} has received by {request.user.username}.")
-        else:
-            order.status = new_status
-            order.save()
-            messages.success(request, f"Request {order.id} status has been updated.")
+
+        try:
+            # Check if the status is being changed to 'released'
+            if new_status == 'approved':
+                order.status = new_status
+                order.approved_by = request.user.username  # Set the approved_by field to the username of the admin
+                order.save()
+                messages.success(request, f"Request with ID {order.id} has been approved by {request.user.username}.")
+            elif new_status == 'released':
+                order.status = new_status
+                order.released_by = request.user.username  # Set the released_by field to the username of the admin
+                order.save()
+                messages.success(request, f"Request with ID {order.id} has been released by {request.user.username}.")
+            elif new_status == 'returned':
+                order.status = new_status
+                order.returned_to = request.user.username  # Set the returned_to field to the username of the admin
+                order.save()
+                messages.success(request, f"Request with ID {order.id} has been received by {request.user.username}.")
+            else:
+                order.status = new_status
+                order.save()
+                messages.success(request, f"Request {order.id} status has been updated.")
+        except ValidationError as e:
+            messages.error(request, e.message)
     
     return redirect('view-request')
 
