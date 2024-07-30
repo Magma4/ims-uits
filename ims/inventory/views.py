@@ -389,6 +389,7 @@ def searchdata(request):
             q_id = int(q)
             orders = Order.objects.filter(
                 Q(request_description__icontains=q) |
+                Q(status__icontains=q) |
                 Q(users__username__icontains=q) |
                 Q(issued_to__icontains=q) |  # Search within the issued_to CharField
                 Q(item_name__name__icontains=q) |
@@ -397,6 +398,7 @@ def searchdata(request):
         except ValueError:
             orders = Order.objects.filter(
                 Q(request_description__icontains=q) |
+                Q(status__icontains=q) |
                 Q(users__username__icontains=q) |
                 Q(issued_to__icontains=q) |  # Search within the issued_to CharField
                 Q(item_name__name__icontains=q)

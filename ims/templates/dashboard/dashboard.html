@@ -794,7 +794,7 @@
                                                     {% csrf_token %}
                                                     <input type="hidden" name="order_id" value="{{ overdue.id }}">
                                                     <button type="submit" class="btn btn-warning btn-sm" name="send_email" data-bs-toggle="tooltip2" data-bs-placement="top" title="Send Email Reminder">
-                                                        <i class="fas fa-envelope"></i>
+                                                        <i class="mdi mdi-gmail"></i>
                                                     </button>
                                                 </form>
                                                 </td>
@@ -853,33 +853,63 @@
                         </div>
                     </div>
                 </div>
-            
                 <div class="col-md-12 col-xl-9" >
                     <div class="row">
-                        <div class="col-md-12 col-xl-4" style="margin-top: 2rem;">
+                        <div class="col-md-12 col-xl-4">
                             <div class="card shadow-lg">
                                 <div class="card-body">
-                                    <div class="row align-items-center" >
+                                    <div class="d-flex align-items-start">
+                                        <div class="avatar-sm font-size-20 me-3">
+                                            <span class="avatar-title bg-soft-primary text-primary rounded">
+                                                <i class="mdi mdi-cart-outline" style="color: #359e45;"></i>
+                                            </span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="font-size-16 mt-2">Items in use</div>
+                                        </div>
+                                    </div>
+                                    <h4 class="mt-4">{{ released_orders }}</h4>
+                                    <div class="row">
                                         <div class="col-8">
-                                            <p class="mb-2">Items in use</p>
-                                            <h4 class="mb-0">{{ released_orders }}</h4>
+                                            <p class="mb-0" style="margin-top: 1rem;">
+                                                <span class="text-success me-2">
+                                                    
+                                                </span>
+                                            </p>
                                         </div>
-                                        <div class="col-4">
-                                            <div class="text-end">
-                                                <div>
-                                                    <i class="mdi  text-success ml-1"></i>
-                                                </div>
-                                                <div class="progress progress-sm mt-3">
-                                                    <div class="progress-bar" role="progressbar" style="width: {{released_percentage}}%" aria-valuenow="{{released_percentage}}" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>
                         </div>
-            
-                        <div class="col-md-12 col-xl-4" style="margin-top: 2rem;">
+                        <div class="col-md-12 col-xl-4">
+                            <div class="card shadow-lg">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-start">
+                                        <div class="avatar-sm font-size-20 me-3">
+                                            <span class="avatar-title bg-soft-primary text-primary rounded">
+                                                <i class="mdi mdi-timer-sand" style="color: #359e45;"></i>
+                                            </span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="font-size-16 mt-2">Pending Requests</div>
+                                        </div>
+                                    </div>
+                                    <h4 class="mt-4">{{ pending_user_orders }}</h4>
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <p class="mb-0" style="margin-top: 1rem;">
+                                                <span class="text-success me-2">
+                                                   
+                                                </span>
+                                            </p>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-12 col-xl-4" style="margin-top: 2rem;">
                             <div class="card shadow-lg">
                                 <div class="card-body">
                                     <div class="row align-items-center">
@@ -900,7 +930,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         
                         <!-- Replicated card -->
                         <div class="col-md-12 col-xl-4">
@@ -942,7 +972,7 @@
                 <div class="col-md-12">
                     <div class="card shadow-lg">
                         <div class="card-body">
-                            <h4 class="card-title" style="text-align: center;">Your Requests</h4>
+                            <h4 class="card-title" style="text-align: center;">Your Requests({{ order_count }})</h4>
 
                             <div class="table-responsive">
                                 <table id="datatable" class="table table-bordered dt-responsive nowrap"
