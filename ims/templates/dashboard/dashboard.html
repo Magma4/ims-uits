@@ -1270,14 +1270,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Show preloader when a link is clicked
     document.addEventListener('DOMContentLoaded', function() {
-        const links = document.querySelectorAll('a');
-        const forms = document.querySelectorAll('form');
+    const links = document.querySelectorAll('a');
+    const forms = document.querySelectorAll('form');
 
-        links.forEach(link => {
-            link.addEventListener('click', function(event) {
-                showPreloader();
-            });
+    links.forEach(link => {
+        link.addEventListener('click', function(event) {
+            const href = link.getAttribute('href');
+            
+            // Exclude specific download links (Excel and PDF)
+            if (href && (href.includes('order_excel') || href.includes('order_pdf'))) {
+                // Skip the preloader for these links
+                return;
+            }
+
+            // Show the preloader for all other links
+            showPreloader();
         });
+    });
+
+
 
         forms.forEach(form => {
             form.addEventListener('submit', function(event) {
