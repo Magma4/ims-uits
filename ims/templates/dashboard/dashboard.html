@@ -660,15 +660,12 @@
                                         <div id="chart" >
                                             <script>
                                                 var ordersData = [
-                                                    {% for order in all_orders %}
-                                                        {% if order.status == 'released' %}
-                                                            {
-                                                                name: "{{ order.item_name|title }}",
-                                                                quantity: {{ order.request_quantity }},
-                                                            },
-                                                        
-                                                        {% endif %}
-                                                    {% endfor %}
+                                                {% for item in released_items_quantity %}
+                        {
+                            name: "{{ item.item_name__name|title }}",
+                            quantity: {{ item.total_quantity }},
+                        },
+                    {% endfor %}
                                                 ];
                                             
                                                 var options = {
@@ -724,7 +721,7 @@
                                             },
                                             series: [{
                                                 name: 'Number Of Products',
-                                                data: [{% for items in items %} {{ items.quantity }}, {% endfor %}],
+                                                data: [{% for items in items %} {{ items.get_total_quantity }}, {% endfor %}],
                                             }],
                                             colors: ['#359e45'], // Set the color of the bars to green
                                         };
@@ -1251,57 +1248,7 @@ document.addEventListener("DOMContentLoaded", function() {
   
     });
   </script>
-  <script>
-    // Function to show the preloader
-    function showPreloader() {
-        document.getElementById('preloader').style.display = 'flex';
-    }
-
-    // Function to hide the preloader
-    function hidePreloader() {
-        document.getElementById('preloader').style.display = 'none';
-    }
-
-    // Show preloader when the form is submitted
-    function submitForm(orderId) {
-        showPreloader();
-        document.getElementById('updateOrderForm-' + orderId).submit();
-    }
-
-    // Show preloader when a link is clicked
-    document.addEventListener('DOMContentLoaded', function() {
-    const links = document.querySelectorAll('a');
-    const forms = document.querySelectorAll('form');
-
-    links.forEach(link => {
-        link.addEventListener('click', function(event) {
-            const href = link.getAttribute('href');
-            
-            // Exclude specific download links (Excel and PDF)
-            if (href && (href.includes('order_excel') || href.includes('order_pdf'))) {
-                // Skip the preloader for these links
-                return;
-            }
-
-            // Show the preloader for all other links
-            showPreloader();
-        });
-    });
-
-
-
-        forms.forEach(form => {
-            form.addEventListener('submit', function(event) {
-                showPreloader();
-            });
-        });
-    });
-
-    // Hide preloader when the page is fully loaded
-    window.onload = function() {
-        hidePreloader();
-    }
-</script>
+  
 
 
 {% if messages %}

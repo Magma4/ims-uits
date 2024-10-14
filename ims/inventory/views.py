@@ -192,6 +192,10 @@ def dashboard(request):
 
     released_items = Order.objects.filter(status='released').select_related('item_name')
 
+    released_items_quantity = Order.objects.filter(status='released') \
+        .values('item_name__name') \
+        .annotate(total_quantity=Sum('request_quantity'))
+
     
     overdue_orders = Order.objects.filter(
         status='released',
@@ -220,6 +224,7 @@ def dashboard(request):
         'pending_orders_count': pending_orders,
         'pending_orders_list': pending_orders_list,
         'overdue_orders': overdue_orders,
+        'released_items_quantity': released_items_quantity,
     }
 
     return render(request, 'dashboard/dashboard.html', context)
