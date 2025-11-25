@@ -167,7 +167,7 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-CELERY_BROKER_URL = 'amqp://ims:uitsims@localhost:5672/'
+CELERY_BROKER_URL = ''
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 
