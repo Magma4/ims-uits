@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -157,15 +156,15 @@ LOGIN_URL = 'user-login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_HOST = 'EMAIL_HOST'
 
-EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_PORT = 'EMAIL_PORT'
 
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_USE_TLS = 'EMAIL_USE_TLS'
 
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_USER = 'EMAIL_HOST_USER'
 
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = 'EMAIL_HOST_PASSWORD'
 
 CELERY_BROKER_URL = ''
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
